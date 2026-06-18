@@ -1,14 +1,9 @@
 return {
-    {
-        "ellisonleao/gruvbox.nvim",
+  {
+    "navarasu/onedark.nvim",
+    opts = {
+      style = "warmer",
+      transparent = true,
     },
-    {
-        "navarasu/onedark.nvim",
-    },
-    {
-        "LazyVim/LazyVim",
-        opts = {
-            -- colorscheme = "onedark",
-        },
-    },
+  }
 }

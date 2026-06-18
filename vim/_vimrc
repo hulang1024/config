@@ -16,6 +16,7 @@ endif
 
 if &t_Co > 2 || has("gui_running")
   " Switch on highlighting the last used search pattern.
+  set renderoptions=type:directx,gamma:1.0,contrast:0.5
   set hlsearch
 endif
 
@@ -44,15 +45,18 @@ let &t_SI.="\e[6 q" " SI = INSERT mode
 let &t_SR.="\e[4 q" " SR = REPLACE mode
 let &t_EI.="\e[2 q" " EI = NORMAL mode (ELSE)
 
+set clipboard=unnamed
+set completeopt=menu,menuone
+set fileencoding=utf-8
 set visualbell
 set relativenumber
 set number
 set hlsearch
 set incsearch
 
-set tabstop=2
-set shiftwidth=2
-set softtabstop=2
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
 set expandtab
 
 set nobackup
@@ -61,7 +65,7 @@ set noswapfile
 set undodir=~/.vimundodir
 
 call plug#begin()
-  " Plug 'morhetz/gruvbox'
+  Plug 'yianwillis/vimcdoc'
   Plug 'joshdick/onedark.vim'
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
@@ -78,12 +82,45 @@ call plug#end()
 let g:highlightedyank_highlight_duration = 200
 
 set termguicolors
-set background=dark
+set termwinsize=10x0
+if has("win32") || has("win64")
+  " set shell=powershell
+  set shell=cmd.exe
+  set shellcmdflag=/c
+  set shellpipe=|
+  set shellredir=>
+endif
+if has("gui_running")
+  set guifont=Maple\ Mono\ NF\ CN:h11
+  set lines=30
+  set columns=120
+else
+  " 设置背景无
+  hi Normal guibg=NONE
+  hi Normal ctermbg=NONE
+  hi NonText guibg=NONE
+  hi LineNr guibg=NONE
+  hi SignColumn guibg=NONE
+endif
 set noshowmode
 colorscheme onedark
 let g:airline_theme = 'onedark'
 
-nmap <C-p> :Files<CR>
-nmap <C-e> :Buffers<CR>
 let g:fzf_action = { 'ctrl-e': 'edit' }
+
+let mapleader=' '
+" Go to left window
+nmap <C-h> <C-w>h<CR>
+" Go to right window
+nmap <C-j> <C-w>j<CR>
+" Go to upper window
+nmap <C-k> <C-w>k<CR>
+" Go to lower window
+nmap <C-l> <C-w>l<CR>
+" Search files
+" nmap <C-p> :Files<CR>
+" Save
+nmap <C-s> :up<CR>
+" Open Terminal
+nmap <leader>ft :below term<CR>
 

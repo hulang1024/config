@@ -1,12 +1,29 @@
-oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\amro.omp.json" | Invoke-Expression
-
 [console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding
+
+$env:https_proxy="http://127.0.0.1:7897"
+$env:http_proxy="http://127.0.0.1:7897"
+
+# Alias
+Set-Alias v nvim
+
+# Import-Module -Name Terminal-Icons
+# Import-Module PSFzf
+$fzfTriggered = $false
+function Initialize-Fzf {
+    if (-not $fzfTriggered) {
+        Import-Module PSFzf -ErrorAction SilentlyContinue
+        Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
+        $global:fzfTriggered = $true
+    }
+}
 
 # PSReadLine
 Set-PSReadLineOption -EditMode Vi
 Set-PSReadLineOption -ViModeIndicator Prompt
 Set-PSReadLineOption -BellStyle Visual
-Set-PSReadLineKeyHandler -Chord "Ctrl+[" -Function ViCommandMode
+Set-PSReadLineKeyHandler -Chord "Ctrl+o" -Function ViCommandMode
+Set-PSReadLineKeyHandler -Key Tab -Function AcceptSuggestion
+
 # 在 Insert 模式下添加 Emacs 风格快捷键
 $emacsBindings = @{
     # 光标移动
@@ -28,28 +45,48 @@ $emacsBindings = @{
     "Alt+d"  = "DeleteWord"              # 删除后一个单词
     "Ctrl+u" = "BackwardDeleteLine"      # 删除到行首
     "Ctrl+k" = "KillLine"                # 删除到行尾
-    "Ctrl+y" = "Yank"                    # 粘贴
+    "Shift+Ctrl+y" = "Yank"                    # 粘贴
     "Alt+y"  = "YankPop"                 # 在粘贴历史中循环
     # 参数操作 (重点添加)
     "Alt+."   = "YankLastArg"            # 插入上一个命令的最后一个参数
     # 其他实用功能
     "Ctrl+l" = "ClearScreen"             # 清屏
     "Ctrl+_" = "Undo"                    # 撤销
-    "Tab"    = "Complete"                # 自动补全
+    "Tab"    = "Complete"
+    "Ctrl+y"    = "AcceptSuggestion"        # 自动补全
 }
 
 foreach ($key in $emacsBindings.Keys) {
     Set-PSReadLineKeyHandler -Chord $key -Function $emacsBindings[$key] -ViMode Insert
 }
 
-# Install-Module -Name Terminal-Icons -Repository PSGallery
-Import-Module -Name Terminal-Icons
+Set-PSReadLineKeyHandler -Chord 'Ctrl+t' -ScriptBlock { Initialize-Fzf; [Microsoft.PowerShell.PSConsoleReadLine]::Insert('Ctrl+t') }
+Set-PSReadLineKeyHandler -Chord 'Ctrl+r' -ScriptBlock { Initialize-Fzf; [Microsoft.PowerShell.PSConsoleReadLine]::RemoveLine() }
+# Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
-# Fzf
-# Install-Module -Name PSFzf
-Import-Module PSFzf
-Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 
-# Alias
-Set-Alias v nvim
-Set-Alias vi nvim
+function ssh-go {
+    $sshConfig = "$HOME\.ssh\config"
+    # 检查配置文件是否存在
+    if (-not (Test-Path $sshConfig)) {
+        Write-Warning "未找到 SSH 配置文件: $sshConfig"
+        return
+    }
+    Initialize-Fzf
+    # 读取 config，正则提取 Host 名称（过滤掉通配符 *），传给 fzf 模糊搜索
+    $selected = Select-String -Path $sshConfig -Pattern '^\s*Host\s+([a-zA-Z0-9_.-]+)$' |
+                ForEach-Object { $_.Matches.Groups[1].Value } |
+                fzf --height 40% --reverse --border --prompt="🌐 SSH > "
+    # 如果在 fzf 中选中了服务器并回车，则发起连接
+    if (-not [string]::IsNullOrWhiteSpace($selected)) {
+        Write-Host "正在连接到 $selected ..." -ForegroundColor Cyan
+        ssh $selected
+    }
+}
+
+$starshipCache = "$HOME\.starship_cache.ps1"
+if (-not (Test-Path $starshipCache)) {
+    # 如果缓存不存在，生成一个（仅在第一次或手动删除时发生一次）
+    starship init powershell --print-full-init > $starshipCache
+}
+. $starshipCache
