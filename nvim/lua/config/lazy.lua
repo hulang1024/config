@@ -13,12 +13,17 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
   end
 end
 vim.opt.rtp:prepend(lazypath)
-vim.opt.rtp:prepend(vim.fn.stdpath("data") .. "/site")
 
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
-    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    {
+      "LazyVim/LazyVim",
+      import = "lazyvim.plugins",
+      opts = {
+        colorscheme = "catppuccin"
+      },
+    },
     -- import/override with your plugins
     { import = "plugins" },
   },
@@ -31,7 +36,6 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = { colorscheme = { "tokyonight", "habamax" } },
   checker = {
     enabled = true, -- check for plugin updates periodically
     notify = false, -- notify on update
@@ -52,39 +56,3 @@ require("lazy").setup({
     },
   },
 })
-require("mini.surround").setup({
-  mappings = {
-    add = "ys", -- Add surrounding in Normal and Visual modes
-    delete = "ds", -- Delete surrounding
-    find = "", -- Find surrounding (to the right)
-    find_left = "", -- Find surrounding (to the left)
-    highlight = "", -- Highlight surrounding
-    replace = "cs", -- Replace surrounding
-
-    suffix_last = "l", -- Suffix to search with "prev" method
-    suffix_next = "n", -- Suffix to search with "next" method
-  },
-})
-
-if vim.g.vscode then
-  -- 禁用 LazyVim 的 UI 类插件，避免它们在 VSCode 中试图接管界面
-  vim.g.snacks_picker = false -- 禁用 snacks 的 picker
-  vim.g.snacks_dashboard = false -- 禁用 snacks 的 dashboard
-else
-  require("notify").setup({
-    background_colour = '#000000'
-  })
-
-  require("lualine").setup({
-    options = {
-      component_separators = { left = "", right = "" },
-      section_separators = { left = "", right = "" },
-    },
-  })
-
-  require("conform").setup({
-    formatters_by_ft = {
-      java = { "google_java_format" },
-    },
-  })
-end
