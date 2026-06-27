@@ -30,8 +30,8 @@ return {
           lua = false,
           filter = false,
           help = false,
-        }
-      }
+        },
+      },
     },
   },
   {
@@ -42,10 +42,19 @@ return {
     },
   },
   {
-		"folke/snacks.nvim",
+    "folke/snacks.nvim",
     ---@module "snacks"
     ---@type snacks.Config
-		opts = {
+    opts = {
+      terminal = {
+        win = {
+          position = "float",
+          border = "hpad",
+          wo = {
+            winhighlight = "FloatBorder:NormalFloat",
+          },
+        },
+      },
       dashboard = {
         preset = {
           header = [[
@@ -72,6 +81,6 @@ return {
           },
         },
       },
-		},
-	},
+    },
+  },
 }

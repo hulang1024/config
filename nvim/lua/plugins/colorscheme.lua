@@ -22,13 +22,16 @@ return {
     "catppuccin/nvim",
     name = "catppuccin",
     priority = 1000,
+    opts = {
+      transparent = true,
+    }
   },
   {
     "rebelot/kanagawa.nvim",
     priority = 1000,
     opts = {
       theme = "wave",
-      transparent = false,
+      transparent = true,
     }
   },
 }

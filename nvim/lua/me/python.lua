@@ -1,5 +1,4 @@
-local M = {}
-function M.run_command()
+local function run_command()
   local filename = vim.fn.expand("%:p")
   if filename == "" then
     vim.notify("当前没有打开任何文件！", vim.log.levels.WARN)
@@ -22,6 +21,16 @@ function M.run_command()
     term = true,
   })
   vim.keymap.set('n', 'q', '<Cmd>bd!<CR>', { buffer = buf, silent = true })
+end
+
+local M = {}
+
+function M.setup()
+  vim.keymap.set('n', '<leader>pr', run_command, {
+      noremap = true,
+      silent = true,
+      desc = "运行python",
+  })
 end
 
 return M

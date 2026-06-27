@@ -1,6 +1,4 @@
-local M = {}
-
-function M.trigger_webhook(webhook_id)
+local function trigger_webhook(webhook_id)
   local _, curl = pcall(require, "plenary.curl")
   curl.post("http://192.168.1.100:8123/api/webhook/" .. webhook_id, {
     callback = function(response)
@@ -11,8 +9,14 @@ function M.trigger_webhook(webhook_id)
   })
 end
 
-function M.toggle_light()
-  M.trigger_webhook("-Gu-fnjgbtfWjgrtXshg_yNRK")
+local function toggle_light()
+  trigger_webhook("-Gu-fnjgbtfWjgrtXshg_yNRK")
+end
+
+local M = {}
+
+function M.setup()
+  vim.keymap.set('n', '<leader>hl', toggle_light, { desc = "开关卧室吸顶灯" })
 end
 
 return M

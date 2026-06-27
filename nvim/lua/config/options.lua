@@ -18,7 +18,7 @@ vim.opt.list = false
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.scrolloff =  999
-vim.opt.shell = "pwsh"
+vim.opt.shell = "powershell.exe"
 vim.opt.shiftwidth = 4
 vim.opt.showcmd = true
 vim.opt.signcolumn = "yes"
@@ -32,6 +32,7 @@ vim.opt.termguicolors = true
 vim.opt.title = false
 vim.opt.virtualedit = "block"
 vim.opt.visualbell = true
+vim.opt.winblend = vim.g.neovide and 60 or 10
 vim.opt.wrap = false
 
 if vim.g.vscode then

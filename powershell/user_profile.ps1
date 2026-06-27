@@ -18,6 +18,7 @@ function Initialize-Fzf {
 }
 
 # PSReadLine
+# Install-Module -Name PSReadLine -Repository Tsinghua -Scope CurrentUser -Force -AllowClobber
 Set-PSReadLineOption -EditMode Vi
 Set-PSReadLineOption -ViModeIndicator Prompt
 Set-PSReadLineOption -BellStyle Visual
@@ -38,14 +39,14 @@ $emacsBindings = @{
     "Ctrl+n" = "NextHistory"
     "Ctrl+r" = "ReverseSearchHistory"
     "Ctrl+s" = "ForwardSearchHistory"
-    # 文本编辑
-    "Ctrl+d" = "DeleteChar"              # 删除光标处字符
+    # 文本编辑 (Ctrl+{h,w,u}在shell和vim里通用)
     "Ctrl+h" = "BackwardDeleteChar"      # 删除光标前字符
     "Ctrl+w" = "BackwardDeleteWord"      # 删除前一个单词
-    "Alt+d"  = "DeleteWord"              # 删除后一个单词
     "Ctrl+u" = "BackwardDeleteLine"      # 删除到行首
+    "Ctrl+d" = "DeleteChar"              # 删除光标处字符
+    "Alt+d"  = "DeleteWord"              # 删除后一个单词
     "Ctrl+k" = "KillLine"                # 删除到行尾
-    "Shift+Ctrl+y" = "Yank"                    # 粘贴
+    "Shift+Ctrl+y" = "Yank"              # 粘贴
     "Alt+y"  = "YankPop"                 # 在粘贴历史中循环
     # 参数操作 (重点添加)
     "Alt+."   = "YankLastArg"            # 插入上一个命令的最后一个参数
@@ -53,7 +54,7 @@ $emacsBindings = @{
     "Ctrl+l" = "ClearScreen"             # 清屏
     "Ctrl+_" = "Undo"                    # 撤销
     "Tab"    = "Complete"
-    "Ctrl+y"    = "AcceptSuggestion"        # 自动补全
+    "Ctrl+y" = "AcceptSuggestion"        # 自动补全
 }
 
 foreach ($key in $emacsBindings.Keys) {

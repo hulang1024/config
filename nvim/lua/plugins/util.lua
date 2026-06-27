@@ -8,4 +8,9 @@ return {
       quickfile = { enabled = not vim.g.vscode },
     },
   },
+  {
+    "meznaric/key-analyzer.nvim",
+    cmd = { "KeyAnalyzer" },
+    opts = {}
+  }
 }
