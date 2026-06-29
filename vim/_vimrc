@@ -1,58 +1,14 @@
-if v:progname =~? "evim"
-  finish
-endif
-
-" Get the defaults that most users want.
-source $VIMRUNTIME/defaults.vim
-
-if has("vms")
-  set nobackup		" do not keep a backup file, use versions instead
-else
-  set backup		" keep a backup file (restore to previous version)
-  if has('persistent_undo')
-    set undofile	" keep an undo file (undo changes after closing)
-  endif
-endif
-
-if &t_Co > 2 || has("gui_running")
-  " Switch on highlighting the last used search pattern.
-  set renderoptions=type:directx,gamma:1.0,contrast:0.5
-  set hlsearch
-endif
-
-" Put these in an autocmd group, so that we can delete them easily.
-augroup vimrcEx
-  au!
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
-augroup END
-
-" Add optional packages.
-"
-" The matchit plugin makes the % command work better, but it is not backwards
-" compatible.
-" The ! means the package won't be loaded right away but when plugins are
-" loaded during initialization.
-if has('syntax') && has('eval')
-  packadd! matchit
-endif
-
 set nocompatible
 syntax on
 filetype plugin indent on
 
-let &t_SI.="\e[6 q" " SI = INSERT mode
-let &t_SR.="\e[4 q" " SR = REPLACE mode
-let &t_EI.="\e[2 q" " EI = NORMAL mode (ELSE)
-
-set clipboard=unnamed
-set completeopt=menu,menuone
-set fileencoding=utf-8
-set visualbell
-set relativenumber
 set number
+if has("relativenumber")
+    set relativenumber
+endif
 set hlsearch
 set incsearch
+set visualbell
 
 set tabstop=4
 set shiftwidth=4
@@ -62,65 +18,30 @@ set expandtab
 set nobackup
 set nowritebackup
 set noswapfile
-set undodir=~/.vimundodir
 
-call plug#begin()
-  Plug 'yianwillis/vimcdoc'
-  Plug 'joshdick/onedark.vim'
-  Plug 'vim-airline/vim-airline'
-  Plug 'vim-airline/vim-airline-themes'
-  Plug 'machakann/vim-highlightedyank'
-  Plug 'tpope/vim-surround'
-  Plug 'tpope/vim-commentary'
-  Plug 'tpope/vim-unimpaired'
-  Plug 'kana/vim-textobj-user'
-  Plug 'kana/vim-textobj-entire'
-  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-  Plug 'junegunn/fzf.vim'
-call plug#end()
-
-let g:highlightedyank_highlight_duration = 200
-
-set termguicolors
-set termwinsize=10x0
-if has("win32") || has("win64")
-  " set shell=powershell
-  set shell=cmd.exe
-  set shellcmdflag=/c
-  set shellpipe=|
-  set shellredir=>
+if has('persistent_undo')
+    set undofile
+    set undodir=~/.vimundodir
 endif
+
+if has('clipboard')
+    set clipboard=unnamedplus
+endif
+
 if has("gui_running")
-  set guifont=Maple\ Mono\ NF\ CN:h11
-  set lines=30
-  set columns=120
-else
-  " 设置背景无
-  hi Normal guibg=NONE
-  hi Normal ctermbg=NONE
-  hi NonText guibg=NONE
-  hi LineNr guibg=NONE
-  hi SignColumn guibg=NONE
+    set guifont=Terminess\ Nerd\ Font\ Mono:h12
+    set lines=35
+    set columns=110
 endif
-set noshowmode
-colorscheme onedark
-let g:airline_theme = 'onedark'
 
-let g:fzf_action = { 'ctrl-e': 'edit' }
+if has("termguicolors")
+    set termguicolors
+endif
 
-let mapleader=' '
-" Go to left window
-nmap <C-h> <C-w>h<CR>
-" Go to right window
-nmap <C-j> <C-w>j<CR>
-" Go to upper window
-nmap <C-k> <C-w>k<CR>
-" Go to lower window
-nmap <C-l> <C-w>l<CR>
-" Search files
-" nmap <C-p> :Files<CR>
-" Save
+if has("win32") || has("win64")
+    set shell=powershell.exe
+endif
+
+let mapleader = ' '
+
 nmap <C-s> :up<CR>
-" Open Terminal
-nmap <leader>ft :below term<CR>
-

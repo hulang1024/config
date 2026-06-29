@@ -20,13 +20,6 @@ BackDeleteLine() => Send("+{Home}{Backspace}")
     ^p::Up
 #HotIf
 
-#HotIf WinActive("ahk_exe QQ.exe") || WinActive("ahk_exe WeChat.exe")
-    ^j::^Down
-    ^k::^Up
-    ^n::^Down
-    ^p::^Up
-#HotIf
-
 #HotIf WinActive("ahk_exe NeatReader.exe") || WinActive("ahk_class MultitaskingViewFrame")
     h::Left
     l::Right
