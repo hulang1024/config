@@ -6,9 +6,19 @@ return {
     opts = {
       keymap = {
         preset = "super-tab",
+        ['<CR>'] = { 'accept', 'fallback' },
         ["<C-Enter>"] = { "show", "show_documentation", "hide_documentation" },
       },
-      completion = { documentation = { auto_show = true } },
+      completion = {
+        documentation = { auto_show = true },
+        list = {
+          selection = {
+            preselect = function()
+              return not require('blink.cmp').snippet_active({ direction = 1 }) 
+            end
+          },
+        },
+      },
       sources = {
         providers = {
           cmdline = {
@@ -23,9 +33,11 @@ return {
   },
   {
     "folke/flash.nvim",
-    enabled = false,
   },
   {
     "yianwillis/vimcdoc",
+  },
+  {
+    "sitiom/nvim-numbertoggle"
   },
 }

@@ -1,3 +1,27 @@
+local mode_map = {
+  ['n']      = 'NORMAL',
+  ['i']      = 'INSERT',
+  ['c']      = 'COMMAND',
+  ['t']      = 'TERMINAL',
+  ['R']      = 'REPLACE',
+
+  ['v']      = 'VISUAL',
+  ['V']      = 'V-LINE',
+  ['\22']    = 'V-BLOCK',
+
+  ['s']      = 'SELECT',
+  ['S']      = 'SELECT',
+  ['\19']    = 'SELECT',
+
+  ['no']     = 'O-PENDING',
+  ['nov']    = 'O-PENDING',
+  ['noV']    = 'O-PENDING',
+  ['no\22']  = 'O-PENDING',
+
+  ['nt']     = 'T-NORMAL',
+  ['cv']     = 'VIM-EX',
+}
+
 return {
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -14,6 +38,16 @@ return {
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
       },
+      sections = {
+        lualine_a = {
+          {
+            function()
+              local m = vim.fn.mode(1)
+              return mode_map[m] or string.sub(m, 1, 1)
+            end,
+          }
+        },
+      }
     },
   },
   {
@@ -51,6 +85,7 @@ return {
           position = "float",
           border = "hpad",
           wo = {
+            winblend = 40,
             winhighlight = "FloatBorder:NormalFloat",
           },
         },
@@ -58,13 +93,14 @@ return {
       dashboard = {
         preset = {
           header = [[
- ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
- ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
- ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
- ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
- ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
- ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
-   ]],
+███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
+  ]],
+          hidden = true,
         },
       },
       picker = {
@@ -72,7 +108,6 @@ return {
           explorer = {
             layout = {
               preset = "default",
-              preview = false,
             },
             auto_close = true,
             jump = { close = true },

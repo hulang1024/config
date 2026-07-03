@@ -1,0 +1,22 @@
+fps_max = 0
+vsync = true
+render_to_cpu = false
+idle = false
+hide_menus = true
+remember_window_size = false
+maximized = true
+frame = "full"
+chdir = "E:/work"
+
+[font]
+size = 13.5
+# edging = "subpixelantialias"
+hinting = "full"
+
+[[font.normal]]
+family = "Terminess Nerd Font"
+style = "Normal" 
+
+[[font.normal]]
+family = "Ark Pixel 10px Mono zh_cn"
+style = "Thin"

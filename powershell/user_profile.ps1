@@ -3,9 +3,6 @@
 $env:https_proxy="http://127.0.0.1:7897"
 $env:http_proxy="http://127.0.0.1:7897"
 
-# Alias
-Set-Alias v nvim
-
 # Import-Module -Name Terminal-Icons
 # Import-Module PSFzf
 $fzfTriggered = $false
@@ -83,6 +80,16 @@ function ssh-go {
         Write-Host "正在连接到 $selected ..." -ForegroundColor Cyan
         ssh $selected
     }
+}
+
+function y {
+	$tmp = (New-TemporaryFile).FullName
+	yazi.exe @args --cwd-file="$tmp"
+	$cwd = Get-Content -Path $tmp -Encoding UTF8
+	if ($cwd -and $cwd -ne $PWD.Path -and (Test-Path -LiteralPath $cwd -PathType Container)) {
+		Set-Location -LiteralPath (Resolve-Path -LiteralPath $cwd).Path
+	}
+	Remove-Item -Path $tmp
 }
 
 $starshipCache = "$HOME\.starship_cache.ps1"

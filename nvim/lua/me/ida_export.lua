@@ -1,6 +1,9 @@
+local M = {}
+
+---@type snacks.win
 local ida_term = nil
 
-local function open_export_cs(cs_path)
+function M.open_export_cs(cs_path)
   local scripts_dir = vim.env.IDA_TOOL_SCRIPTS_DIR
 
   if not scripts_dir or scripts_dir == "" then
@@ -28,6 +31,7 @@ local function open_export_cs(cs_path)
   vim.bo.modifiable = false
   vim.bo.swapfile = false
   vim.bo.buflisted = false
+  vim.opt.wrap = true
   vim.keymap.set("n", "q", "<Cmd>close<CR>", { buffer = true })
   -- vim.cmd('G')
   -- vim.cmd('?\\v\\/\\/Fun Name')
@@ -39,7 +43,6 @@ local function find_unfixed_files()
   -- 格式被死死锁在：`路径:行号:列号:内容`（中间 3 个冒号）
   local cmd = { "rg", "^", "-g", "*.cs", "--max-count", "1", "--no-heading", "--with-filename", "--vimgrep", "." }
   local lines = vim.fn.systemlist(cmd)
-  vim.print(lines)
   local qf_list = {}
   local total_scanned = 0 -- 记录扫描的文件总数
   table.sort(lines)
@@ -87,6 +90,11 @@ local function find_unfixed_files()
 end
 
 local function run_command(ignore_exists)
+  if ida_term and ida_term.buf and vim.api.nvim_buf_is_valid(ida_term.buf) then
+    ida_term:toggle()
+    return
+  end
+
   local scripts_dir = vim.env.IDA_TOOL_SCRIPTS_DIR
 
   if not scripts_dir or scripts_dir == "" then
@@ -108,7 +116,9 @@ local function run_command(ignore_exists)
   if not ignore_exists then
     local target_file = vim.fs.joinpath(scripts_dir, "/output/", file_basename)
     if vim.fn.filereadable(target_file) == 1 then
-      vim.notify("目标文件已存在: " .. target_file, vim.log.levels.WARN)
+      local mtime = vim.fn.getftime(target_file)
+      local formatted_time = os.date("%Y-%m-%d %H:%M:%S", mtime)
+      vim.notify("目标文件已存在。\n文件位置：" .. target_file .. "\n生成时间：" .. formatted_time, vim.log.levels.WARN)
       return
     end
   end
@@ -123,13 +133,8 @@ local function run_command(ignore_exists)
     "--fix-out-dir", vim.fs.joinpath(scripts_dir, "/output/"),
     "-O", vim.fs.joinpath(scripts_dir, "/output/", file_basename),
     "--replay-full", "",
-    -- "--export-hexrays", ""
   }
 
-  if ida_term and ida_term.buf and vim.api.nvim_buf_is_valid(ida_term.buf) then
-    ida_term:toggle()
-    return
-  end
   ida_term = Snacks.terminal.toggle(cmd, {
     auto_close = false,
     win = {
@@ -153,14 +158,13 @@ local function run_command(ignore_exists)
   end, { buffer = true })
   vim.keymap.set({"n", "t"}, "Q", function()
     ida_term:close()
-    ida_term = nil
-    open_export_cs(file_basename)
+    M.open_export_cs(file_basename)
   end, { buffer = true })
 end
 
-local M = {}
-
 function M.setup()
+  vim.fn.setreg("r", "ggO\23// NOTE: Restored.\x1b")
+
   local map  = vim.keymap.set
   map('n', '<leader>rr', function() run_command(false) end, {
       noremap = true,
@@ -172,7 +176,7 @@ function M.setup()
       silent = true,
       desc = "导出当前文件(重新)",
   })
-  map('n', '<leader>ro', open_export_cs, {
+  map('n', '<leader>ro', M.open_export_cs, {
       noremap = true,
       silent = true,
       desc = "打开导出结果文件",

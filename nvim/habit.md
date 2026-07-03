@@ -27,23 +27,25 @@ Tab              接受补全
 <leader>xx       诊断信息 (Trouble)
 <leader>xX       缓冲区诊断信息 (Trouble)
 
-[b               上个缓冲区
-[b               上个缓冲区
-]b               下个缓冲区
-[q               上个Quickfix项
-]q               下个Quickfix项
-[d               上个诊断
-]d               下个诊断
-[e               上个诊断错误
-]e               下个诊断错误
-[w               上个诊断警告
-]w               下个诊断警告
+`[b`               上个缓冲区
+`[b``               上个缓冲区
+`]b``               下个缓冲区
+`[q``               上个Quickfix项
+`]q``               下个Quickfix项
+`[d``               上个诊断
+`]d``               下个诊断
+`[e``               上个诊断错误
+`]e``               下个诊断错误
+`[w``               上个诊断警告
+`]w`               下个诊断警告
 
 
 ## Others
 
-<C-/>            显示隐藏终端
+<C-/>            显示隐藏终端 (根目录)
+<leader>fT       显示隐藏终端 (pwd)
 <C-\>_<C-n>      切换到普通模式
+<leader>ql       恢复最后会话
 
 
 # Text Objects

@@ -5,7 +5,7 @@ BackDeleteLine() => Send("+{Home}{Backspace}")
 #HotIf WinActive("ahk_exe Microsoft.CmdPal.UI.exe")
     || WinActive("ahk_exe chrome.exe")
     || WinActive("ahk_exe QQ.exe")
-    || WinActive("ahk_exe WeChat.exe")
+    || WinActive("ahk_exe Weixin.exe")
     ^h::BackDeleteChar
     ^w::BackDeleteWord
     ^u::BackDeleteLine
@@ -14,8 +14,6 @@ BackDeleteLine() => Send("+{Home}{Backspace}")
 
 ; 导航移动
 #HotIf WinActive("ahk_exe Microsoft.CmdPal.UI.exe")
-    ^j::Down
-    ^k::Up
     ^n::Down
     ^p::Up
 #HotIf

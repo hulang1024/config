@@ -4,12 +4,12 @@ return {
     priority = 1000,
     opts = {
       style = "warmer",
-      transparent = true,
+      transparent = false,
     },
   },
   {
     "folke/tokyonight.nvim",
-    priority = 1000,
+    lazy = true,
     opts = {
       transparent = true,
       styles = {
@@ -20,18 +20,23 @@ return {
   },
   {
     "catppuccin/nvim",
-    name = "catppuccin",
-    priority = 1000,
+    lazy = true,
     opts = {
       transparent = true,
-    }
+      float = {
+        transparent = true,
+      },
+      dim_inactive = {
+        enabled = false,
+      },
+    },
   },
   {
     "rebelot/kanagawa.nvim",
-    priority = 1000,
+    lazy = true,
     opts = {
       theme = "wave",
-      transparent = true,
+      transparent = false,
     }
   },
 }

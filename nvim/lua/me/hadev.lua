@@ -1,5 +1,5 @@
 local function trigger_webhook(webhook_id)
-  local _, curl = pcall(require, "plenary.curl")
+  local = require("plenary.curl")
   curl.post("http://192.168.1.100:8123/api/webhook/" .. webhook_id, {
     callback = function(response)
       if not response.status == 200 then
