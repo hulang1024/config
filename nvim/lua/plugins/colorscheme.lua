@@ -6,6 +6,10 @@ return {
       style = "warmer",
       transparent = false,
     },
+    config = function(_, opts)
+      require("onedark").setup(opts)
+      require("onedark").load()
+    end,
   },
   {
     "folke/tokyonight.nvim",
@@ -37,6 +41,6 @@ return {
     opts = {
       theme = "wave",
       transparent = false,
-    }
+    },
   },
 }

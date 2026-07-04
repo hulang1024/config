@@ -4,8 +4,8 @@ vim.g.maplocalleader = "\\"
 vim.g.autoformat = false
 
 -- 缩进
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.autoindent = true
 vim.opt.smartindent = true
@@ -19,7 +19,7 @@ vim.opt.smartcase = true
 vim.opt.inccommand = "split"
 
 -- 编辑与导航
-vim.opt.scrolloff =  999
+vim.opt.scrolloff = 999
 vim.opt.jumpoptions = "stack"
 vim.opt.virtualedit = "block"
 vim.opt.mouse = {}
@@ -37,9 +37,10 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.cursorline = true
 vim.opt.signcolumn = "yes"
+vim.opt.laststatus = 2
+vim.opt.cmdheight = 0
 vim.opt.wrap = false
 vim.opt.list = false
-vim.opt.cmdheight = 1
 vim.opt.showcmd = true
 vim.opt.title = false
 vim.opt.visualbell = true
@@ -48,7 +49,12 @@ vim.opt.linespace = 2
 -- 其它
 vim.opt.clipboard = "unnamedplus"
 vim.opt.encoding = "utf-8"
-vim.opt.shell = "powershell.exe"
+vim.opt.shell = "cmd.exe"
+vim.opt.shellcmdflag = "/s /c"
+vim.opt.shellpipe = ">%s 2>&1"
+vim.opt.shellredir = ">%s 2>&1"
+vim.opt.shellquote = ""
+vim.opt.shellxquote = '"'
 vim.opt.backup = false
 vim.opt.exrc = true
 
@@ -75,9 +81,9 @@ if vim.g.neovide then
     vim.g.neovide_scale_factor = 1.0
   end)
   vim.keymap.set("n", "<C-=>", function()
-    change_scale_factor(1.25)
+    change_scale_factor(1.15)
   end)
   vim.keymap.set("n", "<C-->", function()
-    change_scale_factor(1/1.25)
+    change_scale_factor(1 / 1.15)
   end)
 end

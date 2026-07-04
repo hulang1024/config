@@ -118,7 +118,10 @@ local function run_command(ignore_exists)
     if vim.fn.filereadable(target_file) == 1 then
       local mtime = vim.fn.getftime(target_file)
       local formatted_time = os.date("%Y-%m-%d %H:%M:%S", mtime)
-      vim.notify("目标文件已存在。\n文件位置：" .. target_file .. "\n生成时间：" .. formatted_time, vim.log.levels.WARN)
+      vim.notify(
+        "目标文件已存在。\n文件位置：" .. target_file .. "\n生成时间：" .. formatted_time,
+        vim.log.levels.WARN
+      )
       return
     end
   end
@@ -126,13 +129,20 @@ local function run_command(ignore_exists)
   local cmd = {
     "python",
     vim.fs.joinpath(scripts_dir, "/prepare_ida_export.py"),
-    "--export-f5", vim.fs.joinpath(scripts_dir, "/export_f5.py"),
-    "--ida-log", vim.fs.joinpath(scripts_dir, "/log/ida_log.txt"),
-    "--idb", vim.fs.joinpath(scripts_dir, "/gamedata/libil2cpp.so.i64"),
-    "--cs", current_file,
-    "--fix-out-dir", vim.fs.joinpath(scripts_dir, "/output/"),
-    "-O", vim.fs.joinpath(scripts_dir, "/output/", file_basename),
-    "--replay-full", "",
+    "--export-f5",
+    vim.fs.joinpath(scripts_dir, "/export_f5.py"),
+    "--ida-log",
+    vim.fs.joinpath(scripts_dir, "/log/ida_log.txt"),
+    "--idb",
+    vim.fs.joinpath(scripts_dir, "/gamedata/libil2cpp.so.i64"),
+    "--cs",
+    current_file,
+    "--fix-out-dir",
+    vim.fs.joinpath(scripts_dir, "/output/"),
+    "-O",
+    vim.fs.joinpath(scripts_dir, "/output/", file_basename),
+    "--replay-full",
+    "",
   }
 
   ida_term = Snacks.terminal.toggle(cmd, {
@@ -153,10 +163,10 @@ local function run_command(ignore_exists)
       vim.notify("IDA 导出异常退出 (代码: " .. exit_code .. ")", vim.log.levels.ERROR)
     end
   end, { buf = true })
-  vim.keymap.set({"n", "t"}, "q", function()
+  vim.keymap.set({ "n", "t" }, "q", function()
     ida_term:toggle()
   end, { buffer = true })
-  vim.keymap.set({"n", "t"}, "Q", function()
+  vim.keymap.set({ "n", "t" }, "Q", function()
     ida_term:close()
     M.open_export_cs(file_basename)
   end, { buffer = true })
@@ -165,26 +175,30 @@ end
 function M.setup()
   vim.fn.setreg("r", "ggO\23// NOTE: Restored.\x1b")
 
-  local map  = vim.keymap.set
-  map('n', '<leader>rr', function() run_command(false) end, {
-      noremap = true,
-      silent = true,
-      desc = "导出当前文件",
+  local map = vim.keymap.set
+  map("n", "<leader>rr", function()
+    run_command(false)
+  end, {
+    noremap = true,
+    silent = true,
+    desc = "导出当前文件",
   })
-  map('n', '<leader>rR', function() run_command(true) end, {
-      noremap = true,
-      silent = true,
-      desc = "导出当前文件(重新)",
+  map("n", "<leader>rR", function()
+    run_command(true)
+  end, {
+    noremap = true,
+    silent = true,
+    desc = "导出当前文件(重新)",
   })
-  map('n', '<leader>ro', M.open_export_cs, {
-      noremap = true,
-      silent = true,
-      desc = "打开导出结果文件",
+  map("n", "<leader>ro", M.open_export_cs, {
+    noremap = true,
+    silent = true,
+    desc = "打开导出结果文件",
   })
-  map('n', '<leader>rf', find_unfixed_files, {
-      noremap = true,
-      silent = true,
-      desc = "查找未修正的文件",
+  map("n", "<leader>rf", find_unfixed_files, {
+    noremap = true,
+    silent = true,
+    desc = "查找未修正的文件",
   })
 end
 

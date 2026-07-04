@@ -1,10 +1,49 @@
 return {
   {
-    "esmuellert/codediff.nvim",
-    cmd = "CodeDiff",
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        lua = { "stylua" },
+      },
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_format = "fallback",
+      },
+    },
+  },
+  {
+    "nvim-telescope/telescope.nvim",
+    version = "*",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      -- optional but recommended
+      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    },
+    cmd = "Telescope",
+  },
+  {
+    "nvim-mini/mini.ai",
+    version = false,
+    dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
+    event = "VeryLazy",
+    config = function()
+      local ai = require("mini.ai")
+      ai.setup({
+        custom_textobjects = {
+          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
+          a = ai.gen_spec.treesitter({ a = "@parameter.outer", i = "@parameter.inner" }),
+          o = ai.gen_spec.treesitter({
+            a = { "@conditional.outer", "@loop.outer" },
+            i = { "@conditional.inner", "@loop.inner" },
+          }),
+        },
+      })
+    end,
   },
   {
     "nvim-mini/mini.surround",
+    event = "VeryLazy",
     opts = function(_, opts)
       require("mini.surround").setup({
         mappings = {
@@ -20,5 +59,84 @@ return {
         },
       })
     end,
+  },
+  {
+    "nvim-mini/mini.pairs",
+    event = "VeryLazy",
+    opts = {},
+  },
+  {
+    "mason-org/mason.nvim",
+    opts = {},
+    cmd = "Mason",
+  },
+  {
+    "mason-org/mason-lspconfig.nvim",
+    opts = {},
+    dependencies = {
+      { "mason-org/mason.nvim", opts = {} },
+      "neovim/nvim-lspconfig",
+    },
+    event = { "BufReadPre", "BufNewFile" },
+  },
+  {
+    "esmuellert/codediff.nvim",
+    cmd = "CodeDiff",
+  },
+  {
+    "folke/trouble.nvim",
+    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cmd = "Trouble",
+    keys = {
+      {
+        "<leader>xx",
+        "<cmd>Trouble diagnostics toggle<cr>",
+        desc = "Diagnostics (Trouble)",
+      },
+      {
+        "<leader>xX",
+        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+        desc = "Buffer Diagnostics (Trouble)",
+      },
+      {
+        "<leader>cs",
+        "<cmd>Trouble symbols toggle focus=false<cr>",
+        desc = "Symbols (Trouble)",
+      },
+      {
+        "<leader>cl",
+        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+        desc = "LSP Definitions / references / ... (Trouble)",
+      },
+      {
+        "<leader>xL",
+        "<cmd>Trouble loclist toggle<cr>",
+        desc = "Location List (Trouble)",
+      },
+      {
+        "<leader>xQ",
+        "<cmd>Trouble qflist toggle<cr>",
+        desc = "Quickfix List (Trouble)",
+      },
+    },
+  },
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    event = { "BufReadPre", "BufNewFile" },
+    cmd = { "TodoTelescope", "TodoLocList", "TodoQuickFix", "TodoTrouble" },
+    opts = {},
+  },
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        { path = "snacks.nvim", words = { "Snacks" } },
+        { path = "lazy.nvim", words = { "LazyVim" } },
+        { path = "nvim-lspconfig", words = { "lspconfig.settings" } },
+      },
+    },
   },
 }

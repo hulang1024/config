@@ -1,38 +1,32 @@
 ﻿; 文本编辑
-BackDeleteChar() => Send("{Backspace}")
-BackDeleteWord() => Send("^{Backspace}")
-BackDeleteLine() => Send("+{Home}{Backspace}")
+DeleteLeftChar() => Send("{Backspace}")
+DeleteLeftWord() => Send("^{Backspace}")
+DeleteToHead() => Send("+{Home}{Backspace}")
+DeleteRightChar() => Send("{Delete}")
+DeleteRightWord() => Send("^{Delete}")
+DeleteToEnd() => Send("+{End}{Delete}")
 BackChar() => Send("{Left}")
 ForwardChar() => Send("{Right}")
 BackWord() => Send("^{Left}")
 ForwardWord() => Send("^{Right}")
-BeginningOfLine() => Send("{End}")
+ToHead() => Send("{Home}")
+ToEnd() => Send("{End}")
 #HotIf WinActive("ahk_exe Microsoft.CmdPal.UI.exe")
     || WinActive("ahk_exe chrome.exe")
     || WinActive("ahk_exe QQ.exe")
     || WinActive("ahk_exe Weixin.exe")
-    ^h::BackDeleteChar
-    ^w::BackDeleteWord
-    ^u::BackDeleteLine
+    ^h::DeleteLeftChar
+    ^w::DeleteLeftWord
+    ^d::DeleteRightChar
+    !d::DeleteRightWord
+    ^u::DeleteToHead
+    ^k::DeleteToEnd
     ^b::BackChar
     ^f::ForwardChar
     !b::BackWord
     !f::ForwardWord
-    ^e::BeginningOfLine
-#HotIf
-
-
-; 导航移动
-#HotIf WinActive("ahk_exe Microsoft.CmdPal.UI.exe")
-    ^n::Down
-    ^p::Up
-#HotIf
-
-#HotIf WinActive("ahk_exe NeatReader.exe") || WinActive("ahk_class MultitaskingViewFrame")
-    h::Left
-    l::Right
-    j::Down
-    k::Up
+    ^i::ToHead
+    ^e::ToEnd
 #HotIf
 
 ; 虚拟桌面
