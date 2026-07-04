@@ -2,6 +2,11 @@
 BackDeleteChar() => Send("{Backspace}")
 BackDeleteWord() => Send("^{Backspace}")
 BackDeleteLine() => Send("+{Home}{Backspace}")
+BackChar() => Send("{Left}")
+ForwardChar() => Send("{Right}")
+BackWord() => Send("^{Left}")
+ForwardWord() => Send("^{Right}")
+BeginningOfLine() => Send("{End}")
 #HotIf WinActive("ahk_exe Microsoft.CmdPal.UI.exe")
     || WinActive("ahk_exe chrome.exe")
     || WinActive("ahk_exe QQ.exe")
@@ -9,6 +14,11 @@ BackDeleteLine() => Send("+{Home}{Backspace}")
     ^h::BackDeleteChar
     ^w::BackDeleteWord
     ^u::BackDeleteLine
+    ^b::BackChar
+    ^f::ForwardChar
+    !b::BackWord
+    !f::ForwardWord
+    ^e::BeginningOfLine
 #HotIf
 
 
