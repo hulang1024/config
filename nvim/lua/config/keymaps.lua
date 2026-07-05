@@ -18,6 +18,11 @@ map("n", "<leader>bd", function()
 end, { desc = "Delete Buffer" })
 map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
 
+map({ "i", "n", "s" }, "<esc>", function()
+  vim.cmd("noh")
+  return "<esc>"
+end, { expr = true, desc = "Escape" })
+
 -- 保存文件
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File", silent = true })
 
@@ -50,7 +55,6 @@ local diagnostic_goto = function(next, severity)
     })
   end
 end
-map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line Diagnostics" })
 map("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
 map("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
 map("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
@@ -64,10 +68,11 @@ map({ "n", "x" }, "<leader>l", "<Cmd>Lazy<CR>", { desc = "Lazy", silent = true }
 -- code action
 map({ "n", "v" }, "<A-CR>", vim.lsp.buf.code_action, { desc = "Show Code Context Actions" })
 
+-- Code diff
 map({ "n", "v" }, "<leader>go", "<Cmd>CodeDiff<CR>", { desc = "CodeDiff" })
 
 -- quit
-map({ "n", "x" }, "<leader>qq", "<Cmd>confirm wqall<CR>", { desc = "Quit All", silent = true })
+map({ "n", "x" }, "<leader>qq", "<Cmd>qa<CR>", { desc = "Quit All", silent = true })
 
 -- floating terminal
 map("n", "<leader>ft", function()
@@ -81,3 +86,9 @@ map({ "n", "x" }, "<localleader>r", function()
   Snacks.debug.run()
 end, { desc = "Run Lua" })
 map({ "n", "v" }, "<localleader>s", "<Cmd>source %<CR>", { desc = "Source File" })
+
+map({ "n", "v" }, "<leader>cd", function()
+  local dir = vim.fn.expand("%:p:h")
+  vim.fn.chdir(dir)
+  vim.notify(dir, vim.log.levels.INFO)
+end, { desc = "切换目录 (当前文件目录)" })

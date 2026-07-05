@@ -6,7 +6,6 @@ return {
         lua = { "stylua" },
       },
       format_on_save = {
-        timeout_ms = 500,
         lsp_format = "fallback",
       },
     },
@@ -37,6 +36,15 @@ return {
             a = { "@conditional.outer", "@loop.outer" },
             i = { "@conditional.inner", "@loop.inner" },
           }),
+          -- Whole buffer
+          g = function()
+            local from = { line = 1, col = 1 }
+            local to = {
+              line = vim.fn.line("$"),
+              col = math.max(vim.fn.getline("$"):len(), 1),
+            }
+            return { from = from, to = to }
+          end,
         },
       })
     end,
@@ -44,7 +52,7 @@ return {
   {
     "nvim-mini/mini.surround",
     event = "VeryLazy",
-    opts = function(_, opts)
+    opts = function()
       require("mini.surround").setup({
         mappings = {
           add = "ys", -- Add surrounding in Normal and Visual modes
@@ -64,20 +72,6 @@ return {
     "nvim-mini/mini.pairs",
     event = "VeryLazy",
     opts = {},
-  },
-  {
-    "mason-org/mason.nvim",
-    opts = {},
-    cmd = "Mason",
-  },
-  {
-    "mason-org/mason-lspconfig.nvim",
-    opts = {},
-    dependencies = {
-      { "mason-org/mason.nvim", opts = {} },
-      "neovim/nvim-lspconfig",
-    },
-    event = { "BufReadPre", "BufNewFile" },
   },
   {
     "esmuellert/codediff.nvim",
@@ -134,7 +128,7 @@ return {
       library = {
         { path = "${3rd}/luv/library", words = { "vim%.uv" } },
         { path = "snacks.nvim", words = { "Snacks" } },
-        { path = "lazy.nvim", words = { "LazyVim" } },
+        { path = "lazy.nvim", words = { "lazy" } },
         { path = "nvim-lspconfig", words = { "lspconfig.settings" } },
       },
     },

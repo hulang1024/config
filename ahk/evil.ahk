@@ -12,7 +12,6 @@ ForwardWord() => Send("^{Right}")
 ToHead() => Send("{Home}")
 ToEnd() => Send("{End}")
 #HotIf WinActive("ahk_exe Microsoft.CmdPal.UI.exe")
-    || WinActive("ahk_exe chrome.exe")
     || WinActive("ahk_exe QQ.exe")
     || WinActive("ahk_exe Weixin.exe")
     ^h::DeleteLeftChar
@@ -27,6 +26,25 @@ ToEnd() => Send("{End}")
     !f::ForwardWord
     ^i::ToHead
     ^e::ToEnd
+#HotIf
+#HotIf WinActive("ahk_exe chrome.exe")
+    ^h::DeleteLeftChar
+    ^w::DeleteLeftWord
+    ^d::DeleteRightChar
+    !d::DeleteRightWord
+    ^u::DeleteToHead
+    ^k::DeleteToEnd
+    ^b::BackChar
+    !b::BackWord
+    !f::ForwardWord
+    ^i::ToHead
+    ^e::ToEnd
+#HotIf
+
+; 导航移动
+#HotIf WinActive("ahk_exe Microsoft.CmdPal.UI.exe")
+    ^n::Down
+    ^p::Up
 #HotIf
 
 ; 虚拟桌面

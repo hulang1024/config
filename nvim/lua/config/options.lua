@@ -47,7 +47,14 @@ vim.opt.visualbell = true
 vim.opt.linespace = 2
 
 -- 其它
+if vim.fn.has("win32") == 1 then
+  -- 解决LSP的一些问题
+  vim.opt.backupcopy = "yes"
+end
+vim.opt.undofile = true
+vim.opt.undolevels = 10000
 vim.opt.clipboard = "unnamedplus"
+vim.opt.completeopt = "menu,menuone,noselect"
 vim.opt.encoding = "utf-8"
 vim.opt.shell = "cmd.exe"
 vim.opt.shellcmdflag = "/s /c"

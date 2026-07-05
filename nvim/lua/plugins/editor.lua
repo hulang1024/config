@@ -7,10 +7,14 @@ return {
     config = function()
       require("nvim-treesitter").install({
         "c",
+        "regex",
+        "bash",
         "lua",
         "vim",
         "vimdoc",
         "query",
+        "markdown",
+        "markdown_inline",
         "python",
         "javascript",
       })
@@ -28,6 +32,8 @@ return {
       -- you can use `gb` in `:Lazy` to rebuild the plugin as needed
       require("blink.cmp").build():pwait()
     end,
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
     opts = {
       keymap = {
         preset = "super-tab",
@@ -46,9 +52,8 @@ return {
       },
       cmdline = {
         completion = {
-          menu = {
-            auto_show = true,
-          },
+          menu = { auto_show = true },
+          list = { selection = { preselect = false } },
         },
       },
       sources = {
@@ -60,7 +65,20 @@ return {
           cmdline = {
             -- ignores cmdline completions when executing shell commands
             enabled = function()
-              return vim.fn.getcmdtype() ~= ":" or not vim.fn.getcmdline():match("^[%%0-9,'<>%-]*!")
+              if vim.fn.getcmdtype() ~= ":" then
+                return true
+              end
+              local cmd = vim.fn.getcmdline()
+              if cmd:match("^[%%0-9,'<>%-]*!") then
+                return false
+              end
+              local ignore_cmds = { "checkhealth" }
+              for _, word in ipairs(ignore_cmds) do
+                if cmd:match("^" .. word .. "%s") then
+                  return false
+                end
+              end
+              return true
             end,
           },
           dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
