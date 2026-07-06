@@ -1,3 +1,4 @@
+--stylua: ignore start
 local map = vim.keymap.set
 
 -- better up/down
@@ -12,11 +13,19 @@ map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
 map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move Down" })
 map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
--- Buffers
-map("n", "<leader>bd", function()
-  Snacks.bufdelete()
-end, { desc = "Delete Buffer" })
+-- buffers
+map("n", "<leader>bd", function() Snacks.bufdelete() end, { desc = "Delete Buffer" })
+map("n", "<leader>bo", function() Snacks.bufdelete.other() end, { desc = "Delete Other Buffers" })
+map("n", "<leader>bi", function() Snacks.bufdelete.invisible() end, { desc = "Delete Invisible Buffers" })
 map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
+
+-- tabs
+map("n", "<leader><tab>0", "<cmd>tablast<cr>", { desc = "Last Tab" })
+map("n", "<leader><tab>$", "<cmd>tabfirst<cr>", { desc = "First Tab" })
+map("n", "<leader><tab>c", "<cmd>tabclose<cr>", { desc = "Close Tab" })
+map("n", "<leader><tab>o", "<cmd>tabonly<cr>", { desc = "Close Other Tabs" })
+map("n", "<leader><tab>l", "<cmd>tabs<cr>", { desc = "List Tabs" })
+map("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
 
 map({ "i", "n", "s" }, "<esc>", function()
   vim.cmd("noh")
@@ -62,33 +71,31 @@ map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
 map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
 map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 
+-- todo comments
+map("n", "<leader>st", "<cmd>TodoTelescope<cr>", { desc = "Todo" })
+map("n", "<leader>sT", "<cmd>Trouble todo<cr>", { desc = "Trouble Todo" })
+
 -- lazy
-map({ "n", "x" }, "<leader>l", "<Cmd>Lazy<CR>", { desc = "Lazy", silent = true })
+map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy", silent = true })
 
 -- code action
-map({ "n", "v" }, "<A-CR>", vim.lsp.buf.code_action, { desc = "Show Code Context Actions" })
+map("n", "<A-CR>", vim.lsp.buf.code_action, { desc = "Show Code Context Actions" })
 
 -- Code diff
-map({ "n", "v" }, "<leader>go", "<Cmd>CodeDiff<CR>", { desc = "CodeDiff" })
+map("n", "<leader>go", "<cmd>CodeDiff<cr>", { desc = "CodeDiff" })
 
 -- quit
-map({ "n", "x" }, "<leader>qq", "<Cmd>qa<CR>", { desc = "Quit All", silent = true })
+map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All", silent = true })
 
 -- floating terminal
-map("n", "<leader>ft", function()
-  Snacks.terminal()
-end, { desc = "Terminal (cwd)" })
-map({ "n", "t" }, "<c-/>", function()
-  Snacks.terminal.focus(nil, { cwd = vim.uv.cwd() })
-end, { desc = "Terminal (Current Dir)" })
+map("n", "<leader>ft", function() Snacks.terminal() end, { desc = "Terminal (cwd)" })
+map({ "n", "t" }, "<c-/>", function() Snacks.terminal.focus(nil, { cwd = vim.uv.cwd() }) end, { desc = "Terminal (Current Dir)" })
 
-map({ "n", "x" }, "<localleader>r", function()
-  Snacks.debug.run()
-end, { desc = "Run Lua" })
-map({ "n", "v" }, "<localleader>s", "<Cmd>source %<CR>", { desc = "Source File" })
+map("n", "<localleader>r", function() Snacks.debug.run() end, { desc = "Run Lua" })
+map("n", "<localleader>s", "<cmd>source %<cr>", { desc = "Source File" })
 
-map({ "n", "v" }, "<leader>cd", function()
-  local dir = vim.fn.expand("%:p:h")
-  vim.fn.chdir(dir)
-  vim.notify(dir, vim.log.levels.INFO)
-end, { desc = "切换目录 (当前文件目录)" })
+map("n", "<leader>ee", "<CMD>Oil --float<CR>", { desc = "Open parent directory (float window)" })
+map("n", "<leader>eE", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+map("n", "<leader>ed", function() MiniFiles.open() end, { desc = "Directory" })
+map("n", "<leader>ef", function() MiniFiles.open(vim.api.nvim_buf_get_name(0)) end, { desc = "File directory" })
+--stylua: ignore end

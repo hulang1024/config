@@ -4,6 +4,44 @@ return {
     lazy = false,
     priority = 1000,
     opts = {
+      bigfile = { enabled = true },
+      dashboard = {
+        enabled = true,
+        preset = {
+          --stylua: ignore
+          ---@type snacks.dashboard.Item[]
+          keys = {
+            { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+            { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+            { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
+            { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+            { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+            { icon = " ", key = "s", desc = "Restore Session", action = function() require("persistence").load({ last = true }) end },
+            { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy ~= nil },
+            -- { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+          },
+        },
+      },
+      explorer = { enabled = false },
+      indent = {
+        enabled = true,
+        char = "·",
+        only_scope = true,
+        only_current = true,
+        animate = { enabled = false },
+        scope = { enabled = true },
+        chunk = { enabled = false },
+      },
+      input = { enabled = true },
+      notifier = {
+        enabled = false,
+        timeout = 3000,
+      },
+      picker = { enabled = true },
+      quickfile = { enabled = true },
+      scope = { enabled = false },
+      scroll = { enabled = false },
+      statuscolumn = { enabled = true },
       terminal = {
         shell = "powershell.exe",
         win = {
@@ -23,8 +61,8 @@ return {
       { "<leader>,", function() Snacks.picker.buffers() end, desc = "Buffers" },
       { "<leader>/", function() Snacks.picker.grep() end, desc = "Grep" },
       { "<leader>:", function() Snacks.picker.command_history() end, desc = "Command History" },
-      { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
-      { "<leader>e", function() Snacks.explorer() end, desc = "File Explorer" },
+      { "<leader>N", function() Snacks.picker.notifications() end, desc = "Notification History" },
+      { "<leader>E", function() Snacks.explorer() end, desc = "File Explorer (cwd)" },
       -- find
       { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
       { "<leader>fc", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },

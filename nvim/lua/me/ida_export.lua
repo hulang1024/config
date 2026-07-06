@@ -38,7 +38,7 @@ function M.open_export_cs(cs_path)
   -- vim.cmd('normal zz')
 end
 
-local function find_unfixed_files()
+function M.find_unfixed_files()
   -- 1. 极其严格地让 rg 只输出每个文件的真正第一行（通过匹配行首 `^`）
   -- 格式被死死锁在：`路径:行号:列号:内容`（中间 3 个冒号）
   local cmd = { "rg", "^", "-g", "*.cs", "--max-count", "1", "--no-heading", "--with-filename", "--vimgrep", "." }
@@ -89,7 +89,7 @@ local function find_unfixed_files()
   end
 end
 
-local function run_command(ignore_exists)
+function M.run_command(ignore_exists)
   if ida_term and ida_term.buf and vim.api.nvim_buf_is_valid(ida_term.buf) then
     ida_term:toggle()
     return
@@ -170,36 +170,6 @@ local function run_command(ignore_exists)
     ida_term:close()
     M.open_export_cs(file_basename)
   end, { buffer = true })
-end
-
-function M.setup()
-  vim.fn.setreg("r", "ggO\23// NOTE: Restored.\x1b")
-
-  local map = vim.keymap.set
-  map("n", "<leader>rr", function()
-    run_command(false)
-  end, {
-    noremap = true,
-    silent = true,
-    desc = "导出当前文件",
-  })
-  map("n", "<leader>rR", function()
-    run_command(true)
-  end, {
-    noremap = true,
-    silent = true,
-    desc = "导出当前文件(重新)",
-  })
-  map("n", "<leader>ro", M.open_export_cs, {
-    noremap = true,
-    silent = true,
-    desc = "打开导出结果文件",
-  })
-  map("n", "<leader>rf", find_unfixed_files, {
-    noremap = true,
-    silent = true,
-    desc = "查找未修正的文件",
-  })
 end
 
 return M

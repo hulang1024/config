@@ -9,10 +9,12 @@ local function run_command()
     return
   end
 
-  local cmd = { "python", filename, }
+  local cmd = { "python", filename }
 
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.bo[buf].buftype == 'terminal' then vim.cmd("bd! " .. buf) end
+    if vim.bo[buf].buftype == "terminal" then
+      vim.cmd("bd! " .. buf)
+    end
   end
   vim.bo.bufhidden = "wipe"
   vim.cmd("below 10new")
@@ -20,16 +22,16 @@ local function run_command()
   vim.fn.jobstart(cmd, {
     term = true,
   })
-  vim.keymap.set('n', 'q', '<Cmd>bd!<CR>', { buffer = buf, silent = true })
+  vim.keymap.set("n", "q", "<Cmd>bd!<CR>", { buffer = buf, silent = true })
 end
 
 local M = {}
 
 function M.setup()
-  vim.keymap.set('n', '<leader>pr', run_command, {
-      noremap = true,
-      silent = true,
-      desc = "运行python",
+  vim.keymap.set("n", "<localleader>p", run_command, {
+    noremap = true,
+    silent = true,
+    desc = "运行python",
   })
 end
 

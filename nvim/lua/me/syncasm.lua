@@ -1,3 +1,5 @@
+local M = {}
+
 local function get_csharp_method_name()
   local node = vim.treesitter.get_node()
   while node do
@@ -24,7 +26,7 @@ local function get_asm_win(base_filename)
   return nil
 end
 
-local function sync_cs_to_asm()
+function M.sync_cs_to_asm()
   local method_name = get_csharp_method_name()
   if not method_name or method_name == "" then
     return
@@ -45,20 +47,10 @@ local function sync_cs_to_asm()
     if found > 0 then
       local comment_line = vim.fn.line(".")
       local target_line = comment_line - 1
-      vim.api.nvim_win_set_cursor(0, {target_line, 0})
+      vim.api.nvim_win_set_cursor(0, { target_line, 0 })
       vim.cmd("normal! zt")
     end
   end)
-end
-
-local M = {}
-
-function M.setup()
-  -- vim.api.nvim_create_autocmd("CursorHold", {
-  --   pattern = "*.cs",
-  --   callback = sync_cs_to_asm
-  -- })
-  vim.keymap.set("n", "<leader>rj", sync_cs_to_asm, { desc = "定位到方法的汇编代码" })
 end
 
 return M

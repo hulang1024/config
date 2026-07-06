@@ -1,0 +1,22 @@
+{
+  "Select All": {
+    "prefix": "sall",
+    "body": ["select * from ${1:table_name} limit ${2:10};", "$0"],
+    "description": "Select all query with a limit"
+  },
+  "Count Rows": {
+    "prefix": "scnt",
+    "body": ["select count(1) from ${1:table_name};"],
+    "description": "Fast row count"
+  },
+  "Select Orders": {
+    "prefix": "sorder",
+    "body": ["select * from product_order where orderno in(\n$1\n);"],
+    "description": "查询订单"
+  },
+  "Delete Orders": {
+    "prefix": "dorder",
+    "body": ["insert into product_order_deleted $0select * from product_order where orderno in(\n$1\n);"],
+    "description": "删除订单"
+  }
+}

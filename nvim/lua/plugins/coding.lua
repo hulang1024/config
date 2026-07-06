@@ -1,24 +1,30 @@
 return {
   {
     "stevearc/conform.nvim",
+    lazy = true,
+    cmd = "ConformInfo",
     opts = {
       formatters_by_ft = {
         lua = { "stylua" },
+        json = { "biome" },
       },
       format_on_save = {
-        lsp_format = "fallback",
+        lsp_format = "never",
       },
     },
-  },
-  {
-    "nvim-telescope/telescope.nvim",
-    version = "*",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      -- optional but recommended
-      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    keys = {
+      {
+        "<leader>cf",
+        function()
+          require("conform").format({
+            lsp_fallback = true,
+            timeout_ms = 1000,
+          })
+        end,
+        mode = { "n", "v" },
+        desc = "Format",
+      },
     },
-    cmd = "Telescope",
   },
   {
     "nvim-mini/mini.ai",
@@ -74,44 +80,17 @@ return {
     opts = {},
   },
   {
-    "esmuellert/codediff.nvim",
-    cmd = "CodeDiff",
-  },
-  {
     "folke/trouble.nvim",
     opts = {}, -- for default options, refer to the configuration section for custom setup.
     cmd = "Trouble",
+    --stylua: ignore
     keys = {
-      {
-        "<leader>xx",
-        "<cmd>Trouble diagnostics toggle<cr>",
-        desc = "Diagnostics (Trouble)",
-      },
-      {
-        "<leader>xX",
-        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-        desc = "Buffer Diagnostics (Trouble)",
-      },
-      {
-        "<leader>cs",
-        "<cmd>Trouble symbols toggle focus=false<cr>",
-        desc = "Symbols (Trouble)",
-      },
-      {
-        "<leader>cl",
-        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-        desc = "LSP Definitions / references / ... (Trouble)",
-      },
-      {
-        "<leader>xL",
-        "<cmd>Trouble loclist toggle<cr>",
-        desc = "Location List (Trouble)",
-      },
-      {
-        "<leader>xQ",
-        "<cmd>Trouble qflist toggle<cr>",
-        desc = "Quickfix List (Trouble)",
-      },
+      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)", },
+      { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)", },
+      { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)", },
+      { "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP Definitions / references / ... (Trouble)", },
+      { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)", },
+      { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)", },
     },
   },
   {
@@ -123,13 +102,12 @@ return {
   },
   {
     "folke/lazydev.nvim",
-    ft = "lua", -- only load on lua files
+    ft = "lua",
     opts = {
       library = {
-        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-        { path = "snacks.nvim", words = { "Snacks" } },
-        { path = "lazy.nvim", words = { "lazy" } },
         { path = "nvim-lspconfig", words = { "lspconfig.settings" } },
+        { path = "snacks.nvim", words = { "Snacks" } },
+        { path = "mini.files", words = { "MiniFiles" } },
       },
     },
   },

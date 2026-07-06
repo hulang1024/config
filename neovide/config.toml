@@ -9,7 +9,7 @@ frame = "full"
 chdir = "E:/work"
 
 [font]
-size = 13.5
+size = 14
 # edging = "subpixelantialias"
 hinting = "full"
 
