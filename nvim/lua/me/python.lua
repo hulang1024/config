@@ -28,10 +28,17 @@ end
 local M = {}
 
 function M.setup()
-  vim.keymap.set("n", "<localleader>p", run_command, {
-    noremap = true,
-    silent = true,
-    desc = "运行python",
+  vim.api.nvim_create_autocmd("FileType", {
+    group = vim.api.nvim_create_augroup("RunPython", { clear = true }),
+    pattern = "python",
+    callback = function()
+      vim.keymap.set("n", "<localleader>r", run_command, {
+        noremap = true,
+        silent = true,
+        buffer = true,
+        desc = "运行python",
+      })
+    end
   })
 end
 

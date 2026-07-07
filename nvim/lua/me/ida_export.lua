@@ -1,7 +1,7 @@
 local M = {}
 
----@type snacks.win
-local ida_term = nil
+local ida_buf = nil
+local ida_job = nil
 
 function M.open_export_cs(cs_path)
   local scripts_dir = vim.env.IDA_TOOL_SCRIPTS_DIR
@@ -18,7 +18,7 @@ function M.open_export_cs(cs_path)
   end
 
   -- 拼接目标文件路径
-  local target_file = vim.fs.joinpath(scripts_dir, "/output/", file_basename)
+  local target_file = vim.fs.joinpath(scripts_dir, "output", file_basename)
 
   -- 检查文件是否存在 (可选，提升体验)
   if vim.fn.filereadable(target_file) == 0 then
@@ -89,11 +89,69 @@ function M.find_unfixed_files()
   end
 end
 
-function M.run_command(ignore_exists)
-  if ida_term and ida_term.buf and vim.api.nvim_buf_is_valid(ida_term.buf) then
-    ida_term:toggle()
+local function process_progress(filename, buf)
+  local progress = require("fidget.progress")
+  local task = progress.handle.create({
+    title = "",
+    message = "正在初始化...",
+    lsp_client = { name = "逆向文件: " .. filename },
+  })
+  local timer = vim.uv.new_timer()
+  if not timer then
     return
   end
+  timer:start(
+    0,
+    200,
+    vim.schedule_wrap(function()
+      if not vim.api.nvim_buf_is_valid(buf) or ida_job == nil then
+        timer:stop()
+        timer:close()
+        if task.percentage ~= 100 then
+          task:cancel()
+        end
+        return
+      end
+      local line_cnt = vim.api.nvim_buf_line_count(buf)
+      local lines = vim.api.nvim_buf_get_lines(buf, math.max(0, line_cnt - 100), line_cnt, false)
+      local last_line = ""
+      local percent = 10
+      for i = #lines, 1, -1 do
+        local line = lines[i]
+        if line and line:match("%S") then
+          last_line = line
+          if line:find("No types/methods", 1, true) or line:find("post%-IDA 工作流完成", 1, true) then
+            percent = 100
+          end
+          break
+        end
+      end
+      if last_line ~= "" then
+        task.message = last_line
+        -- task.percentage = percent
+      end
+
+      if percent >= 100 then
+        timer:stop()
+        timer:close()
+        task.message = "完成！"
+        task:finish()
+      end
+    end)
+  )
+end
+
+function M.run_command(ignore_exists)
+  if ida_job then
+    vim.notify("导出任务正在进行", vim.log.levels.ERROR)
+    return
+  end
+  if ida_buf and vim.api.nvim_buf_is_valid(ida_buf) then
+    vim.api.nvim_buf_delete(ida_buf, { force = true })
+    return
+  end
+
+  require("noice").cmd("dismiss")
 
   local scripts_dir = vim.env.IDA_TOOL_SCRIPTS_DIR
 
@@ -114,7 +172,7 @@ function M.run_command(ignore_exists)
   end
 
   if not ignore_exists then
-    local target_file = vim.fs.joinpath(scripts_dir, "/output/", file_basename)
+    local target_file = vim.fs.joinpath(scripts_dir, "output", file_basename)
     if vim.fn.filereadable(target_file) == 1 then
       local mtime = vim.fn.getftime(target_file)
       local formatted_time = os.date("%Y-%m-%d %H:%M:%S", mtime)
@@ -128,48 +186,75 @@ function M.run_command(ignore_exists)
 
   local cmd = {
     "python",
-    vim.fs.joinpath(scripts_dir, "/prepare_ida_export.py"),
+    vim.fs.joinpath(scripts_dir, "prepare_ida_export.py"),
     "--export-f5",
-    vim.fs.joinpath(scripts_dir, "/export_f5.py"),
+    vim.fs.joinpath(scripts_dir, "export_f5.py"),
     "--ida-log",
-    vim.fs.joinpath(scripts_dir, "/log/ida_log.txt"),
+    vim.fs.joinpath(scripts_dir, "log/ida_log.txt"),
     "--idb",
-    vim.fs.joinpath(scripts_dir, "/gamedata/libil2cpp.so.i64"),
+    vim.fs.joinpath(scripts_dir, "gamedata/libil2cpp.so.i64"),
     "--cs",
     current_file,
     "--fix-out-dir",
-    vim.fs.joinpath(scripts_dir, "/output/"),
+    vim.fs.joinpath(scripts_dir, "output"),
     "-O",
-    vim.fs.joinpath(scripts_dir, "/output/", file_basename),
+    vim.fs.joinpath(scripts_dir, "output", file_basename),
     "--replay-full",
     "",
   }
+  ida_buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_call(ida_buf, function()
+    vim.opt_local.scrollback = 100000
+    ida_job = vim.fn.jobstart(cmd, {
+      term = true,
+      on_exit = function(_, exit_code, _)
+        if exit_code == 0 then
+          vim.notify("IDA 导出成功！", vim.log.levels.INFO)
+        else
+          if exit_code == 1 or exit_code == 137 or exit_code == 143 then
+            vim.notify("IDA 导出已被中断", vim.log.levels.WARN)
+          else
+            vim.notify("IDA 导出异常退出 (代码: " .. exit_code .. ")", vim.log.levels.ERROR)
+          end
+        end
+        ida_job = nil
+      end,
+    })
+  end)
+  process_progress(file_basename, ida_buf)
+end
 
-  ida_term = Snacks.terminal.toggle(cmd, {
-    auto_close = false,
-    win = {
-      title = "IDA Export",
-      position = "float",
-      width = 0.8,
-      height = 0.8,
-      border = "hpad",
-    },
-  })
-  ida_term:on("TermClose", function()
-    local exit_code = vim.v.event.status
-    if exit_code == 0 then
-      vim.notify("IDA 导出成功！", vim.log.levels.INFO)
-    else
-      vim.notify("IDA 导出异常退出 (代码: " .. exit_code .. ")", vim.log.levels.ERROR)
+function M.interrupt(silent)
+  if ida_job then
+    vim.fn.jobstop(ida_job)
+  elseif not silent then
+    vim.notify("当前没有正在运行的导出任务", vim.log.levels.WARN)
+  end
+end
+
+function M.toggle_window()
+  if not (ida_buf and vim.api.nvim_buf_is_valid(ida_buf)) then
+    vim.notify("当前没有正在运行的导出任务", vim.log.levels.WARN)
+    return
+  end
+  Snacks.win({
+    buf = ida_buf,
+    position = "float",
+    width = 0.8,
+    height = 0.8,
+    title = "IDA Export",
+    border = "hpad",
+    on_win = function (self)
+      vim.cmd("startinsert")
+      vim.keymap.set({ "n", "t" }, "q", function()
+        self:toggle()
+      end, { buffer = self.buf, nowait = true })
+      vim.keymap.set({ "n", "t" }, "<c-c>", function()
+        self:toggle()
+        M.interrupt(true)
+      end, { buffer = self.buf, nowait = true })
     end
-  end, { buf = true })
-  vim.keymap.set({ "n", "t" }, "q", function()
-    ida_term:toggle()
-  end, { buffer = true })
-  vim.keymap.set({ "n", "t" }, "Q", function()
-    ida_term:close()
-    M.open_export_cs(file_basename)
-  end, { buffer = true })
+  })
 end
 
 return M

@@ -3,6 +3,7 @@ return {
     "folke/snacks.nvim",
     lazy = false,
     priority = 1000,
+    ---@type snacks.Config
     opts = {
       bigfile = { enabled = true },
       dashboard = {
@@ -37,7 +38,7 @@ return {
         enabled = false,
         timeout = 3000,
       },
-      picker = { enabled = true },
+      picker = { enabled = true, layout = { preset = "telescope" } },
       quickfile = { enabled = true },
       scope = { enabled = false },
       scroll = { enabled = false },
@@ -47,8 +48,8 @@ return {
         win = {
           position = "float",
           border = "hpad",
+          backdrop = false,
           wo = {
-            winblend = 40,
             winhighlight = "FloatBorder:NormalFloat",
           },
         },

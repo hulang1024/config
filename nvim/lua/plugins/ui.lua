@@ -232,13 +232,18 @@ return {
       })
       wk.setup({
         preset = "helix",
-        delay = 1000,
+        delay = 600,
       })
     end,
   },
   {
     "MeanderingProgrammer/render-markdown.nvim",
     ft = { "markdown", "norg", "rmd", "org" },
+    opts = {},
+  },
+  {
+    "j-hui/fidget.nvim",
+    version = "*",
     opts = {},
   },
 }

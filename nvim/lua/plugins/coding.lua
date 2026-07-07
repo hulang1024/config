@@ -2,7 +2,6 @@ return {
   {
     "stevearc/conform.nvim",
     lazy = true,
-    cmd = "ConformInfo",
     opts = {
       formatters_by_ft = {
         lua = { "stylua" },
@@ -28,19 +27,18 @@ return {
   },
   {
     "nvim-mini/mini.ai",
-    version = false,
-    dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
     event = "VeryLazy",
     config = function()
-      local ai = require("mini.ai")
-      ai.setup({
+      local gen_spec = require("mini.ai").gen_spec
+      require("mini.ai").setup({
+        n_lines = 500,
         custom_textobjects = {
-          f = ai.gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
-          c = ai.gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
-          a = ai.gen_spec.treesitter({ a = "@parameter.outer", i = "@parameter.inner" }),
-          o = ai.gen_spec.treesitter({
-            a = { "@conditional.outer", "@loop.outer" },
-            i = { "@conditional.inner", "@loop.inner" },
+          f = gen_spec.treesitter({ a = "@function.outer", i = "@function.inner" }),
+          c = gen_spec.treesitter({ a = "@class.outer", i = "@class.inner" }),
+          a = gen_spec.treesitter({ a = "@parameter.outer", i = "@parameter.inner" }),
+          o = gen_spec.treesitter({
+            a = { "@block.outer", "@conditional.outer", "@loop.outer" },
+            i = { "@block.inner", "@conditional.inner", "@loop.inner" },
           }),
           -- Whole buffer
           g = function()

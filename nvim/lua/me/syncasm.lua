@@ -1,6 +1,12 @@
 local M = {}
 
 local function get_csharp_method_name()
+  local parser = vim.treesitter.get_parser(0)
+  if not parser then
+    vim.notify("获取treesitter parser失败", vim.log.levels.ERROR)
+    return nil
+  end
+  parser:parse(true)
   local node = vim.treesitter.get_node()
   while node do
     local type = node:type()
@@ -18,7 +24,7 @@ local function get_asm_win(base_filename)
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local buf = vim.api.nvim_win_get_buf(win)
     local buf_name = vim.api.nvim_buf_get_name(buf)
-    local target_path = "/output/" .. base_filename
+    local target_path = vim.fs.joinpath("output", base_filename)
     if string.find(buf_name, target_path, 1, true) then
       return win
     end
