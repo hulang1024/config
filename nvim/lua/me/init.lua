@@ -1,5 +1,6 @@
 require("me.python").setup()
 require("me.hadev").setup()
+require("me.record_indicator").setup()
 
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("UnityProjectCSharp", { clear = true }),

@@ -82,9 +82,6 @@ map("n", "<leader>P", "<cmd>Lazy<cr>", { desc = "Plugin Manager", silent = true 
 -- code action
 map("n", "<A-CR>", vim.lsp.buf.code_action, { desc = "Show Code Context Actions" })
 
--- Code diff
-map("n", "<leader>go", "<cmd>CodeDiff<cr>", { desc = "CodeDiff" })
-
 -- quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All", silent = true })
 

@@ -42,6 +42,7 @@ vim.opt.cmdheight = 0
 vim.opt.wrap = false
 vim.opt.list = false
 vim.opt.showcmd = true
+vim.opt.showtabline = 1
 vim.opt.title = false
 vim.opt.visualbell = true
 vim.opt.linespace = 2

@@ -19,6 +19,7 @@ return {
   },
   {
     "akinsho/bufferline.nvim",
+    enabled = false,
     event = "VeryLazy",
     opts = {
       options = {
@@ -65,7 +66,7 @@ return {
         ["cv"] = "VIM-EX",
       }
       local trouble = require("trouble")
-      local symbols = trouble.statusline({
+      local lsp_symbols = trouble.statusline({
         mode = "lsp_document_symbols",
         groups = {},
         title = false,
@@ -75,6 +76,7 @@ return {
         -- Set it to the lualine section you want to use
         hl_group = "lualine_c_normal",
       })
+      -- local lualine_record = require("me.lualine_record")
       return {
         options = {
           component_separators = { left = "", right = "" },
@@ -90,24 +92,17 @@ return {
             },
           },
           lualine_c = {
-            "lsp_status",
-            "filename",
             {
-              symbols.get,
-              cond = symbols.has,
+              "filename",
+              path = 1,
+            },
+            {
+              lsp_symbols.get,
+              cond = lsp_symbols.has,
             },
           },
           lualine_x = {
-            {
-              function()
-                local reg = vim.fn.reg_recording()
-                return reg == "" and "" or "Recording @" .. reg
-              end,
-              color = function()
-                local theme_color = require("lualine.utils.utils").extract_highlight_colors("DiagnosticError", "fg")
-                return { fg = theme_color or "#e86671", gui = "italic,bold" }
-              end,
-            },
+            -- lualine_record.lualine_section,
             {
               "progress",
               separator = "",
@@ -134,13 +129,6 @@ return {
           lualine_z = {},
         },
       }
-    end,
-    init = function()
-      vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
-        callback = function()
-          require("lualine").refresh()
-        end,
-      })
     end,
   },
   {

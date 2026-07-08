@@ -117,18 +117,21 @@ return {
         },
         completion = {
           documentation = { auto_show = true },
+          menu = { auto_show = true },
+          ghost_text = { enabled = true },
           list = {
             selection = {
               preselect = function()
                 return not require("blink.cmp").snippet_active({ direction = 1 })
               end,
+              auto_insert = false,
             },
           },
         },
         cmdline = {
           completion = {
             menu = { auto_show = true },
-            list = { selection = { preselect = false } },
+            list = { selection = { preselect = false, auto_insert = true } },
           },
         },
         sources = {
