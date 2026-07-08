@@ -76,8 +76,8 @@ map("n", "<leader>xT", "<cmd>Trouble todo toggle filter={tag={TODO,FIX,FIXME}}<c
 map("n", "<leader>st", "<cmd>TodoTelescope<cr>", { desc = "Todo" })
 map("n", "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", { desc = "Todo/Fix/Fixme" })
 
--- lazy
-map("n", "<leader>l", "<cmd>Lazy<cr>", { desc = "Lazy", silent = true })
+-- plugin manager
+map("n", "<leader>P", "<cmd>Lazy<cr>", { desc = "Plugin Manager", silent = true })
 
 -- code action
 map("n", "<A-CR>", vim.lsp.buf.code_action, { desc = "Show Code Context Actions" })

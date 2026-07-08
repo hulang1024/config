@@ -102,7 +102,7 @@ local function process_progress(filename, buf)
   end
   timer:start(
     0,
-    200,
+    800,
     vim.schedule_wrap(function()
       if not vim.api.nvim_buf_is_valid(buf) or ida_job == nil then
         timer:stop()
@@ -148,7 +148,6 @@ function M.run_command(ignore_exists)
   end
   if ida_buf and vim.api.nvim_buf_is_valid(ida_buf) then
     vim.api.nvim_buf_delete(ida_buf, { force = true })
-    return
   end
 
   require("noice").cmd("dismiss")
@@ -209,12 +208,12 @@ function M.run_command(ignore_exists)
       term = true,
       on_exit = function(_, exit_code, _)
         if exit_code == 0 then
-          vim.notify("IDA 导出成功！", vim.log.levels.INFO)
+          vim.notify("导出成功！", vim.log.levels.INFO)
         else
-          if exit_code == 1 or exit_code == 137 or exit_code == 143 then
-            vim.notify("IDA 导出已被中断", vim.log.levels.WARN)
+          if exit_code == 1 or exit_code == 137 or exit_code == 143 or exit_code == 129 then
+            vim.notify("导出已被中断", vim.log.levels.WARN)
           else
-            vim.notify("IDA 导出异常退出 (代码: " .. exit_code .. ")", vim.log.levels.ERROR)
+            vim.notify("导出异常退出 (代码: " .. exit_code .. ")", vim.log.levels.ERROR)
           end
         end
         ida_job = nil

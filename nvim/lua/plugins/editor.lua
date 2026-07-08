@@ -23,6 +23,53 @@ return {
     cmd = "Telescope",
   },
   {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    branch = "main",
+    opts = {},
+    config = function()
+      require("nvim-treesitter-textobjects").setup({
+        move = {
+          set_jumps = true,
+        },
+      })
+      local moves = {
+        goto_next_start = {
+          ["]f"] = "@function.outer",
+          ["]c"] = "@class.outer",
+          ["]a"] = "@parameter.outer",
+        },
+        goto_previous_start = {
+          ["[f"] = "@function.outer",
+          ["[c"] = "@class.outer",
+          ["[a"] = "@parameter.outer",
+        },
+        goto_next_end = {
+          ["]F"] = "@function.outer",
+          ["]C"] = "@class.outer",
+          ["]A"] = "@parameter.outer",
+        },
+        goto_previous_end = {
+          ["[F"] = "@function.outer",
+          ["[C"] = "@class.outer",
+          ["[A"] = "@parameter.outer",
+        },
+      }
+      for method, map in pairs(moves) do
+        for key, node in pairs(map) do
+          local node_name = node:match("@(.-)%.") or node
+          local desc = string.format("%s %s %s",
+            method:match("next") and "Next" or "Previous",
+            node_name,
+            method:match("start") and "start" or "end"
+          )
+          vim.keymap.set({ "n", "x", "o" }, key, function()
+            require("nvim-treesitter-textobjects.move")[method](node, "textobjects")
+          end, { desc = desc })
+        end
+      end
+    end,
+  },
+  {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     lazy = false,
