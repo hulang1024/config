@@ -1,15 +1,24 @@
 return {
   {
     "navarasu/onedark.nvim",
+    lazy = true,
     priority = 1000,
     opts = {
       style = "warmer",
       transparent = false,
     },
-    config = function(_, opts)
-      require("onedark").setup(opts)
-      require("onedark").load()
-    end,
+    -- config = function(_, opts)
+      -- require("onedark").setup(opts)
+      -- require("onedark").load()
+    -- end,
+  },
+  {
+    "ellisonleao/gruvbox.nvim",
+    opts = {},
+    config = function (opts)
+      require("gruvbox").setup(opts)
+      vim.cmd("colorscheme gruvbox")
+    end
   },
   {
     "folke/tokyonight.nvim",

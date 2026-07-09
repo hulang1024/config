@@ -8,7 +8,8 @@ return {
     "esmuellert/codediff.nvim",
     cmd = "CodeDiff",
     keys = {
-      { "<leader>gd", "<cmd>CodeDiff<cr>", desc = "CodeDiff" },
+      { "<leader>gD", "<cmd>CodeDiff<cr>", desc = "CodeDiff" },
+      { "<leader>gd", "<cmd>CodeDiff file HEAD<cr>", desc = "CodeDiff This File" },
     },
   },
   {

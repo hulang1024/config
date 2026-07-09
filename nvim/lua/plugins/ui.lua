@@ -5,11 +5,11 @@ return {
     config = function()
       require("ibl").setup({
         indent = {
-          char = "|",
+          char = "",
         },
         scope = {
           enabled = true,
-          char = "▎",
+          char = "|",
           highlight = "Function",
           show_start = false,
           show_end = false,
@@ -65,17 +65,14 @@ return {
         ["nt"] = "T-NORMAL",
         ["cv"] = "VIM-EX",
       }
-      local trouble = require("trouble")
-      local lsp_symbols = trouble.statusline({
-        mode = "lsp_document_symbols",
-        groups = {},
-        title = false,
-        filter = { range = true },
-        format = "{kind_icon}{symbol.name:Normal}",
-        -- The following line is needed to fix the background color
-        -- Set it to the lualine section you want to use
-        hl_group = "lualine_c_normal",
-      })
+      -- local lsp_symbols = require("trouble").statusline({
+      --   mode = "lsp_document_symbols",
+      --   groups = {},
+      --   title = false,
+      --   filter = { range = true },
+      --   format = "{kind_icon}{symbol.name:Normal}",
+      --   hl_group = "lualine_c_normal",
+      -- })
       -- local lualine_record = require("me.lualine_record")
       return {
         options = {
@@ -87,7 +84,7 @@ return {
             {
               function()
                 local m = vim.fn.mode(1)
-                return mode_map[m] or string.sub(m, 1, 1)
+                return mode_map[m] or m
               end,
             },
           },
@@ -96,10 +93,10 @@ return {
               "filename",
               path = 1,
             },
-            {
-              lsp_symbols.get,
-              cond = lsp_symbols.has,
-            },
+            -- {
+            --   lsp_symbols.get,
+            --   cond = lsp_symbols.has,
+            -- },
           },
           lualine_x = {
             -- lualine_record.lualine_section,
@@ -217,6 +214,7 @@ return {
         { "<leader>x", group = "diagnostics/quickfix" },
         { "<leader>s", group = "search" },
         { "<leader>u", group = "ui" },
+        { "<leader>h", group = "home assistant", icon = "󰟐" },
       })
       wk.setup({
         preset = "helix",

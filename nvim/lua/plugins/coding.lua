@@ -1,15 +1,29 @@
 return {
   {
     "stevearc/conform.nvim",
-    lazy = true,
+    event = "VeryLazy",
+    ---@type conform.setupOpts
     opts = {
       formatters_by_ft = {
         lua = { "stylua" },
         json = { "biome" },
+        javascript = { "biome" },
+        typescript = { "biome" },
+        cs = { "csharpier" },
+        sql = { "sqruff" },
       },
-      format_on_save = {
-        lsp_format = "never",
-      },
+      format_on_save = function(bufnr)
+        local ft = vim.bo[bufnr].filetype
+        local allowed = { "lua", "json", "sql" }
+        if vim.tbl_contains(allowed, ft) then
+          return {
+            timeout_ms = 1000,
+            lsp_format = "never",
+          }
+        else
+          return nil
+        end
+      end,
     },
     keys = {
       {
@@ -83,12 +97,12 @@ return {
     cmd = "Trouble",
     --stylua: ignore
     keys = {
-      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)", },
-      { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)", },
-      { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (Trouble)", },
+      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>",                        desc = "Diagnostics (Trouble)", },
+      { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",           desc = "Buffer Diagnostics (Trouble)", },
+      { "<leader>cs", "<cmd>Trouble symbols toggle focus=false<cr>",                desc = "Symbols (Trouble)", },
       { "<leader>cl", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", desc = "LSP Definitions / references / ... (Trouble)", },
-      { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)", },
-      { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)", },
+      { "<leader>xL", "<cmd>Trouble loclist toggle<cr>",                            desc = "Location List (Trouble)", },
+      { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>",                             desc = "Quickfix List (Trouble)", },
     },
   },
   {

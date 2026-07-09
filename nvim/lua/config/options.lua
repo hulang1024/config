@@ -4,8 +4,9 @@ vim.g.maplocalleader = "\\"
 vim.g.autoformat = false
 
 -- 缩进
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
 vim.opt.expandtab = true
 vim.opt.autoindent = true
 vim.opt.smartindent = true
@@ -14,6 +15,7 @@ vim.opt.breakindent = true
 
 -- 搜索与替换
 vim.opt.hlsearch = true
+vim.opt.incsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.inccommand = "split"
@@ -23,6 +25,9 @@ vim.opt.scrolloff = 999
 vim.opt.jumpoptions = "stack"
 vim.opt.virtualedit = "block"
 vim.opt.mouse = {}
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
 
 -- 窗口
 vim.opt.splitbelow = true

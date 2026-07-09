@@ -46,9 +46,21 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = '*',
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "lua",
   callback = function()
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.softtabstop = 2
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+    vim.opt_local.foldmethod = "expr"
+    vim.opt_local.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
     pcall(vim.treesitter.start)
   end,
 })

@@ -80,10 +80,11 @@ map("n", "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", { desc 
 map("n", "<leader>P", "<cmd>Lazy<cr>", { desc = "Plugin Manager", silent = true })
 
 -- code action
-map("n", "<A-CR>", vim.lsp.buf.code_action, { desc = "Show Code Context Actions" })
+map({"n", "v", "i"}, "<A-CR>", vim.lsp.buf.code_action, { desc = "Show Code Context Actions" })
 
 -- quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All", silent = true })
+map("n", "<leader>qR", "<cmd>restart<cr><esc>", { desc = "Restart", silent = true })
 
 -- floating terminal
 map("n", "<leader>ft", function() Snacks.terminal() end, { desc = "Terminal (cwd)" })

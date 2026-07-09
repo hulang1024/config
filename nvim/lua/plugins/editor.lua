@@ -57,7 +57,8 @@ return {
       for method, map in pairs(moves) do
         for key, node in pairs(map) do
           local node_name = node:match("@(.-)%.") or node
-          local desc = string.format("%s %s %s",
+          local desc = string.format(
+            "%s %s %s",
             method:match("next") and "Next" or "Previous",
             node_name,
             method:match("start") and "start" or "end"

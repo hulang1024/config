@@ -10,12 +10,9 @@ return {
             vim.keymap.set(opts.mode or "n", keys, func, { buffer = ev.buf, desc = opts.desc })
           end
           -- stylua: ignore start
-          map("gK", function() return vim.lsp.buf.signature_help() end, { desc = "Signature Help" })
-          map("<c-k>", function() return vim.lsp.buf.signature_help() end, { mode = "i", desc = "Signature Help" })
-          map("<leader>ca", vim.lsp.buf.code_action, { desc = "Code Action" })
-          map("<leader>cc", vim.lsp.codelens.run, { desc = "Run Codelens" })
-          map("<leader>cR", function() Snacks.rename.rename_file() end, { desc = "Rename File" })
-          map("<leader>cr", vim.lsp.buf.rename, { desc ="Rename" })
+          map("gK", vim.lsp.buf.signature_help, { desc = "Signature Help" })
+          map("<c-k>", vim.lsp.buf.signature_help, { mode = "i", desc = "Signature Help" })
+          map("<leader>cR", Snacks.rename.rename_file, { desc = "Rename File" })
           map("]]", function() Snacks.words.jump(vim.v.count1) end, { has = "documentHighlight", desc = "Next Reference" })
           map("[[", function() Snacks.words.jump(-vim.v.count1) end, { has = "documentHighlight", desc = "Prev Reference" })
           map("<a-n>", function() Snacks.words.jump(vim.v.count1, true) end, { has = "documentHighlight", desc = "Next Reference" })
