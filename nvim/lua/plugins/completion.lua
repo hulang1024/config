@@ -1,100 +1,5 @@
 return {
   {
-    "nvim-mini/mini.files",
-    version = false,
-    opts = {},
-  },
-  {
-    "stevearc/oil.nvim",
-    ---@module 'oil'
-    ---@type oil.SetupOpts
-    opts = {},
-    dependencies = { { "nvim-mini/mini.icons", opts = {} } },
-    lazy = false,
-  },
-  {
-    "nvim-telescope/telescope.nvim",
-    version = "*",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      -- optional but recommended
-      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-    },
-    cmd = "Telescope",
-  },
-  {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-    branch = "main",
-    opts = {},
-    config = function()
-      require("nvim-treesitter-textobjects").setup({
-        move = {
-          set_jumps = true,
-        },
-      })
-      local moves = {
-        goto_next_start = {
-          ["]f"] = "@function.outer",
-          ["]c"] = "@class.outer",
-          ["]a"] = "@parameter.outer",
-        },
-        goto_previous_start = {
-          ["[f"] = "@function.outer",
-          ["[c"] = "@class.outer",
-          ["[a"] = "@parameter.outer",
-        },
-        goto_next_end = {
-          ["]F"] = "@function.outer",
-          ["]C"] = "@class.outer",
-          ["]A"] = "@parameter.outer",
-        },
-        goto_previous_end = {
-          ["[F"] = "@function.outer",
-          ["[C"] = "@class.outer",
-          ["[A"] = "@parameter.outer",
-        },
-      }
-      for method, map in pairs(moves) do
-        for key, node in pairs(map) do
-          local node_name = node:match("@(.-)%.") or node
-          local desc = string.format(
-            "%s %s %s",
-            method:match("next") and "Next" or "Previous",
-            node_name,
-            method:match("start") and "start" or "end"
-          )
-          vim.keymap.set({ "n", "x", "o" }, key, function()
-            require("nvim-treesitter-textobjects.move")[method](node, "textobjects")
-          end, { desc = desc })
-        end
-      end
-    end,
-  },
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    lazy = false,
-    event = "VeryLazy",
-    config = function()
-      require("nvim-treesitter").install({
-        "c",
-        "regex",
-        "bash",
-        "lua",
-        "vim",
-        "vimdoc",
-        "query",
-        "markdown",
-        "markdown_inline",
-        "toml",
-        "yaml",
-        "json",
-        "python",
-        "javascript",
-      })
-    end,
-  },
-  {
     "saghen/blink.cmp",
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
@@ -118,7 +23,7 @@ return {
         },
         completion = {
           documentation = { auto_show = true },
-          menu = { auto_show = true },
+          menu = { auto_show = true, winblend = 30 },
           ghost_text = { enabled = true },
           list = {
             selection = {
@@ -177,7 +82,8 @@ return {
     end,
   },
   {
-    "folke/flash.nvim",
+    "nvim-mini/mini.pairs",
     event = "VeryLazy",
+    opts = {},
   },
 }

@@ -38,4 +38,15 @@ return {
     },
     event = { "BufReadPre", "BufNewFile" },
   },
+  {
+    "folke/lazydev.nvim",
+    ft = "lua",
+    opts = {
+      library = {
+        { path = "nvim-lspconfig", words = { "lspconfig.settings" } },
+        { path = "snacks.nvim", words = { "Snacks" } },
+        { path = "mini.files", words = { "MiniFiles" } },
+      },
+    },
+  },
 }

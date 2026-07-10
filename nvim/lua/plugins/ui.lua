@@ -18,26 +18,6 @@ return {
     end,
   },
   {
-    "akinsho/bufferline.nvim",
-    enabled = false,
-    event = "VeryLazy",
-    opts = {
-      options = {
-        themable = true,
-        left_mouse_command = false,
-        right_mouse_command = false,
-        show_buffer_close_icons = false,
-        diagnostics = "nvim_lsp",
-      },
-    },
-    keys = {
-      { "<leader>bp", "<Cmd>BufferLineTogglePin<CR>", desc = "Toggle Pin" },
-      { "<leader>bP", "<Cmd>BufferLineGroupClose ungrouped<CR>", desc = "Delete Non-Pinned Buffers" },
-      { "<leader>br", "<Cmd>BufferLineCloseRight<CR>", desc = "Delete Buffers to the Right" },
-      { "<leader>bl", "<Cmd>BufferLineCloseLeft<CR>", desc = "Delete Buffers to the Left" },
-    },
-  },
-  {
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     event = "VeryLazy",
@@ -223,13 +203,12 @@ return {
     end,
   },
   {
-    "MeanderingProgrammer/render-markdown.nvim",
-    ft = { "markdown", "norg", "rmd", "org" },
+    "j-hui/fidget.nvim",
+    version = "*",
     opts = {},
   },
   {
-    "j-hui/fidget.nvim",
-    version = "*",
+    "m00qek/baleia.nvim",
     opts = {},
   },
 }

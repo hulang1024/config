@@ -8,17 +8,17 @@ return {
       transparent = false,
     },
     -- config = function(_, opts)
-      -- require("onedark").setup(opts)
-      -- require("onedark").load()
+    -- require("onedark").setup(opts)
+    -- require("onedark").load()
     -- end,
   },
   {
     "ellisonleao/gruvbox.nvim",
     opts = {},
-    config = function (opts)
+    config = function(opts)
       require("gruvbox").setup(opts)
       vim.cmd("colorscheme gruvbox")
-    end
+    end,
   },
   {
     "folke/tokyonight.nvim",
@@ -30,6 +30,11 @@ return {
         floats = "transparent",
       },
     },
+  },
+  {
+    "projekt0n/github-nvim-theme",
+    name = "github-theme",
+    lazy = true,
   },
   {
     "catppuccin/nvim",
