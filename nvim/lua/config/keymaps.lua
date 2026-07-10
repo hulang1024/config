@@ -15,15 +15,16 @@ map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", {
 
 -- buffers
 map("n", "<leader>bd", "<cmd>bd<cr>", { desc = "Delete Buffer" })
-map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
+map("n", "<leader>bD", "<cmd>bd<cr>", { desc = "Delete Buffer and Window" })
+map("n", "<leader><tab>", "<cmd>b #<cr>", { desc = "Alternate Buffer" })
 
 -- tabs
-map("n", "<leader><tab>0", "<cmd>tablast<cr>", { desc = "Last Tab" })
-map("n", "<leader><tab>$", "<cmd>tabfirst<cr>", { desc = "First Tab" })
-map("n", "<leader><tab>c", "<cmd>tabclose<cr>", { desc = "Close Tab" })
-map("n", "<leader><tab>o", "<cmd>tabonly<cr>", { desc = "Close Other Tabs" })
-map("n", "<leader><tab>l", "<cmd>tabs<cr>", { desc = "List Tabs" })
-map("n", "<leader><tab><tab>", "<cmd>tabnew<cr>", { desc = "New Tab" })
+map("n", "[t", "<cmd>tabprev<cr>", { desc = "Previous Tab" })
+map("n", "]t", "<cmd>tabnext<cr>", { desc = "Next Tab" })
+map("n", "<leader>tc", "<cmd>tabclose<cr>", { desc = "Close Tab" })
+map("n", "<leader>to", "<cmd>tabonly<cr>", { desc = "Close Other Tabs" })
+map("n", "<leader>tl", "<cmd>tabs<cr>", { desc = "List Tabs" })
+map("n", "<leader>tn", "<cmd>tabnew<cr>", { desc = "New Tab" })
 
 map({ "i", "n", "s" }, "<esc>", function() vim.cmd("noh") return "<esc>" end, { expr = true, desc = "Escape" })
 
@@ -93,8 +94,8 @@ vim.keymap.set('n', '<leader>ug', function() vim.opt.list = not vim.o.list end, 
 
 map("n", "<localleader>s", "<cmd>source %<cr>", { desc = "Source File" })
 
-map("n", "<leader>ee", "<CMD>Oil --float<CR>", { desc = "Open parent directory (float window)" })
-map("n", "<leader>eE", "<CMD>Oil<CR>", { desc = "Open parent directory" })
-map("n", "<leader>ed", function() MiniFiles.open() end, { desc = "Directory" })
-map("n", "<leader>ef", function() MiniFiles.open(vim.api.nvim_buf_get_name(0)) end, { desc = "File directory" })
+-- explorer
+map("n", "-", "<cmd>Oil<cr>", { desc = "Open parent directory (float window)" })
+map("n", "<leader>fE", function() MiniFiles.open() end, { desc = "File Explorer (cwd)" })
+map("n", "<leader>fe", function() MiniFiles.open(vim.api.nvim_buf_get_name(0)) end, { desc = "File Explorer" })
 --stylua: ignore end

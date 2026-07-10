@@ -78,14 +78,12 @@ function M.find_unfixed_files()
       vim.log.levels.INFO,
       { title = "Unfixed Files" }
     )
-    vim.cmd("copen")
   else
     vim.notify(
       string.format("🎉 太棒了！检查了 %d 个文件，所有文件均已标记为已处理", total_scanned),
       vim.log.levels.INFO,
       { title = "Unfixed Files" }
     )
-    vim.cmd("cclose") -- 如果都修复了，顺手帮用户把旧的 quickfix 窗口关掉
   end
 end
 

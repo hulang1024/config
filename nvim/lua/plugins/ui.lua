@@ -186,7 +186,7 @@ return {
       wk.add({
         { "<leader>b", group = "buffers" },
         { "<leader><tab>", group = "tabs" },
-        { "<leader>f", group = "file/Find" },
+        { "<leader>f", group = "file/find" },
         { "<leader>e", group = "explorer", icon = " " },
         { "<leader>g", group = "git" },
         { "<leader>c", group = "code" },
