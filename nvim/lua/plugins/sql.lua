@@ -19,6 +19,10 @@ return {
       vim.g.db_ui_save_location = "~/dadbod_ui"
       vim.g.db_ui_tmp_query_location = "~/dadbod_ui/tmp"
       vim.g.db_ui_execute_on_save = false
+
+      vim.api.nvim_create_user_command("DBUITab", function()
+        vim.cmd("tabnew | execute 'DBUIFindBuffer'")
+      end, { desc = "打开DBUI Tab" })
     end,
   },
 }

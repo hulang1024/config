@@ -14,9 +14,7 @@ map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc 
 map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
 
 -- buffers
-map("n", "<leader>bd", function() Snacks.bufdelete() end, { desc = "Delete Buffer" })
-map("n", "<leader>bo", function() Snacks.bufdelete.other() end, { desc = "Delete Other Buffers" })
-map("n", "<leader>bi", function() Snacks.bufdelete.invisible() end, { desc = "Delete Invisible Buffers" })
+map("n", "<leader>bd", "<cmd>bd<cr>", { desc = "Delete Buffer" })
 map("n", "<leader>bD", "<cmd>:bd<cr>", { desc = "Delete Buffer and Window" })
 
 -- tabs
@@ -86,11 +84,13 @@ map({"n", "v", "i"}, "<A-CR>", vim.lsp.buf.code_action, { desc = "Show Code Cont
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All", silent = true })
 map("n", "<leader>qR", "<cmd>restart<cr><esc>", { desc = "Restart", silent = true })
 
--- floating terminal
-map("n", "<leader>ft", function() Snacks.terminal() end, { desc = "Terminal (cwd)" })
-map({ "n", "t" }, "<c-/>", function() Snacks.terminal.focus(nil, { cwd = vim.uv.cwd() }) end, { desc = "Terminal (Current Dir)" })
+vim.keymap.set('n', '<leader>us', function() vim.opt.spell = not vim.o.spell end, { desc = "Toggle Spelling" })
+vim.keymap.set('n', '<leader>uw', function() vim.opt.wrap = not vim.o.wrap end, { desc = "Toggle Wrap" })
+vim.keymap.set('n', '<leader>ub', function()
+  vim.opt.background = vim.o.background == "dark" and "light" or "dark"
+end, { desc = "Toggle Background" })
+vim.keymap.set('n', '<leader>ug', function() vim.opt.list = not vim.o.list end, { desc = "Toggle Listchars" })
 
-map("n", "<localleader>r", function() Snacks.debug.run() end, { desc = "Run Lua" })
 map("n", "<localleader>s", "<cmd>source %<cr>", { desc = "Source File" })
 
 map("n", "<leader>ee", "<CMD>Oil --float<CR>", { desc = "Open parent directory (float window)" })

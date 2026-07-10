@@ -12,11 +12,6 @@ return {
           -- stylua: ignore start
           map("gK", vim.lsp.buf.signature_help, { desc = "Signature Help" })
           map("<c-k>", vim.lsp.buf.signature_help, { mode = "i", desc = "Signature Help" })
-          map("<leader>cR", Snacks.rename.rename_file, { desc = "Rename File" })
-          map("]]", function() Snacks.words.jump(vim.v.count1) end, { has = "documentHighlight", desc = "Next Reference" })
-          map("[[", function() Snacks.words.jump(-vim.v.count1) end, { has = "documentHighlight", desc = "Prev Reference" })
-          map("<a-n>", function() Snacks.words.jump(vim.v.count1, true) end, { has = "documentHighlight", desc = "Next Reference" })
-          map("<a-p>", function() Snacks.words.jump(-vim.v.count1, true) end, { has = "documentHighlight", desc = "Prev Reference" })
           -- stylua: ignore end
         end,
       })
@@ -44,7 +39,6 @@ return {
     opts = {
       library = {
         { path = "nvim-lspconfig", words = { "lspconfig.settings" } },
-        { path = "snacks.nvim", words = { "Snacks" } },
         { path = "mini.files", words = { "MiniFiles" } },
       },
     },

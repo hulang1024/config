@@ -236,24 +236,34 @@ function M.toggle_window()
     vim.notify("当前没有正在运行的导出任务", vim.log.levels.WARN)
     return
   end
-  Snacks.win({
-    buf = ida_buf,
-    position = "float",
-    width = 0.8,
-    height = 0.8,
-    title = "IDA Export",
-    border = "hpad",
-    on_win = function (self)
-      vim.cmd("startinsert")
-      vim.keymap.set({ "n", "t" }, "q", function()
-        self:toggle()
-      end, { buffer = self.buf, nowait = true })
-      vim.keymap.set({ "n", "t" }, "<c-c>", function()
-        self:toggle()
-        M.interrupt(true)
-      end, { buffer = self.buf, nowait = true })
+  local width = math.floor(vim.o.columns * 0.8)
+  local height = math.floor(vim.o.lines * 0.8)
+  local row = math.floor((vim.o.lines - height) / 2)
+  local col = math.floor((vim.o.columns - width) / 2)
+  local win_opts = {
+    relative = "editor",
+    width = width,
+    height = height,
+    row = row,
+    col = col,
+    style = "minimal",
+    border = "rounded",
+    title = " IDA Export ",
+    title_pos = "center",
+    zindex = 50,
+  }
+  local win_id = vim.api.nvim_open_win(ida_buf, true, win_opts)
+  vim.cmd("startinsert")
+  local function close_win()
+    if vim.api.nvim_win_is_valid(win_id) then
+      vim.api.nvim_win_close(win_id, true)
     end
-  })
+  end
+  vim.keymap.set({ "n", "t" }, "q", close_win, { buffer = ida_buf, nowait = true })
+  vim.keymap.set({ "n", "t" }, "<c-c>", function()
+    close_win()
+    M.interrupt(true)
+  end, { buffer = ida_buf, nowait = true })
 end
 
 return M
