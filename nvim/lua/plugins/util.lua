@@ -2,7 +2,6 @@ return {
   {
     "epwalsh/pomo.nvim",
     version = "*",
-    lazy = true,
     cmd = { "TimerStart", "TimerRepeat", "TimerSession" },
     dependencies = {
       "rcarriga/nvim-notify",
@@ -14,9 +13,10 @@ return {
   },
   {
     "nvim-mini/mini.misc",
+    lazy = true,
     config = function()
       local misc = require("mini.misc")
-      misc.setup_auto_root()
+      misc.setup_auto_root(vim.g.root_names or { ".git", ".root" })
     end,
   },
 }

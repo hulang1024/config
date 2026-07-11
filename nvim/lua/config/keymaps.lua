@@ -1,4 +1,3 @@
---stylua: ignore start
 local map = vim.keymap.set
 
 -- better up/down
@@ -26,7 +25,10 @@ map("n", "<leader>to", "<cmd>tabonly<cr>", { desc = "Close Other Tabs" })
 map("n", "<leader>tl", "<cmd>tabs<cr>", { desc = "List Tabs" })
 map("n", "<leader>tn", "<cmd>tabnew<cr>", { desc = "New Tab" })
 
-map({ "i", "n", "s" }, "<esc>", function() vim.cmd("noh") return "<esc>" end, { expr = true, desc = "Escape" })
+map({ "i", "n", "s" }, "<esc>", function()
+  vim.cmd("noh")
+  return "<esc>"
+end, { expr = true, desc = "Escape" })
 
 -- 保存文件
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File", silent = true })
@@ -67,35 +69,27 @@ map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
 map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
 map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
 
--- trouble
-map("n", "<leader>xt", "<cmd>Trouble todo toggle<cr>", { desc = "Todo (Trouble)" })
-map("n", "<leader>xT", "<cmd>Trouble todo toggle filter={tag={TODO,FIX,FIXME}}<cr>", { desc = "Todo/Fix/Fixme (Trouble)" })
-
--- todo comments
-map("n", "<leader>st", "<cmd>TodoTelescope<cr>", { desc = "Todo" })
-map("n", "<leader>sT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", { desc = "Todo/Fix/Fixme" })
-
 -- plugin manager
 map("n", "<leader>P", "<cmd>Lazy<cr>", { desc = "Plugin Manager", silent = true })
 
 -- code action
-map({"n", "v", "i"}, "<A-CR>", vim.lsp.buf.code_action, { desc = "Show Code Context Actions" })
+map({ "n", "v", "i" }, "<A-CR>", vim.lsp.buf.code_action, { desc = "Show Code Context Actions" })
 
 -- quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit All", silent = true })
 map("n", "<leader>qR", "<cmd>restart<cr><esc>", { desc = "Restart", silent = true })
 
-vim.keymap.set('n', '<leader>us', function() vim.opt.spell = not vim.o.spell end, { desc = "Toggle Spelling" })
-vim.keymap.set('n', '<leader>uw', function() vim.opt.wrap = not vim.o.wrap end, { desc = "Toggle Wrap" })
-vim.keymap.set('n', '<leader>ub', function()
+vim.keymap.set("n", "<leader>us", function()
+  vim.opt.spell = not vim.o.spell
+end, { desc = "Toggle Spelling" })
+vim.keymap.set("n", "<leader>uw", function()
+  vim.opt.wrap = not vim.o.wrap
+end, { desc = "Toggle Wrap" })
+vim.keymap.set("n", "<leader>ub", function()
   vim.opt.background = vim.o.background == "dark" and "light" or "dark"
 end, { desc = "Toggle Background" })
-vim.keymap.set('n', '<leader>ug', function() vim.opt.list = not vim.o.list end, { desc = "Toggle Listchars" })
+vim.keymap.set("n", "<leader>ug", function()
+  vim.opt.list = not vim.o.list
+end, { desc = "Toggle Listchars" })
 
 map("n", "<localleader>s", "<cmd>source %<cr>", { desc = "Source File" })
-
--- explorer
-map("n", "-", "<cmd>Oil<cr>", { desc = "Open parent directory (float window)" })
-map("n", "<leader>fE", function() MiniFiles.open() end, { desc = "File Explorer (cwd)" })
-map("n", "<leader>fe", function() MiniFiles.open(vim.api.nvim_buf_get_name(0)) end, { desc = "File Explorer" })
---stylua: ignore end

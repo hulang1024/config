@@ -2,7 +2,9 @@ local rec_win_id = nil
 local rec_buf_id = nil
 
 local function show_rec_indicator()
-  if rec_win_id and vim.api.nvim_win_is_valid(rec_win_id) then return end
+  if rec_win_id and vim.api.nvim_win_is_valid(rec_win_id) then
+    return
+  end
 
   rec_buf_id = vim.api.nvim_create_buf(false, true)
   local reg = vim.fn.reg_recording()
@@ -26,7 +28,7 @@ local function show_rec_indicator()
     zindex = 150,
   })
 
-  vim.api.nvim_set_option_value("winblend", 60, { win = rec_win_id })
+  vim.api.nvim_set_option_value("winblend", vim.o.winblend, { win = rec_win_id })
   vim.api.nvim_set_option_value("winhighlight", "Normal:DiagnosticError", { win = rec_win_id })
 end
 

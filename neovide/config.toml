@@ -6,7 +6,6 @@ hide_menus = true
 remember_window_size = false
 maximized = true
 frame = "full"
-chdir = "E:/work"
 
 [font]
 size = 14

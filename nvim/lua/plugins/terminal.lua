@@ -5,8 +5,8 @@ return {
     opts = {
       shell = "powershell",
       float_opts = {
-        border = "rounded",
-        winblend = vim.o.winblend * 0.9,
+        border = "solid",
+        winblend = vim.o.winblend,
       },
     },
     keys = {

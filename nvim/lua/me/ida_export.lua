@@ -202,6 +202,7 @@ function M.run_command(ignore_exists)
   ida_buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_call(ida_buf, function()
     vim.opt_local.scrollback = 100000
+    vim.opt_local.scrolloff = 0
     ida_job = vim.fn.jobstart(cmd, {
       term = true,
       on_exit = function(_, exit_code, _)
@@ -234,6 +235,11 @@ function M.toggle_window()
     vim.notify("当前没有正在运行的导出任务", vim.log.levels.WARN)
     return
   end
+  local win_id = vim.api.nvim_get_current_win()
+  if vim.api.nvim_win_get_buf(win_id) == ida_buf then
+    vim.api.nvim_win_close(win_id, true)
+    return
+  end
   local width = math.floor(vim.o.columns * 0.8)
   local height = math.floor(vim.o.lines * 0.8)
   local row = math.floor((vim.o.lines - height) / 2)
@@ -250,7 +256,7 @@ function M.toggle_window()
     title_pos = "center",
     zindex = 50,
   }
-  local win_id = vim.api.nvim_open_win(ida_buf, true, win_opts)
+  win_id = vim.api.nvim_open_win(ida_buf, true, win_opts)
   vim.cmd("startinsert")
   local function close_win()
     if vim.api.nvim_win_is_valid(win_id) then

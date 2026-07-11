@@ -53,7 +53,7 @@ return {
       --   format = "{kind_icon}{symbol.name:Normal}",
       --   hl_group = "lualine_c_normal",
       -- })
-      -- local lualine_record = require("me.lualine_record")
+      local record = require("me.lualine_record")
       return {
         options = {
           component_separators = { left = "", right = "" },
@@ -68,6 +68,7 @@ return {
               end,
             },
           },
+          lualine_b = { "branch", "diff", "diagnostics" },
           lualine_c = {
             {
               "filename",
@@ -79,7 +80,7 @@ return {
             -- },
           },
           lualine_x = {
-            -- lualine_record.lualine_section,
+            record.lualine_section,
             {
               "progress",
               separator = "",
@@ -138,6 +139,13 @@ return {
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = false, -- add a border to hover docs and signature help
       },
+      cmdline = {
+        format = {
+          filter = false,
+          help = false,
+          lua = false,
+        },
+      },
       views = {
         cmdline_popup = {
           border = {
@@ -170,12 +178,14 @@ return {
   },
   {
     "rcarriga/nvim-notify",
+    event = "VeryLazy",
     opts = {
       background_colour = "#000000",
     },
   },
   {
     "sitiom/nvim-numbertoggle",
+    enabled = false,
   },
   {
     "folke/which-key.nvim",
@@ -185,7 +195,7 @@ return {
       local wk = require("which-key")
       wk.add({
         { "<leader>b", group = "buffers" },
-        { "<leader><tab>", group = "tabs" },
+        { "<leader>t", group = "tabs" },
         { "<leader>f", group = "file/find" },
         { "<leader>e", group = "explorer", icon = " " },
         { "<leader>g", group = "git" },
@@ -195,6 +205,7 @@ return {
         { "<leader>s", group = "search" },
         { "<leader>u", group = "ui" },
         { "<leader>h", group = "home assistant", icon = "󰟐" },
+        { "gr", group = "lsp" },
       })
       wk.setup({
         preset = "helix",
@@ -206,9 +217,11 @@ return {
     "j-hui/fidget.nvim",
     version = "*",
     opts = {},
+    event = "VeryLazy",
   },
   {
     "m00qek/baleia.nvim",
     opts = {},
+    event = "VeryLazy",
   },
 }

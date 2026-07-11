@@ -21,19 +21,27 @@ vim.opt.smartcase = true
 vim.opt.inccommand = "split"
 
 -- 编辑与导航
-vim.opt.scrolloff = 999
+vim.opt.scrolloff = 10
 vim.opt.jumpoptions = "stack"
 vim.opt.virtualedit = "block"
 vim.opt.mouse = {}
 vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
+vim.opt.foldcolumn = "0"
+function _G.get_fold_text()
+  local start_line = vim.fn.getline(vim.v.foldstart)
+  local indent = string.match(start_line, "^%s*") or ""
+  local content = string.gsub(start_line, "^%s*", "")
+  return indent .. " " .. content
+end
+vim.opt.foldtext = "v:lua.get_fold_text()"
 vim.opt.foldenable = true
 
 -- 窗口
 vim.opt.splitbelow = true
 vim.opt.splitright = true
-vim.opt.winblend = vim.g.neovide and 50 or 10
-vim.opt.pumblend = vim.g.neovide and 30 or 10
+vim.opt.winblend = vim.g.neovide and 10 or 5
+vim.opt.pumblend = vim.g.neovide and 10 or 5
 
 -- UI与外观显示
 vim.opt.background = "dark"
@@ -44,6 +52,13 @@ vim.opt.cursorline = true
 vim.opt.signcolumn = "yes"
 vim.opt.laststatus = 2
 vim.opt.cmdheight = 0
+vim.opt.fillchars = {
+  eob = " ",
+  foldopen = "",
+  foldclose = "",
+  fold = " ",
+  foldsep = " ",
+}
 vim.opt.wrap = false
 vim.opt.list = false
 vim.opt.showcmd = true

@@ -22,8 +22,8 @@ return {
           ["<C-Enter>"] = { "show", "show_documentation", "hide_documentation" },
         },
         completion = {
-          documentation = { auto_show = true },
-          menu = { auto_show = true, winblend = 30 },
+          documentation = { auto_show = true, window = { winblend = vim.o.winblend } },
+          menu = { auto_show = true, winblend = vim.o.winblend },
           ghost_text = { enabled = true },
           list = {
             selection = {
