@@ -2,26 +2,21 @@ return {
   {
     "navarasu/onedark.nvim",
     priority = 1000,
+    lazy = true,
     opts = {
       style = "warmer",
       transparent = false,
     },
-    config = function(_, opts)
-      require("onedark").setup(opts)
-      require("onedark").load()
-    end,
   },
   {
     "ellisonleao/gruvbox.nvim",
+    priority = 1000,
     lazy = true,
     opts = {},
-    -- config = function(opts)
-    -- require("gruvbox").setup(opts)
-    -- vim.cmd("colorscheme gruvbox")
-    -- end,
   },
   {
     "folke/tokyonight.nvim",
+    priority = 1000,
     lazy = true,
     opts = {
       transparent = true,
@@ -34,10 +29,12 @@ return {
   {
     "projekt0n/github-nvim-theme",
     name = "github-theme",
+    priority = 1000,
     lazy = true,
   },
   {
     "catppuccin/nvim",
+    priority = 1000,
     lazy = true,
     opts = {
       transparent = true,
@@ -51,6 +48,7 @@ return {
   },
   {
     "rebelot/kanagawa.nvim",
+    priority = 1000,
     lazy = true,
     opts = {
       theme = "wave",

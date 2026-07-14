@@ -89,7 +89,7 @@ return {
       { "grt",        function() require("telescope.builtin").lsp_type_definitions() end, desc = "Goto T[y]pe Definition" },
       { "gai",        function() require("telescope.builtin").lsp_incoming_calls() end, desc = "C[a]lls Incoming" },
       { "gao",        function() require("telescope.builtin").lsp_outgoing_calls() end, desc = "C[a]lls Outgoing" },
-      { "<leader>sS", function() require("telescope.builtin").lsp_dynamic_workspace_symbols() end, desc = "LSP Workspace Symbols" },
+      { "<leader>ss", function() require("telescope.builtin").lsp_dynamic_workspace_symbols() end, desc = "LSP Workspace Symbols" },
       -- git
       { "<leader>gb", function() require("telescope.builtin").git_branches() end, desc = "Git Branches" },
       { "<leader>gc", function() require("telescope.builtin").git_commits() end, desc = "Git Commits" },
@@ -103,11 +103,16 @@ return {
     lazy = true,
     config = function()
       require("telescope").load_extension("frecency")
+      vim.api.nvim_create_autocmd("ColorScheme", {
+        pattern = "*",
+        callback = function()
+          vim.api.nvim_set_hl(0, "TelescopePathSeparator", { link = "TelescopeResultsComment" })
+        end,
+      })
     end,
   },
   {
     "folke/flash.nvim",
-    event = "VeryLazy",
     opts = {},
     --stylua: ignore
     keys = {

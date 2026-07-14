@@ -34,7 +34,7 @@ return {
           end
           map({ "n", "v" }, "r", "<Plug>(DBUI_ExecuteQuery)", "Execute Query")
           map("n", "s", "<Plug>(DBUI_SaveQuery)", "Save Query")
-          map("n", "e", "<Plug>(DBUI_EditBindParameters)", "Edit Bind Parameters")
+          map({ "n", "v" }, "e", "<Plug>(DBUI_EditBindParameters)", "Edit Bind Parameters")
         end,
       })
 

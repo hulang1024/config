@@ -2,7 +2,7 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     opts = {},
-    event = { "BufReadPre", "BufNewFile" },
+    event = { "BufReadPost", "BufNewFile" },
   },
   {
     "esmuellert/codediff.nvim",
@@ -14,7 +14,6 @@ return {
   },
   {
     "NeogitOrg/neogit",
-    lazy = true,
     dependencies = {
       "esmuellert/codediff.nvim",
       "m00qek/baleia.nvim",

@@ -2,6 +2,7 @@ return {
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
     branch = "main",
+    event = "VeryLazy",
     opts = {},
     config = function()
       require("nvim-treesitter-textobjects").setup({
@@ -77,16 +78,23 @@ return {
   },
   {
     "nvim-mini/mini.surround",
-    event = "VeryLazy",
+    keys = {
+      { "sa", desc = "Add surrounding", mode = { "n", "v" } },
+      { "sd", desc = "Delete surrounding" },
+      { "sf", desc = "Find surrounding (to the right)" },
+      { "sF", desc = "Find surrounding (to the left)" },
+      { "sh", desc = "Highlight surrounding" },
+      { "sr", desc = "Replace surrounding" },
+    },
     opts = function()
       require("mini.surround").setup({
         mappings = {
-          add = "sa", -- Add surrounding in Normal and Visual modes
-          delete = "sd", -- Delete surrounding
-          find = "sf", -- Find surrounding (to the right)
-          find_left = "sF", -- Find surrounding (to the left)
-          highlight = "sh", -- Highlight surrounding
-          replace = "sr", -- Replace surrounding
+          add = "sa",
+          delete = "sd",
+          find = "sf",
+          find_left = "sF",
+          highlight = "sh",
+          replace = "sr",
 
           suffix_last = "l", -- Suffix to search with "prev" method
           suffix_next = "n", -- Suffix to search with "next" method

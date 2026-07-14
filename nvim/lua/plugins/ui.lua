@@ -1,7 +1,25 @@
 return {
   {
+    "Bekaboo/dropbar.nvim",
+    dependencies = {
+      "nvim-telescope/telescope-fzf-native.nvim",
+      build = "make",
+    },
+    event = { "BufReadPost", "BufNewFile" },
+    config = function()
+      require("dropbar").setup({
+        icons = { kinds = { dir_icon = "" } },
+      })
+      local dropbar_api = require("dropbar.api")
+      vim.keymap.set("n", "<leader>sS", dropbar_api.pick, { desc = "Pick symbols in winbar" })
+      vim.keymap.set("n", "[;", dropbar_api.goto_context_start, { desc = "Go to start of current context" })
+      vim.keymap.set("n", "];", dropbar_api.select_next_context, { desc = "Select next context" })
+    end,
+  },
+  {
     "lukas-reineke/indent-blankline.nvim",
     main = "ibl",
+    event = { "BufReadPost", "BufNewFile" },
     config = function()
       require("ibl").setup({
         indent = {
@@ -20,7 +38,6 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    event = "VeryLazy",
     opts = function()
       local mode_map = {
         ["n"] = "NORMAL",
@@ -70,10 +87,10 @@ return {
           },
           lualine_b = { "branch", "diff", "diagnostics" },
           lualine_c = {
-            {
-              "filename",
-              path = 1,
-            },
+            -- {
+            --   "filename",
+            --   path = 1,
+            -- },
             -- {
             --   lsp_symbols.get,
             --   cond = lsp_symbols.has,
@@ -112,6 +129,7 @@ return {
   {
     "nvim-mini/mini.icons",
     version = "*",
+    event = "VeryLazy",
     opts = {},
   },
   {
@@ -189,7 +207,7 @@ return {
   },
   {
     "folke/which-key.nvim",
-    event = "VeryLazy",
+    event = "UIEnter",
     config = function()
       -- 开写开头是命令/动作名（叶子），group名则以小写开头
       local wk = require("which-key")
@@ -204,7 +222,7 @@ return {
         { "<leader>x", group = "diagnostics/quickfix" },
         { "<leader>s", group = "search" },
         { "<leader>u", group = "ui" },
-        { "<leader>h", group = "home assistant", icon = "󰟐" },
+        { "<leader>H", group = "home assistant", icon = "󰟐" },
         { "gr", group = "lsp" },
       })
       wk.setup({
@@ -216,12 +234,12 @@ return {
   {
     "j-hui/fidget.nvim",
     version = "*",
-    opts = {},
     event = "VeryLazy",
+    opts = {},
   },
   {
     "m00qek/baleia.nvim",
+    lazy = true,
     opts = {},
-    event = "VeryLazy",
   },
 }

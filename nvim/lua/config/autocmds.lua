@@ -47,6 +47,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("lua"),
   pattern = "lua",
   callback = function()
     vim.opt_local.tabstop = 2
@@ -56,6 +57,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("treesitter_autostart"),
   pattern = "*",
   callback = function()
     vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"

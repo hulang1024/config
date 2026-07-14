@@ -2,7 +2,6 @@ return {
   {
     "nvim-mini/mini.files",
     version = false,
-    event = "VeryLazy",
     --stylua: ignore
     keys = {
       { "<leader>fE", function() require("mini.files").open() end, desc = "File Explorer (cwd)", },
@@ -14,6 +13,7 @@ return {
     dependencies = { { "nvim-mini/mini.icons", opts = {} } },
     -- 会作为启动时使用（nvim .)
     lazy = false,
+    event = "VeryLazy",
     opts = function()
       function _G.get_oil_winbar()
         local bufnr = vim.api.nvim_win_get_buf(vim.g.statusline_winid)
@@ -21,7 +21,7 @@ return {
         if dir then
           local dirname = vim.fn.fnamemodify(dir, ":~")
           local icon, hl = require("mini.icons").get("directory", dirname)
-          return string.format("%%#%s#%s  %%#OilDir#%s %%*", hl, icon, dirname)
+          return string.format(" %%#%s#%s  %%#OilDir#%s %%*", hl, icon, dirname)
         else
           return vim.api.nvim_buf_get_name(0)
         end

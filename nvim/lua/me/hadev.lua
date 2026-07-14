@@ -16,7 +16,7 @@ end
 local M = {}
 
 function M.setup()
-  vim.keymap.set("n", "<leader>hl", toggle_light, { desc = "开关卧室吸顶灯" })
+  vim.keymap.set("n", "<leader>Hl", toggle_light, { desc = "开关卧室吸顶灯" })
 end
 
 return M

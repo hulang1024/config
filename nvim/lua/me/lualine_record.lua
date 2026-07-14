@@ -13,6 +13,7 @@ M.lualine_section = {
 
 local function init()
   vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
+    group = vim.api.nvim_create_augroup("recording_lualine", { clear = true }),
     callback = function()
       require("lualine").refresh()
     end,
@@ -22,4 +23,3 @@ end
 init()
 
 return M
-

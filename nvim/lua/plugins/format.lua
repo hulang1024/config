@@ -1,7 +1,6 @@
 return {
   {
     "stevearc/conform.nvim",
-    event = "VeryLazy",
     ---@type conform.setupOpts
     opts = {
       formatters_by_ft = {
@@ -25,11 +24,14 @@ return {
         end
       end,
     },
+    event = { "BufWritePre" },
+    cmd = { "ConformInfo" },
     keys = {
       {
         "<leader>cf",
         function()
           require("conform").format({
+            async = true,
             lsp_fallback = true,
             timeout_ms = 1000,
           })

@@ -83,7 +83,7 @@ return {
   },
   {
     "nvim-mini/mini.pairs",
-    event = "VeryLazy",
+    event = "InsertEnter",
     opts = {},
   },
 }
