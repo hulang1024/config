@@ -2,11 +2,7 @@ return {
   {
     "nvim-mini/mini.files",
     version = false,
-    --stylua: ignore
-    keys = {
-      { "<leader>fE", function() require("mini.files").open() end, desc = "File Explorer (cwd)", },
-      { "<leader>fe", function() require("mini.files").open(vim.api.nvim_buf_get_name(0)) end, desc = "File Explorer", },
-    },
+    lazy = true,
   },
   {
     "stevearc/oil.nvim",
@@ -59,10 +55,5 @@ return {
         },
       }
     end,
-    --stylua: ignore
-    keys = {
-      { "-",         "<cmd>Oil --float<cr>", desc = "Open parent directory" },
-      { "<leader>-", "<cmd>Oil<cr>", desc = "Open parent directory (float window)" },
-    },
   },
 }

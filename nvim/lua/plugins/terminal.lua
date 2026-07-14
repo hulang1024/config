@@ -9,8 +9,6 @@ return {
         winblend = vim.o.winblend,
       },
     },
-    keys = {
-      { "<c-/>", "<cmd>ToggleTerm direction=float<cr>", mode = { "n", "t" }, desc = "Terminal (Current Dir)" },
-    },
+    cmd = "ToggleTerm",
   },
 }

@@ -11,7 +11,6 @@ return {
         icons = { kinds = { dir_icon = "" } },
       })
       local dropbar_api = require("dropbar.api")
-      vim.keymap.set("n", "<leader>sS", dropbar_api.pick, { desc = "Pick symbols in winbar" })
       vim.keymap.set("n", "[;", dropbar_api.goto_context_start, { desc = "Go to start of current context" })
       vim.keymap.set("n", "];", dropbar_api.select_next_context, { desc = "Select next context" })
     end,
@@ -172,18 +171,6 @@ return {
         },
       },
     },
-    -- stylua: ignore
-    keys = {
-      { "<leader>sn", "", desc = "+noice"},
-      { "<S-Enter>", function() require("noice").redirect(vim.fn.getcmdline()) end, mode = "c", desc = "Redirect Cmdline" },
-      { "<leader>snl", function() require("noice").cmd("last") end, desc = "Noice Last Message" },
-      { "<leader>snh", function() require("noice").cmd("history") end, desc = "Noice History" },
-      { "<leader>sna", function() require("noice").cmd("all") end, desc = "Noice All" },
-      { "<leader>snd", function() require("noice").cmd("dismiss") end, desc = "Dismiss All" },
-      { "<leader>snt", function() require("noice").cmd("pick") end, desc = "Noice Picker (Telescope/FzfLua)" },
-      { "<c-f>", function() if not require("noice.lsp").scroll(4) then return "<c-f>" end end, silent = true, expr = true, desc = "Scroll Forward", mode = {"i", "n", "s"} },
-      { "<c-b>", function() if not require("noice.lsp").scroll(-4) then return "<c-b>" end end, silent = true, expr = true, desc = "Scroll Backward", mode = {"i", "n", "s"}},
-    },
     config = function(_, opts)
       -- HACK: noice shows messages from before it was enabled,
       -- but this is not ideal when Lazy is installing plugins,
@@ -211,20 +198,7 @@ return {
     config = function()
       -- 开写开头是命令/动作名（叶子），group名则以小写开头
       local wk = require("which-key")
-      wk.add({
-        { "<leader>b", group = "buffers" },
-        { "<leader>t", group = "tabs" },
-        { "<leader>f", group = "file/find" },
-        { "<leader>e", group = "explorer", icon = " " },
-        { "<leader>g", group = "git" },
-        { "<leader>c", group = "code" },
-        { "<leader>q", group = "quit/session" },
-        { "<leader>x", group = "diagnostics/quickfix" },
-        { "<leader>s", group = "search" },
-        { "<leader>u", group = "ui" },
-        { "<leader>H", group = "home assistant", icon = "󰟐" },
-        { "gr", group = "lsp" },
-      })
+      wk.add(_G.leader_group_keys)
       wk.setup({
         preset = "helix",
         delay = 600,

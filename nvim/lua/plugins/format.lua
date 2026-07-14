@@ -24,21 +24,8 @@ return {
         end
       end,
     },
+    lazy = true,
     event = { "BufWritePre" },
     cmd = { "ConformInfo" },
-    keys = {
-      {
-        "<leader>cf",
-        function()
-          require("conform").format({
-            async = true,
-            lsp_fallback = true,
-            timeout_ms = 1000,
-          })
-        end,
-        mode = { "n", "v" },
-        desc = "Format",
-      },
-    },
   },
 }

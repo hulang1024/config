@@ -1,5 +1,13 @@
 return {
   {
+    "saghen/blink.compat",
+    version = "*",
+    lazy = true,
+    opts = {
+      impersonate_nvim_cmp = true,
+    },
+  },
+  {
     "saghen/blink.cmp",
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
@@ -47,6 +55,13 @@ return {
             mysql = sql_sources,
             plsql = sql_sources,
             sqlite = sql_sources,
+            AvanteInput = {
+              "avante_commands",
+              "avante_files",
+              "avante_mentions",
+              "avante_shortcuts",
+              "buffer", -- 保留基本的 buffer 补全，可根据喜好调整
+            },
           },
           providers = {
             cmdline = {
@@ -69,6 +84,30 @@ return {
               end,
             },
             dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
+            avante_commands = {
+              name = "avante_commands",
+              module = "blink.compat.source",
+              score_offset = 90, -- 显示优先级高于 lsp
+              opts = {},
+            },
+            avante_files = {
+              name = "avante_files",
+              module = "blink.compat.source",
+              score_offset = 100, -- 显示优先级高于 lsp
+              opts = {},
+            },
+            avante_mentions = {
+              name = "avante_mentions",
+              module = "blink.compat.source",
+              score_offset = 1000, -- 显示优先级高于 lsp
+              opts = {},
+            },
+            avante_shortcuts = {
+              name = "avante_shortcuts",
+              module = "blink.compat.source",
+              score_offset = 1000, -- 显示优先级高于 lsp
+              opts = {},
+            },
             lazydev = {
               name = "LazyDev",
               module = "lazydev.integrations.blink",

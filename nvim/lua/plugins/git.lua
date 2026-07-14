@@ -7,10 +7,6 @@ return {
   {
     "esmuellert/codediff.nvim",
     cmd = "CodeDiff",
-    keys = {
-      { "<leader>gD", "<cmd>CodeDiff<cr>", desc = "CodeDiff" },
-      { "<leader>gd", "<cmd>CodeDiff file HEAD<cr>", desc = "CodeDiff This File" },
-    },
   },
   {
     "NeogitOrg/neogit",
@@ -20,8 +16,5 @@ return {
       "folke/snacks.nvim",
     },
     cmd = "Neogit",
-    keys = {
-      { "<leader>gg", "<cmd>Neogit<cr>", desc = "Show Neogit UI" },
-    },
   },
 }

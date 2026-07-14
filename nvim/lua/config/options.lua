@@ -3,6 +3,9 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 vim.g.autoformat = false
 
+vim.opt.timeout = true
+vim.opt.timeoutlen = 500
+
 -- 缩进
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
@@ -50,7 +53,7 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.cursorline = true
 vim.opt.signcolumn = "yes"
-vim.opt.laststatus = 2
+vim.opt.laststatus = 3
 vim.opt.cmdheight = 0
 vim.opt.fillchars = {
   eob = " ",
@@ -86,6 +89,15 @@ vim.opt.shellquote = ""
 vim.opt.shellxquote = '"'
 vim.opt.backup = false
 vim.opt.exrc = true
+
+-- diagnostic
+vim.diagnostic.config({
+  virtual_text = true,
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+  severity_sort = true,
+})
 
 -- neovide 设置
 if vim.g.neovide then
