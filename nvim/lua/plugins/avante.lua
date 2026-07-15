@@ -38,6 +38,15 @@ return {
           vim.opt_local.cursorline = false
         end,
       })
+
+      -- agent 可能已改文件：回复结束时 checktime
+      vim.api.nvim_create_autocmd("User", {
+        group = vim.api.nvim_create_augroup("my_avante_checktime", { clear = true }),
+        pattern = "AvanteViewBufferUpdated",
+        callback = function()
+          vim.cmd("checktime")
+        end,
+      })
     end,
   },
 }

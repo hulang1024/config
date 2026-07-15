@@ -75,6 +75,7 @@ if vim.fn.has("win32") == 1 then
   -- 解决LSP的一些问题
   vim.opt.backupcopy = "yes"
 end
+vim.opt.autoread = true
 vim.opt.undofile = true
 vim.opt.undolevels = 10000
 vim.opt.clipboard = "unnamedplus"

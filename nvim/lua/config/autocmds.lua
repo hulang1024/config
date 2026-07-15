@@ -73,6 +73,15 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
+vim.api.nvim_create_autocmd({ "FocusGained", "TermClose", "TermLeave" }, {
+  group = augroup("checktime"),
+  callback = function()
+    if vim.o.buftype == "" then
+      vim.cmd("checktime")
+    end
+  end,
+})
+
 if vim.g.neovide then
   vim.api.nvim_create_autocmd("CursorMoved", {
     once = true,

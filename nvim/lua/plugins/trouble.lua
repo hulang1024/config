@@ -1,7 +1,7 @@
 return {
   {
     "folke/trouble.nvim",
-    opts = {},
+    opts = { auto_preview = false, focus = true },
     cmd = "Trouble",
   },
 }

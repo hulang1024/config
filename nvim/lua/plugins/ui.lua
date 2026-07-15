@@ -2,8 +2,11 @@ return {
   {
     "Bekaboo/dropbar.nvim",
     dependencies = {
-      "nvim-telescope/telescope-fzf-native.nvim",
-      build = "make",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        lazy = true,
+      },
     },
     event = { "BufReadPost", "BufNewFile" },
     config = function()
@@ -86,10 +89,10 @@ return {
           },
           lualine_b = { "branch", "diff", "diagnostics" },
           lualine_c = {
-            -- {
-            --   "filename",
-            --   path = 1,
-            -- },
+            {
+              "filename",
+              path = 0,
+            },
             -- {
             --   lsp_symbols.get,
             --   cond = lsp_symbols.has,
