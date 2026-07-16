@@ -11,6 +11,7 @@ return {
     },
     ---@module 'avante'
     ---@type avante.Config
+    ---@diagnostic disable-next-line
     opts = {
       selector = {
         provider = "telescope",
@@ -29,6 +30,11 @@ return {
             end
           end,
         },
+      },
+      behaviour = {
+        auto_approve_tool_permissions = false,
+        enable_token_counting = false,
+        confirmation_ui_style = "popup",
       },
     },
     init = function()

@@ -16,10 +16,7 @@ function Initialize-Fzf {
 
 # PSReadLine
 # Install-Module -Name PSReadLine -Repository Tsinghua -Scope CurrentUser -Force -AllowClobber
-Set-PSReadLineOption -EditMode Vi
-Set-PSReadLineOption -ViModeIndicator Prompt
 Set-PSReadLineOption -BellStyle Visual
-Set-PSReadLineKeyHandler -Chord "Ctrl+o" -Function ViCommandMode
 Set-PSReadLineKeyHandler -Key Tab -Function AcceptSuggestion
 
 # 在 Insert 模式下添加 Emacs 风格快捷键
@@ -54,8 +51,19 @@ $emacsBindings = @{
     "Ctrl+y" = "AcceptSuggestion"        # 自动补全
 }
 
-foreach ($key in $emacsBindings.Keys) {
-    Set-PSReadLineKeyHandler -Chord $key -Function $emacsBindings[$key] -ViMode Insert
+# Neovim 内嵌终端会设置 $env:NVIM；此时不要用 Vi 模式，否则 Esc 被 PSReadLine 抢走
+if ($env:NVIM) {
+    Set-PSReadLineOption -EditMode Windows
+    foreach ($key in $emacsBindings.Keys) {
+        Set-PSReadLineKeyHandler -Chord $key -Function $emacsBindings[$key]
+    }
+} else {
+    Set-PSReadLineOption -EditMode Vi
+    Set-PSReadLineOption -ViModeIndicator Prompt
+    Set-PSReadLineKeyHandler -Chord "Ctrl+o" -Function ViCommandMode
+    foreach ($key in $emacsBindings.Keys) {
+        Set-PSReadLineKeyHandler -Chord $key -Function $emacsBindings[$key] -ViMode Insert
+    }
 }
 
 Set-PSReadLineKeyHandler -Chord 'Ctrl+t' -ScriptBlock { Initialize-Fzf; [Microsoft.PowerShell.PSConsoleReadLine]::Insert('Ctrl+t') }

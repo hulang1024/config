@@ -37,10 +37,11 @@ map("n", "<localleader>s", "<cmd>source %<cr>", { desc = "Source File" })
 _G.leader_group_keys = {
   { "<leader>q", group = "quit" },
   { "<leader>b", group = "buffer", icon = "" },
-  { "<leader>t", group = "tab" },
+  { "<leader><tab>", group = "tab" },
   { "<leader>e", group = "explorer", icon = " " },
   { "<leader>f", group = "find" },
   { "<leader>g", group = "git" },
+  { "<leader>t", group = "terminal" },
   { "<leader>s", group = "session" },
   { "<leader>c", group = "code" },
   { "<leader>u", group = "ui" },
@@ -60,10 +61,10 @@ nmap_leader("bD", "<cmd>bd<cr>", "Delete Buffer and Window")
 -- tab
 nmap("[t", "<cmd>tabprev<cr>", "Previous Tab")
 nmap("]t", "<cmd>tabnext<cr>", "Next Tab")
-nmap_leader("tc", "<cmd>tabclose<cr>", "Close Tab")
-nmap_leader("to", "<cmd>tabonly<cr>", "Close Other Tabs")
-nmap_leader("tl", "<cmd>tabs<cr>", "List Tabs")
-nmap_leader("tn", "<cmd>tabnew<cr>", "New Tab")
+nmap_leader("<tab>c", "<cmd>tabclose<cr>", "Close Tab")
+nmap_leader("<tab>o", "<cmd>tabonly<cr>", "Close Other Tabs")
+nmap_leader("<tab>l", "<cmd>tabs<cr>", "List Tabs")
+nmap_leader("<tab>n", "<cmd>tabnew<cr>", "New Tab")
 
 -- explorer
 nmap("-", "<cmd>Oil --float<cr>", "Open parent directory (float window)")
@@ -80,16 +81,18 @@ nmap_leader("et", "<cmd>Trouble todo toggle<cr>",                               
 nmap_leader("eT", "<cmd>Trouble todo toggle filter={tag={TODO,FIX,FIXME}}<cr>", "Todo/Fix/Fixme (Trouble)")
 
 -- fuzzy find
-local function find_project_files()
-  local root = require("mini.misc").find_root(0, vim.g.root_names or { ".root", ".git" })
+local function find_root()
+  return require("mini.misc").find_root(0, vim.g.root_names or { ".root", ".git" })
+end
+local function find_workspace_files()
   require("telescope.builtin").find_files({
-    cwd = root,
+    cwd = find_root(),
     hidden = true,
   })
 end
 
 nmap_leader(",",  "<cmd>Telescope buffers<cr>", "Buffers")
-nmap_leader(";",  find_project_files, "Project Files")
+nmap_leader(";",  find_workspace_files, "Workspace Files")
 nmap_leader(".",  "<cmd>Telescope frecency<cr>", "Frecency Files")
 nmap_leader(":",  "<cmd>Telescope command_history<cr>", "Command History")
 nmap_leader("/",  "<cmd>Telescope live_grep<cr>", "Grep Workspace")
@@ -129,7 +132,8 @@ nmap_leader("fT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", "Todo/Fix/Fi
 -- git
 nmap_leader("gD", "<cmd>CodeDiff<cr>", "CodeDiff")
 nmap_leader("gd", "<cmd>CodeDiff file HEAD<cr>", "CodeDiff This File")
-nmap_leader("gg", "<cmd>Neogit<cr>", "Show Neogit UI")
+nmap_leader("gg", "<cmd>Neogit<cr>", "Open Neogit")
+nmap_leader("gG", "<cmd>Neogit kind=floating<cr>", "Open Neogit (float window)")
 
 -- session
 nmap_leader("s.", function() require("persistence").load() end, "Restore Session")
@@ -150,7 +154,26 @@ nmap("grc", "<cmd>Telescope lsp_incoming_calls<cr>", "Incoming Calls")
 nmap("grC", "<cmd>Telescope lsp_outgoing_calls<cr>", "Outgoing Calls")
 
 -- terminal
-map({ "n", "t" }, "<c-/>", "<cmd>ToggleTerm direction=float<cr>", { desc = "Terminal (Current Dir)" })
+local function toggle_term(number, type)
+  -- 为空则表示最后方向，否则设置新方向
+  local direction = type and ("direction=" .. type) or ""
+  vim.g.term_toggle_number = number
+  vim.cmd(number .. 'ToggleTerm dir=' .. find_root() .. " " .. direction)
+end
+nmap_leader("ts", function() toggle_term(vim.v.count1, "horizontal") end, "Toggle Terminal(Horizontal) (Root Dir)")
+nmap_leader("ta", function() toggle_term(vim.v.count1, "tab") end,        "Toggle Terminal(Tab) (Root Dir)")
+nmap_leader("tf", function() toggle_term(vim.v.count1, "float") end,      "Toggle Terminal(Float) (Root Dir)")
+map({ 'n', "t", "i" }, '<c-/>', function()
+  local number = 1
+  if vim.v.count ~= 0 then
+    number = vim.v.count
+  elseif vim.o.filetype == "toggleterm" then
+    number = vim.b.toggle_number
+  else
+    number = vim.g.term_toggle_number or 1
+  end
+  toggle_term(number)
+end, { desc = "Toggle Terminal (Root Dir)" })
 
 -- keywordprg
 nmap_leader("K", "<cmd>norm! K<cr>", "Keywordprg")
@@ -165,12 +188,12 @@ local diagnostic_goto = function(next, severity)
     })
   end
 end
-nmap("]d", diagnostic_goto(true), "Next Diagnostic")
-nmap("[d", diagnostic_goto(false), "Prev Diagnostic")
-nmap("]e", diagnostic_goto(true, "ERROR"), "Next Error")
+nmap("]d", diagnostic_goto(true),           "Next Diagnostic")
+nmap("[d", diagnostic_goto(false),          "Prev Diagnostic")
+nmap("]e", diagnostic_goto(true, "ERROR"),  "Next Error")
 nmap("[e", diagnostic_goto(false, "ERROR"), "Prev Error")
-nmap("]w", diagnostic_goto(true, "WARN"), "Next Warning")
-nmap("[w", diagnostic_goto(false, "WARN"), "Prev Warning")
+nmap("]w", diagnostic_goto(true, "WARN"),   "Next Warning")
+nmap("[w", diagnostic_goto(false, "WARN"),  "Prev Warning")
 
 -- ui
 nmap_leader("us", function() vim.opt.spell = not vim.o.spell end, "Toggle Spelling")

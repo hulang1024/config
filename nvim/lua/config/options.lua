@@ -5,6 +5,8 @@ vim.g.autoformat = false
 
 vim.opt.timeout = true
 vim.opt.timeoutlen = 500
+vim.opt.ttimeout = true
+vim.opt.ttimeoutlen = 10
 
 -- 缩进
 vim.opt.tabstop = 4
@@ -82,12 +84,15 @@ vim.opt.clipboard = "unnamedplus"
 vim.opt.completeopt = "menu,menuone,noselect"
 vim.opt.sessionoptions = "buffers,curdir,tabpages,winsize,help,globals,skiprtp,folds"
 vim.opt.encoding = "utf-8"
-vim.opt.shell = "cmd.exe"
-vim.opt.shellcmdflag = "/s /c"
-vim.opt.shellpipe = ">%s 2>&1"
-vim.opt.shellredir = ">%s 2>&1"
-vim.opt.shellquote = ""
-vim.opt.shellxquote = '"'
+if vim.fn.has("win32") == 1 then
+  vim.opt.shell = vim.fn.executable("pwsh") == 1 and "pwsh" or "powershell"
+  vim.opt.shellcmdflag =
+    "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+  vim.opt.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
+  vim.opt.shellpipe = "3>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+  vim.opt.shellquote = ""
+  vim.opt.shellxquote = ""
+end
 vim.opt.backup = false
 vim.opt.exrc = true
 
