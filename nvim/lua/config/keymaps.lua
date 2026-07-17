@@ -13,19 +13,30 @@ local xmap_leader = function(suffix, rhs, desc)
   map_leader("x", suffix, rhs, desc)
 end
 
--- better up/down
-map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true })
-map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { desc = "Up", expr = true })
+map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
+map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
+map({ "n" }, "<up>", "<c-u>")
+map({ "n" }, "<down>", "<c-d>")
 
--- Move Lines
-map("n", "<A-j>", "<cmd>execute 'move .+' . v:count1<cr>==", { desc = "Move Down" })
-map("n", "<A-k>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==", { desc = "Move Up" })
-map("i", "<A-j>", "<esc><cmd>m .+1<cr>==gi", { desc = "Move Down" })
-map("i", "<A-k>", "<esc><cmd>m .-2<cr>==gi", { desc = "Move Up" })
-map("v", "<A-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv", { desc = "Move Down" })
-map("v", "<A-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv", { desc = "Move Up" })
+map({ "i", "x", "n", "s" }, "<c-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
 
-map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
+-- change directory
+local util = require("config.util")
+local function lcd(path)
+  vim.fn.chdir(path, "window")
+  vim.cmd.pwd()
+end
+nmap("cd%", function() lcd(vim.fn.expand("%:h")) end, "LCD to file dir")
+nmap("cdr", function()
+  local root = util.find_root()
+  if root then
+    lcd(root)
+  else
+    vim.notify("No root found", vim.log.levels.WARN)
+  end
+end, "LCD to root")
+nmap("cdu", function() lcd("..") end, "LCD up")
+nmap("cd-", function() lcd("-") end, "LCD previous")
 
 map({ "i", "n", "s" }, "<esc>", function()
   vim.cmd("noh")
@@ -33,11 +44,11 @@ map({ "i", "n", "s" }, "<esc>", function()
 end, { expr = true, desc = "Escape" })
 
 map("n", "<localleader>s", "<cmd>source %<cr>", { desc = "Source File" })
+map("n", "g:", ":lua =")
 
 _G.leader_group_keys = {
   { "<leader>q", group = "quit" },
   { "<leader>b", group = "buffer", icon = "" },
-  { "<leader><tab>", group = "tab" },
   { "<leader>e", group = "explorer", icon = " " },
   { "<leader>f", group = "find" },
   { "<leader>g", group = "git" },
@@ -53,26 +64,34 @@ _G.leader_group_keys = {
 nmap_leader("qq", "<cmd>qa<cr>", "Quit All")
 nmap_leader("qr", "<cmd>restart<cr><esc>", "Restart")
 
+-- window
+map({"n", "i", "t"}, "<m-h>", "<c-\\><c-N><c-w><c-h>")
+map({"n", "i", "t"}, "<m-j>", "<c-\\><c-N><c-w><c-j>")
+map({"n", "i", "t"}, "<m-k>", "<c-\\><c-N><c-w><c-k>")
+map({"n", "i", "t"}, "<m-l>", "<c-\\><c-N><c-w><c-l>")
+nmap("<tab>", "<c-w>p")
+
 -- buffer
-nmap_leader("<space>", "<cmd>b #<cr>", "Alternate Buffer")
-nmap_leader("bd", "<cmd>bd<cr>", "Delete Buffer")
-nmap_leader("bD", "<cmd>bd<cr>", "Delete Buffer and Window")
+nmap("<S-tab>", "<C-^>")
+nmap("zB", "<cmd>bd<cr>")
 
 -- tab
-nmap("[t", "<cmd>tabprev<cr>", "Previous Tab")
-nmap("]t", "<cmd>tabnext<cr>", "Next Tab")
-nmap_leader("<tab>c", "<cmd>tabclose<cr>", "Close Tab")
-nmap_leader("<tab>o", "<cmd>tabonly<cr>", "Close Other Tabs")
-nmap_leader("<tab>l", "<cmd>tabs<cr>", "List Tabs")
-nmap_leader("<tab>n", "<cmd>tabnew<cr>", "New Tab")
+nmap("<M-]>", "gt", "Next Tab")
+nmap("<M-[>", "gT", "Previous Tab")
+nmap("<M-t>", "<cmd>tab split<cr>")
+nmap("zT", "<cmd>tabclose<cr>")
+for n = 1, 9 do
+  nmap("<M-" .. n .. ">", n .. "gt")
+end
 
 -- explorer
 nmap("-", "<cmd>Oil --float<cr>", "Open parent directory (float window)")
 nmap_leader("-", "<cmd>Oil<cr>", "Open parent directory")
 nmap_leader("ed", function() require("mini.files").open() end, "File Explorer (cwd)")
 nmap_leader("ef", function() require("mini.files").open(vim.api.nvim_buf_get_name(0)) end, "File Explorer")
-nmap_leader("ex", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",           "Diagnostics (Buffer)(Trouble)")
+nmap_leader("ex", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",           "Buffer Diagnostics (Trouble)")
 nmap_leader("eX", "<cmd>Trouble diagnostics toggle<cr>",                        "Diagnostics (Trouble)")
+nmap_leader("eE", "<cmd>Trouble diagnostics toggle filter.severity=vim.diagnostic.severity.ERROR<cr>", "Errors (Trouble)")
 nmap_leader("es", "<cmd>Trouble symbols toggle focus=false<cr>",                "Symbols (Trouble)")
 nmap_leader("el", "<cmd>Trouble lsp toggle focus=false win.position=right<cr>", "LSP Definitions / references / ... (Trouble)")
 nmap_leader("eq", "<cmd>Trouble qflist toggle<cr>",                             "Quickfix List (Trouble)")
@@ -81,21 +100,17 @@ nmap_leader("et", "<cmd>Trouble todo toggle<cr>",                               
 nmap_leader("eT", "<cmd>Trouble todo toggle filter={tag={TODO,FIX,FIXME}}<cr>", "Todo/Fix/Fixme (Trouble)")
 
 -- fuzzy find
-local function find_root()
-  return require("mini.misc").find_root(0, vim.g.root_names or { ".root", ".git" })
-end
-local function find_workspace_files()
+local function find_files()
   require("telescope.builtin").find_files({
-    cwd = find_root(),
     hidden = true,
   })
 end
 
-nmap_leader(",",  "<cmd>Telescope buffers<cr>", "Buffers")
-nmap_leader(";",  find_workspace_files, "Workspace Files")
-nmap_leader(".",  "<cmd>Telescope frecency<cr>", "Frecency Files")
+nmap("<c-f>", find_files)
+nmap("<c-b>", "<cmd>Telescope buffers<cr>")
+nmap_leader(";",  "<cmd>Telescope frecency<cr>", "Frecency Files")
 nmap_leader(":",  "<cmd>Telescope command_history<cr>", "Command History")
-nmap_leader("/",  "<cmd>Telescope live_grep<cr>", "Grep Workspace")
+nmap_leader("/",  "<cmd>Telescope live_grep<cr>", "Grep")
 nmap_leader("'",  "<cmd>Telescope lsp_document_symbols<cr>", "LSP Document Symbols")
 nmap_leader("*",  "<cmd>Telescope grep_string<cr>", "Grep Word/Selection")
 xmap_leader("*",  "<cmd>Telescope grep_string<cr>", "Grep Word/Selection")
@@ -130,10 +145,17 @@ nmap_leader("ft", "<cmd>TodoTelescope<cr>", "Todo")
 nmap_leader("fT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", "Todo/Fix/Fixme")
 
 -- git
-nmap_leader("gD", "<cmd>CodeDiff<cr>", "CodeDiff")
-nmap_leader("gd", "<cmd>CodeDiff file HEAD<cr>", "CodeDiff This File")
-nmap_leader("gg", "<cmd>Neogit<cr>", "Open Neogit")
-nmap_leader("gG", "<cmd>Neogit kind=floating<cr>", "Open Neogit (float window)")
+nmap_leader("gd", "<cmd>CodeDiff<cr>", "CodeDiff")
+nmap_leader("gD", "<cmd>CodeDiff file HEAD<cr>", "CodeDiff This File")
+nmap_leader("gg", "<cmd>Neogit kind=floating<cr>", "Open Neogit (float window)")
+nmap_leader("gG", "<cmd>Neogit<cr>", "Open Neogit")
+nmap_leader("gp", "<cmd>Gitsigns preview_hunk_inline<cr>", "Preview Hunk Inline")
+nmap_leader("ghs", "<cmd>Gitsigns stage_hunk<cr>", "Stage hunk")
+nmap_leader("ghS", "<cmd>Gitsigns stage_buffer<cr>", "Stage Buffer")
+nmap_leader("ghr", "<cmd>Gitsigns reset_hunk<cr>", "Reset Hunk")
+nmap_leader("ghR", "<cmd>Gitsigns reset_buffer<cr>", "Reset Buffer")
+nmap("[h", "<cmd>Gitsigns prev_hunk<cr>")
+nmap("]h", "<cmd>Gitsigns next_hunk<cr>")
 
 -- session
 nmap_leader("s.", function() require("persistence").load() end, "Restore Session")
@@ -158,11 +180,11 @@ local function toggle_term(number, type)
   -- 为空则表示最后方向，否则设置新方向
   local direction = type and ("direction=" .. type) or ""
   vim.g.term_toggle_number = number
-  vim.cmd(number .. 'ToggleTerm dir=' .. find_root() .. " " .. direction)
+  vim.cmd(number .. 'ToggleTerm ' .. direction)
 end
-nmap_leader("ts", function() toggle_term(vim.v.count1, "horizontal") end, "Toggle Terminal(Horizontal) (Root Dir)")
-nmap_leader("ta", function() toggle_term(vim.v.count1, "tab") end,        "Toggle Terminal(Tab) (Root Dir)")
-nmap_leader("tf", function() toggle_term(vim.v.count1, "float") end,      "Toggle Terminal(Float) (Root Dir)")
+nmap_leader("ts", function() toggle_term(vim.v.count1, "horizontal") end, "Toggle Terminal Horizontal")
+nmap_leader("ta", function() toggle_term(vim.v.count1, "tab") end,        "Toggle Terminal Tab")
+nmap_leader("tf", function() toggle_term(vim.v.count1, "float") end,      "Toggle Terminal Float")
 map({ 'n', "t", "i" }, '<c-/>', function()
   local number = 1
   if vim.v.count ~= 0 then
@@ -173,7 +195,7 @@ map({ 'n', "t", "i" }, '<c-/>', function()
     number = vim.g.term_toggle_number or 1
   end
   toggle_term(number)
-end, { desc = "Toggle Terminal (Root Dir)" })
+end, { desc = "Toggle Terminal" })
 
 -- keywordprg
 nmap_leader("K", "<cmd>norm! K<cr>", "Keywordprg")

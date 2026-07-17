@@ -39,7 +39,8 @@ return {
       })
 
       vim.api.nvim_create_user_command("DBUITab", function()
-        vim.cmd("tabnew | execute 'DBUI'")
+        vim.cmd("tabnew | lcd " .. vim.g.db_ui_save_location)
+        vim.cmd("DBUI")
         vim.cmd("bwipeout #")
         vim.cmd("normal jjojo")
         vim.cmd("wincmd p | vertical resize 39 | wincmd p")

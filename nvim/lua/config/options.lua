@@ -4,7 +4,7 @@ vim.g.maplocalleader = "\\"
 vim.g.autoformat = false
 
 vim.opt.timeout = true
-vim.opt.timeoutlen = 500
+vim.opt.timeoutlen = 1000
 vim.opt.ttimeout = true
 vim.opt.ttimeoutlen = 10
 
@@ -26,7 +26,7 @@ vim.opt.smartcase = true
 vim.opt.inccommand = "split"
 
 -- 编辑与导航
-vim.opt.scrolloff = 10
+vim.opt.scrolloff = 2
 vim.opt.jumpoptions = "stack"
 vim.opt.virtualedit = "block"
 vim.opt.mouse = {}

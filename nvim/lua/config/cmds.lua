@@ -1,3 +1,5 @@
+local util = require("config.util")
+
 local function do_copy(content)
   vim.fn.setreg("+", content)
   if content ~= "" then
@@ -13,8 +15,7 @@ vim.api.nvim_create_user_command("CopyAbsolutePath", function()
 end, { desc = "复制绝对路径" })
 
 vim.api.nvim_create_user_command("CopyRootPath", function()
-  local _, misc = pcall(require, "mini.misc")
-  local path = misc and misc.find_root(0) or ""
+  local path = util.find_root() or ""
   if path then
     do_copy(path)
     return

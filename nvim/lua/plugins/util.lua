@@ -14,9 +14,5 @@ return {
   {
     "nvim-mini/mini.misc",
     lazy = true,
-    config = function()
-      local misc = require("mini.misc")
-      misc.setup_auto_root(vim.g.root_names or { ".root", ".git" })
-    end,
   },
 }

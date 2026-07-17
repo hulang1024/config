@@ -17,6 +17,7 @@ return {
       },
       on_open = function(term)
         vim.cmd("startinsert!")
+        vim.opt_local.winbar = ""
         local opts = { buffer = term.bufnr, silent = true }
         vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], vim.tbl_extend("force", opts, { desc = "Terminal Normal" }))
         vim.keymap.set("t", "<C-[>", [[<C-\><C-n>]], vim.tbl_extend("force", opts, { desc = "Terminal Normal" }))
