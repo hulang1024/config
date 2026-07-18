@@ -205,6 +205,9 @@ return {
       wk.setup({
         preset = "helix",
         delay = 600,
+        win = {
+          border = "solid",
+        },
       })
     end,
   },

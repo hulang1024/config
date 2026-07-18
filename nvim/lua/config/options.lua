@@ -49,7 +49,6 @@ vim.opt.winblend = vim.g.neovide and 10 or 5
 vim.opt.pumblend = vim.g.neovide and 10 or 5
 
 -- UI与外观显示
-vim.opt.background = "dark"
 vim.opt.termguicolors = true
 vim.opt.number = true
 vim.opt.relativenumber = true

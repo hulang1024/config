@@ -47,15 +47,18 @@ map("n", "<localleader>s", "<cmd>source %<cr>", { desc = "Source File" })
 map("n", "g:", ":lua =")
 
 _G.leader_group_keys = {
+  { "<leader>", icon = "󰈔" },
   { "<leader>q", group = "quit" },
   { "<leader>b", group = "buffer", icon = "" },
   { "<leader>e", group = "explorer", icon = " " },
-  { "<leader>f", group = "find" },
+  { "<leader>f", group = "find", icon = "" },
   { "<leader>g", group = "git" },
   { "<leader>t", group = "terminal" },
   { "<leader>s", group = "session" },
   { "<leader>c", group = "code" },
   { "<leader>u", group = "ui" },
+  { "<leader>h", group = "flash", icon="⚡" },
+  { "<leader>a", group = "avante", icon=" " },
   { "<leader>H", group = "home assistant", icon = "󰟐" },
   { "gr", group = "lsp" },
 }
@@ -107,8 +110,9 @@ local function find_files()
 end
 
 nmap("<c-f>", find_files)
-nmap("<c-b>", "<cmd>Telescope buffers<cr>")
-nmap_leader(";",  "<cmd>Telescope frecency<cr>", "Frecency Files")
+nmap_leader(";",  find_files, "Files")
+nmap_leader(",",  "<cmd>Telescope buffers<cr>", "Buffers")
+nmap_leader(".",  "<cmd>Telescope frecency<cr>", "Frecency Files")
 nmap_leader(":",  "<cmd>Telescope command_history<cr>", "Command History")
 nmap_leader("/",  "<cmd>Telescope live_grep<cr>", "Grep")
 nmap_leader("'",  "<cmd>Telescope lsp_document_symbols<cr>", "LSP Document Symbols")
@@ -218,11 +222,25 @@ nmap("]w", diagnostic_goto(true, "WARN"),   "Next Warning")
 nmap("[w", diagnostic_goto(false, "WARN"),  "Prev Warning")
 
 -- ui
+local function find_colorschemes()
+  local colors = vim.fn.getcompletion("", "color")
+  local lazy = package.loaded["lazy.core.util"]
+  if lazy and lazy.get_unloaded_rtp then
+    for _, f in ipairs(vim.fn.globpath(table.concat(lazy.get_unloaded_rtp(""), ","), "colors/*", true, true)) do
+      colors[#colors + 1] = vim.fn.fnamemodify(f, ":t:r")
+    end
+  end
+  require("telescope.builtin").colorscheme({
+    ignore_builtins = true,
+    enable_preview = true,
+    colors = vim.fn.uniq(vim.fn.sort(colors)),
+  })
+end
 nmap_leader("us", function() vim.opt.spell = not vim.o.spell end, "Toggle Spelling")
 nmap_leader("uw", function() vim.opt.wrap = not vim.o.wrap end, "Toggle Wrap")
 nmap_leader("ub", function() vim.opt.background = vim.o.background == "dark" and "light" or "dark" end, "Toggle Background")
 nmap_leader("ug", function() vim.opt.list = not vim.o.list end, "Toggle Listchars")
-nmap_leader("uc", "<cmd>Telescope colorscheme enable_preview=true<cr>", "Colorschemes")
+nmap_leader("uc", find_colorschemes, "Colorschemes")
 
 -- plugin manager
 nmap_leader("P", "<cmd>Lazy<cr>", "Plugin Manager")
