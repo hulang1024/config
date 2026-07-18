@@ -13,9 +13,7 @@ end
 update()
 
 vim.api.nvim_create_autocmd({ "FocusGained", "CursorHold" }, {
-  callback = function()
-    update()
-  end,
+  callback = update,
 })
 
 local function modname(colorname)

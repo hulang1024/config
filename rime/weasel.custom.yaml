@@ -1,0 +1,24 @@
+customization:
+  distribution_code_name: Weasel
+  distribution_version: 0.17.4
+  generator: "Weasel::UIStyleSettings"
+  modified_time: "Sat Jul 18 21:56:19 2026"
+  rime_version: 1.13.1
+patch:
+  app_options:
+    WindowsTerminal.exe: {ascii_mode: true, vim_mode: true}
+    gvim.exe: {ascii_mode: true, vim_mode: true}
+    neovide.exe: {ascii_mode: true, vim_mode: true}
+  ascii_mask: 1
+  ascii_mode: true
+  "style/color_scheme": solarized_rock
+  "style/font_face": "Terminess Nerd Font,Ark Pixel 10px Mono zh_cn"
+  "style/font_point": 14
+  "style/horizontal": false
+  "style/layout/+":
+    corner_radius: 0
+    hilite_padding: 4
+    hilite_padding_x: 4
+    margin_x: 14
+    margin_y: 14
+    round_corner: 2
