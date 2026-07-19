@@ -4,7 +4,7 @@ vim.g.colorscheme = "bamboo"
 local function update()
   local hour = tonumber(os.date("%H"))
   local old_bg = vim.o.background
-  local new_bg = hour < 18 and "light" or "dark"
+  local new_bg = 5 < hour and hour < 18 and "light" or "dark"
   if old_bg ~= new_bg then
     vim.opt.background = new_bg
   end
@@ -13,6 +13,7 @@ end
 update()
 
 vim.api.nvim_create_autocmd({ "FocusGained", "CursorHold" }, {
+  group = vim.api.nvim_create_augroup("colorscheme_update", { clear = true }),
   callback = update,
 })
 

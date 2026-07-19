@@ -31,7 +31,7 @@ vim.api.nvim_create_autocmd("FileType", {
       end, {
         buffer = event.buf,
         silent = true,
-        desc = "Quit buffer",
+        desc = "Quit window and buffer",
       })
     end)
   end,

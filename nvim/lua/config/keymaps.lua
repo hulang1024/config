@@ -9,42 +9,71 @@ end
 local nmap_leader = function(suffix, rhs, desc)
   map_leader("n", suffix, rhs, desc)
 end
-local xmap_leader = function(suffix, rhs, desc)
-  map_leader("x", suffix, rhs, desc)
-end
 
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
 map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
-map({ "n" }, "<up>", "<c-u>")
-map({ "n" }, "<down>", "<c-d>")
 
-map({ "i", "x", "n", "s" }, "<c-s>", "<cmd>w<cr><esc>", { desc = "Save File" })
+map("n", "<a-j>", "<cmd>execute 'move .+' . v:count1<cr>==")
+map("n", "<a-k>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==")
+map("i", "<a-j>", "<esc><cmd>m .+1<cr>==gi")
+map("i", "<a-k>", "<esc><cmd>m .-2<cr>==gi")
+map("v", "<a-j>", ":<C-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv")
+map("v", "<a-k>", ":<C-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv")
 
--- change directory
-local util = require("config.util")
-local function lcd(path)
-  vim.fn.chdir(path, "window")
-  vim.cmd.pwd()
-end
-nmap("cd%", function() lcd(vim.fn.expand("%:h")) end, "LCD to file dir")
-nmap("cdr", function()
-  local root = util.find_root()
-  if root then
-    lcd(root)
+map({ "n", "i", "s" }, "<esc>", function() vim.cmd("noh") return "<esc>" end, { expr = true })
+
+nmap("Q", "<nop>")
+nmap("<c-s>", "<cmd>w<cr>", "Write File")
+nmap("g:", ":lua =")
+nmap("<localleader>s", "<cmd>source %<cr>", "Source File")
+
+-- buffer
+nmap("<c-b>", function()
+  if vim.v.count == 0 then
+    vim.fn.feedkeys(":b", "n")
+    vim.defer_fn(function() vim.fn.feedkeys(" ", "t") end, 1)
   else
-    vim.notify("No root found", vim.log.levels.WARN)
+    vim.cmd(vim.v.count .. "b")
   end
-end, "LCD to root")
-nmap("cdu", function() lcd("..") end, "LCD up")
-nmap("cd-", function() lcd("-") end, "LCD previous")
+end)
+nmap("<space><space>", "<c-^>")
+nmap("zB", "<cmd>bd<cr>")
 
-map({ "i", "n", "s" }, "<esc>", function()
-  vim.cmd("noh")
-  return "<esc>"
-end, { expr = true, desc = "Escape" })
+-- window
+nmap("<c-h>", "<c-w>h")
+nmap("<c-j>", "<c-w>j")
+nmap("<c-k>", "<c-w>k")
+nmap("<c-l>", "<c-w>l")
+nmap("<tab>", function()
+  local cur_win = vim.api.nvim_get_current_win()
+  vim.cmd("wincmd p")
+  if vim.api.nvim_get_current_win() == cur_win then
+    vim.cmd("wincmd w")
+  end
+end)
 
-map("n", "<localleader>s", "<cmd>source %<cr>", { desc = "Source File" })
-map("n", "g:", ":lua =")
+-- tab
+nmap("zT", "<cmd>tabclose<cr>")
+for n = 1, 9 do
+  nmap("<M-" .. n .. ">", n .. "gt")
+end
+
+-- diagnostic
+local diagnostic_goto = function(next, severity)
+  return function()
+    vim.diagnostic.jump({
+      count = (next and 1 or -1) * vim.v.count1,
+      severity = severity and vim.diagnostic.severity[severity] or nil,
+      float = true,
+    })
+  end
+end
+nmap("]d", diagnostic_goto(true),           "Next Diagnostic")
+nmap("[d", diagnostic_goto(false),          "Prev Diagnostic")
+nmap("]e", diagnostic_goto(true, "ERROR"),  "Next Error")
+nmap("[e", diagnostic_goto(false, "ERROR"), "Prev Error")
+nmap("]w", diagnostic_goto(true, "WARN"),   "Next Warning")
+nmap("[w", diagnostic_goto(false, "WARN"),  "Prev Warning")
 
 _G.leader_group_keys = {
   { "<leader>", icon = "󰈔" },
@@ -63,29 +92,15 @@ _G.leader_group_keys = {
   { "gr", group = "lsp" },
 }
 
+-- keywordprg
+nmap_leader("K", "<cmd>norm! K<cr>", "Keywordprg")
+
+-- plugin manager
+nmap_leader("P", "<cmd>Lazy<cr>", "Plugin Manager")
+
 -- quit
 nmap_leader("qq", "<cmd>qa<cr>", "Quit All")
 nmap_leader("qr", "<cmd>restart<cr><esc>", "Restart")
-
--- window
-map({"n", "i", "t"}, "<m-h>", "<c-\\><c-N><c-w><c-h>")
-map({"n", "i", "t"}, "<m-j>", "<c-\\><c-N><c-w><c-j>")
-map({"n", "i", "t"}, "<m-k>", "<c-\\><c-N><c-w><c-k>")
-map({"n", "i", "t"}, "<m-l>", "<c-\\><c-N><c-w><c-l>")
-nmap("<tab>", "<c-w>p")
-
--- buffer
-nmap("<S-tab>", "<C-^>")
-nmap("zB", "<cmd>bd<cr>")
-
--- tab
-nmap("<M-]>", "gt", "Next Tab")
-nmap("<M-[>", "gT", "Previous Tab")
-nmap("<M-t>", "<cmd>tab split<cr>")
-nmap("zT", "<cmd>tabclose<cr>")
-for n = 1, 9 do
-  nmap("<M-" .. n .. ">", n .. "gt")
-end
 
 -- explorer
 nmap("-", "<cmd>Oil --float<cr>", "Open parent directory (float window)")
@@ -103,26 +118,20 @@ nmap_leader("et", "<cmd>Trouble todo toggle<cr>",                               
 nmap_leader("eT", "<cmd>Trouble todo toggle filter={tag={TODO,FIX,FIXME}}<cr>", "Todo/Fix/Fixme (Trouble)")
 
 -- fuzzy find
-local function find_files()
+nmap("<c-f>", function()
   require("telescope.builtin").find_files({
     hidden = true,
   })
-end
-
-nmap("<c-f>", find_files)
-nmap_leader(";",  find_files, "Files")
-nmap_leader(",",  "<cmd>Telescope buffers<cr>", "Buffers")
-nmap_leader(".",  "<cmd>Telescope frecency<cr>", "Frecency Files")
-nmap_leader(":",  "<cmd>Telescope command_history<cr>", "Command History")
+end)
+nmap_leader(",", "<cmd>Telescope buffers<cr>", "Buffers")
+nmap_leader(".", "<cmd>Telescope frecency<cr>", "Frecency Files")
+nmap_leader(":", "<cmd>Telescope command_history<cr>", "Command History")
 nmap_leader("/",  "<cmd>Telescope live_grep<cr>", "Grep")
-nmap_leader("'",  "<cmd>Telescope lsp_document_symbols<cr>", "LSP Document Symbols")
-nmap_leader("*",  "<cmd>Telescope grep_string<cr>", "Grep Word/Selection")
-xmap_leader("*",  "<cmd>Telescope grep_string<cr>", "Grep Word/Selection")
-nmap_leader("r",  "<cmd>Telescope resume<cr>", "Resume Last Picker")
-nmap_leader("fc", function() require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") }) end, "Config File")
-nmap_leader("fP", function() require("telescope.builtin").find_files({ cwd = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy") }) end, "Plugin File")
+nmap_leader("f.", "<cmd>Telescope resume<cr>", "Resume Last Picker")
 nmap_leader("fr", "<cmd>Telescope oldfiles<cr>", "Recent Files")
 nmap_leader("fp", "<cmd>Telescope projects<cr>", "Projects")
+nmap_leader("fc", function() require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") }) end, "Config File")
+nmap_leader("fP", function() require("telescope.builtin").find_files({ cwd = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy") }) end, "Plugin File")
 nmap_leader("fg", "<cmd>Telescope live_grep grep_open_files=true<cr>", "Grep Open Buffers")
 nmap_leader("fG", "<cmd>Telescope git_files<cr>", "Git Files")
 nmap_leader('f"', "<cmd>Telescope registers<cr>", "Registers")
@@ -139,14 +148,16 @@ nmap_leader("fh", "<cmd>Telescope help_tags<cr>", "Help Pages")
 nmap_leader("fH", "<cmd>Telescope highlights<cr>", "Highlights")
 nmap_leader("fj", "<cmd>Telescope jumplist<cr>", "Jumps")
 nmap_leader("fk", "<cmd>Telescope keymaps<cr>", "Keymaps")
-nmap_leader("fl", "<cmd>Telescope loclist<cr>", "Location List")
+nmap_leader("fQ", "<cmd>Telescope loclist<cr>", "Location List")
 nmap_leader("fm", "<cmd>Telescope marks<cr>", "Marks")
 nmap_leader("fq", "<cmd>Telescope quickfix<cr>", "Quickfix List")
-nmap_leader("fs", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "LSP Workspace Symbols")
-nmap_leader("fb", "<cmd>Telescope git_branches<cr>", "Git Branches")
+nmap_leader("fs", "<cmd>Telescope lsp_document_symbols<cr>", "LSP Document Symbols")
+nmap_leader("fS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", "LSP Workspace Symbols")
+nmap_leader("fB", "<cmd>Telescope git_branches<cr>", "Git Branches")
 nmap_leader("fM", "<cmd>Telescope git_commits<cr>", "Git Commits")
 nmap_leader("ft", "<cmd>TodoTelescope<cr>", "Todo")
 nmap_leader("fT", "<cmd>TodoTelescope keywords=TODO,FIX,FIXME<cr>", "Todo/Fix/Fixme")
+map_leader({ "n", "x" }, "*", "<cmd>Telescope grep_string<cr>", "Grep Word/Selection")
 
 -- git
 nmap_leader("gd", "<cmd>CodeDiff<cr>", "CodeDiff")
@@ -162,7 +173,7 @@ nmap("[h", "<cmd>Gitsigns prev_hunk<cr>")
 nmap("]h", "<cmd>Gitsigns next_hunk<cr>")
 
 -- session
-nmap_leader("s.", function() require("persistence").load() end, "Restore Session")
+nmap_leader("sR", function() require("persistence").load() end, "Restore Session")
 nmap_leader("ss", function() require("persistence").select() end,"Select Session")
 nmap_leader("sr", function() require("persistence").load({ last = true }) end, "Restore Last Session")
 nmap_leader("sd", function() require("persistence").stop() end, "Don't Save Current Session")
@@ -201,28 +212,12 @@ map({ 'n', "t", "i" }, '<c-/>', function()
   toggle_term(number)
 end, { desc = "Toggle Terminal" })
 
--- keywordprg
-nmap_leader("K", "<cmd>norm! K<cr>", "Keywordprg")
-
--- diagnostic
-local diagnostic_goto = function(next, severity)
-  return function()
-    vim.diagnostic.jump({
-      count = (next and 1 or -1) * vim.v.count1,
-      severity = severity and vim.diagnostic.severity[severity] or nil,
-      float = true,
-    })
-  end
-end
-nmap("]d", diagnostic_goto(true),           "Next Diagnostic")
-nmap("[d", diagnostic_goto(false),          "Prev Diagnostic")
-nmap("]e", diagnostic_goto(true, "ERROR"),  "Next Error")
-nmap("[e", diagnostic_goto(false, "ERROR"), "Prev Error")
-nmap("]w", diagnostic_goto(true, "WARN"),   "Next Warning")
-nmap("[w", diagnostic_goto(false, "WARN"),  "Prev Warning")
-
 -- ui
-local function find_colorschemes()
+nmap_leader("us", function() vim.opt.spell = not vim.o.spell end, "Toggle Spelling")
+nmap_leader("uw", function() vim.opt.wrap = not vim.o.wrap end, "Toggle Wrap")
+nmap_leader("ub", function() vim.opt.background = vim.o.background == "dark" and "light" or "dark" end, "Toggle Background")
+nmap_leader("ug", function() vim.opt.list = not vim.o.list end, "Toggle Listchars")
+nmap_leader("uc", function()
   local colors = vim.fn.getcompletion("", "color")
   local lazy = package.loaded["lazy.core.util"]
   if lazy and lazy.get_unloaded_rtp then
@@ -235,13 +230,5 @@ local function find_colorschemes()
     enable_preview = true,
     colors = vim.fn.uniq(vim.fn.sort(colors)),
   })
-end
-nmap_leader("us", function() vim.opt.spell = not vim.o.spell end, "Toggle Spelling")
-nmap_leader("uw", function() vim.opt.wrap = not vim.o.wrap end, "Toggle Wrap")
-nmap_leader("ub", function() vim.opt.background = vim.o.background == "dark" and "light" or "dark" end, "Toggle Background")
-nmap_leader("ug", function() vim.opt.list = not vim.o.list end, "Toggle Listchars")
-nmap_leader("uc", find_colorschemes, "Colorschemes")
-
--- plugin manager
-nmap_leader("P", "<cmd>Lazy<cr>", "Plugin Manager")
+end , "Colorschemes")
 --stylua: ignore end

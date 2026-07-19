@@ -12,7 +12,6 @@ return {
           end
           -- stylua: ignore start
           map("gK", vim.lsp.buf.signature_help, { desc = "Signature Help" })
-          map("<c-k>", vim.lsp.buf.signature_help, { mode = "i", desc = "Signature Help" })
           map("gD", vim.lsp.buf.declaration, { desc = "Goto Declaration" })
           -- stylua: ignore end
         end,

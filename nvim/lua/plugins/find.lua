@@ -36,8 +36,9 @@ return {
         },
         pickers = {
           buffers = {
+            show_all_buffers = true,
             sort_mru = true,
-            ignore_current_buffer = true,
+            ignore_current_buffer = false,
             mappings = {
               n = {
                 ["d"] = "delete_buffer",

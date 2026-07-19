@@ -19,6 +19,13 @@ set nobackup
 set nowritebackup
 set noswapfile
 
+" favorite colorscheme:
+"   light: zellner, shine
+"   dark: lunaperche, habamax, slate, sorbet, torte, wildcharm, zaibatsu
+colorscheme shine 
+let themes = ['zellner', 'shine', 'lunaperche', 'habamax', 'slate', 'sorbet', 'torte', 'wildcharm', 'zaibatsu']
+execute 'colorscheme' themes[(localtime() + getpid()) % len(themes)]
+
 if has('persistent_undo')
     set undofile
     set undodir=~/.vimundodir

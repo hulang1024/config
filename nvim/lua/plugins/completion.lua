@@ -15,8 +15,6 @@ return {
       "rafamadriz/friendly-snippets",
     },
     build = function()
-      -- build the fuzzy matcher, optionally add a timeout to `pwait(timeout_ms)`
-      -- you can use `gb` in `:Lazy` to rebuild the plugin as needed
       require("blink.cmp").build():pwait()
     end,
     opts = function()
@@ -30,8 +28,8 @@ return {
           ["<C-Enter>"] = { "show", "show_documentation", "hide_documentation" },
         },
         completion = {
-          documentation = { auto_show = true, window = { winblend = vim.o.winblend } },
-          menu = { auto_show = true, winblend = vim.o.winblend },
+          documentation = { auto_show = false, window = { winblend = vim.o.winblend } },
+          menu = { auto_show = false, winblend = vim.o.winblend },
           ghost_text = { enabled = true },
           list = {
             selection = {
@@ -60,7 +58,7 @@ return {
               "avante_files",
               "avante_mentions",
               "avante_shortcuts",
-              "buffer", -- 保留基本的 buffer 补全，可根据喜好调整
+              "buffer",
             },
           },
           providers = {
@@ -87,25 +85,25 @@ return {
             avante_commands = {
               name = "avante_commands",
               module = "blink.compat.source",
-              score_offset = 90, -- 显示优先级高于 lsp
+              score_offset = 90, -- 显示优先级
               opts = {},
             },
             avante_files = {
               name = "avante_files",
               module = "blink.compat.source",
-              score_offset = 100, -- 显示优先级高于 lsp
+              score_offset = 100,
               opts = {},
             },
             avante_mentions = {
               name = "avante_mentions",
               module = "blink.compat.source",
-              score_offset = 1000, -- 显示优先级高于 lsp
+              score_offset = 1000,
               opts = {},
             },
             avante_shortcuts = {
               name = "avante_shortcuts",
               module = "blink.compat.source",
-              score_offset = 1000, -- 显示优先级高于 lsp
+              score_offset = 1000,
               opts = {},
             },
             lazydev = {
