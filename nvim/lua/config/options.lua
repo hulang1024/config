@@ -54,8 +54,9 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.cursorline = true
 vim.opt.signcolumn = "yes"
+vim.opt.showmode = false
 vim.opt.laststatus = 3
-vim.opt.cmdheight = 0
+vim.opt.cmdheight = 1
 vim.opt.fillchars = {
   eob = " ",
   foldopen = "",
@@ -69,7 +70,7 @@ vim.opt.showcmd = true
 vim.opt.showtabline = 1
 vim.opt.title = false
 vim.opt.visualbell = true
-vim.opt.linespace = 2
+vim.opt.linespace = 0
 
 -- 其它
 if vim.fn.has("win32") == 1 then
@@ -114,7 +115,7 @@ if vim.g.neovide then
   vim.g.neovide_hide_mouse_when_typing = true
   vim.g.neovide_floating_blur_amount_x = 2
   vim.g.neovide_floating_blur_amount_y = 2
-  vim.g.neovide_floating_z_height = 4
+  vim.g.neovide_floating_z_height = 1
   vim.g.neovide_refresh_rate = 144
   vim.g.neovide_refresh_rate_idle = 30
   vim.g.neovide_profiler = false

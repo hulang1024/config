@@ -16,10 +16,20 @@ return {
     opts = function()
       return {
         defaults = {
+          layout_strategy = "bottom_pane",
+          layout_config = {
+            height = 0.5,
+            prompt_position = "top",
+          },
+          sorting_strategy = "ascending",
+          border = false,
+          winblend = function()
+            return vim.o.winblend
+          end,
           file_ignore_patterns = {
             "^%.git[/\\]",
           },
-          path_display = { "filename_first" },
+          -- path_display = { "filename_first" },
           mappings = {
             i = {
               ["<C-s>"] = "select_horizontal",
@@ -29,13 +39,10 @@ return {
               ["<C-s>"] = "select_horizontal",
             },
           },
-          border = false,
-          winblend = function()
-            return vim.o.winblend
-          end,
         },
         pickers = {
           buffers = {
+            previewer = false,
             show_all_buffers = true,
             sort_mru = true,
             ignore_current_buffer = false,
@@ -44,6 +51,18 @@ return {
                 ["d"] = "delete_buffer",
               },
             },
+          },
+          find_files = {
+            previewer = false,
+          },
+          oldfiles = {
+            previewer = false,
+          },
+          frecency = {
+            previewer = false,
+          },
+          git_files = {
+            previewer = false,
           },
         },
       }
@@ -64,16 +83,5 @@ return {
         end,
       })
     end,
-  },
-  {
-    "folke/flash.nvim",
-    opts = {},
-    --stylua: ignore
-    keys = {
-      { "<leader>hh", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-      { "<leader>ht", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-      { "r",          mode = { "o" },           function() require("flash").remote() end, desc = "Remote Flash" },
-      { "R",          mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Flash Treesitter Search" },
-    },
   },
 }

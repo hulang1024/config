@@ -8,9 +8,34 @@ return {
         lazy = true,
       },
     },
-    event = { "BufReadPost", "BufNewFile" },
+    -- event = { "BufReadPost", "BufNewFile" },
+    lazy = true,
     config = function()
       require("dropbar").setup({
+        bar = {
+          sources = function(buf, _)
+            local sources = require("dropbar.sources")
+            local utils = require("dropbar.utils")
+            if vim.bo[buf].ft == "markdown" then
+              return {
+                -- sources.path,
+                sources.markdown,
+              }
+            end
+            if vim.bo[buf].buftype == "terminal" then
+              return {
+                sources.terminal,
+              }
+            end
+            return {
+              -- sources.path,
+              utils.source.fallback({
+                sources.lsp,
+                sources.treesitter,
+              }),
+            }
+          end,
+        },
         icons = { kinds = { dir_icon = "" } },
       })
       local dropbar_api = require("dropbar.api")
@@ -91,7 +116,7 @@ return {
           lualine_c = {
             {
               "filename",
-              path = 0,
+              path = 1,
             },
             -- {
             --   lsp_symbols.get,
@@ -151,15 +176,19 @@ return {
           ["vim.lsp.util.stylize_markdown"] = true,
           ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
         },
+        progress = {
+          enabled = false,
+        },
       },
       presets = {
-        bottom_search = false, -- use a classic bottom cmdline for search
-        command_palette = false, -- position the cmdline and popupmenu together
+        bottom_search = true, -- use a classic bottom cmdline for search
+        command_palette = true, -- position the cmdline and popupmenu together
         long_message_to_split = true, -- long messages will be sent to a split
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = false, -- add a border to hover docs and signature help
       },
       cmdline = {
+        view = "cmdline",
         format = {
           filter = false,
           help = false,
@@ -175,9 +204,6 @@ return {
       },
     },
     config = function(_, opts)
-      -- HACK: noice shows messages from before it was enabled,
-      -- but this is not ideal when Lazy is installing plugins,
-      -- so clear the messages in this case.
       if vim.o.filetype == "lazy" then
         vim.cmd([[messages clear]])
       end
@@ -188,7 +214,11 @@ return {
     "rcarriga/nvim-notify",
     event = "VeryLazy",
     opts = {
-      background_colour = "#000000",
+      stages = "static",
+      background = "#282c34",
+      window_opts = {
+        winblend = 0,
+      },
     },
   },
   {
@@ -203,10 +233,13 @@ return {
       local wk = require("which-key")
       wk.add(_G.leader_group_keys)
       wk.setup({
-        preset = "helix",
+        preset = "classic",
         delay = 600,
         win = {
           border = "solid",
+        },
+        icons = {
+          mappings = false,
         },
       })
     end,

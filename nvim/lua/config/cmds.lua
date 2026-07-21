@@ -28,3 +28,12 @@ vim.api.nvim_create_user_command("CopyFilename", function()
   local filename = vim.fn.expand("%:t")
   do_copy(filename)
 end, { desc = "复制文件名" })
+
+vim.api.nvim_create_user_command("ToggleDropbar", function()
+  if vim.o.winbar == "" then
+    require("dropbar")
+    vim.opt.winbar = "%{%v:lua.dropbar()%}"
+  else
+    vim.opt.winbar = ""
+  end
+end, { desc = "切换Dropbar" })
