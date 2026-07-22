@@ -1,6 +1,6 @@
 -- 激活colorscheme (支持变体: catppuccin-frappe, tokyonight-night, github_dark, …)
 vim.g.light_colorscheme = "bamboo"
-vim.g.dark_colorscheme = "doom-one"
+vim.g.dark_colorscheme = "bamboo-vulgaris"
 vim.g.active_colorscheme = ""
 vim.g.auto_background = true
 

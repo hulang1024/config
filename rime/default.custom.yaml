@@ -16,5 +16,5 @@ patch:
     bindings:
       - { when: composing, accept: Control+n, send: Down }
       - { when: composing, accept: Control+p, send: Up }
-      - { when: composing, accept: Control+j, send: Page_Down }
-      - { when: composing, accept: Control+k, send: Page_Up }
+      - { when: composing, accept: Control+d, send: Page_Down }
+      - { when: composing, accept: Control+u, send: Page_Up }

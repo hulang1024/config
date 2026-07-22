@@ -188,12 +188,15 @@ return {
         lsp_doc_border = false, -- add a border to hover docs and signature help
       },
       cmdline = {
-        view = "cmdline",
+        enabled = false,
         format = {
           filter = false,
           help = false,
           lua = false,
         },
+      },
+      messages = {
+        enabled = false,
       },
       views = {
         cmdline_popup = {

@@ -7,15 +7,27 @@ remember_window_size = false
 maximized = true
 frame = "full"
 
+[box-drawing]
+# "font-glyph", "native" or "selected-native"
+mode = "native"
+
 [font]
 size = 14
 # edging = "subpixelantialias"
-hinting = "full"
+# hinting = "full"
 
 [[font.normal]]
 family = "Terminess Nerd Font"
 style = "Normal" 
 
 [[font.normal]]
-family = "Ark Pixel 10px Mono zh_cn"
-style = "Thin"
+family = "Sarasa Term SC"
+style = "Normal"
+
+# [[font.normal]]
+# family = "Ark Pixel 10px Mono zh_cn"
+# style = "Thin"
+
+# [[font.normal]]
+# family = "Maple Mono NF CN"
+# style = "Normal" 

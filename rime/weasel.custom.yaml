@@ -12,7 +12,7 @@ patch:
   ascii_mask: 1
   ascii_mode: true
   "style/color_scheme": solarized_rock
-  "style/font_face": "Terminess Nerd Font,Ark Pixel 10px Mono zh_cn"
+  "style/font_face": "Sarasa UI SC"
   "style/font_point": 14
   "style/horizontal": false
   "style/layout/+":

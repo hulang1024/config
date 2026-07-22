@@ -19,6 +19,13 @@ map({ "n", "i", "s" }, "<esc>", function() vim.cmd("noh") return "<esc>" end, { 
 
 nmap("Q", "<nop>")
 nmap("<localleader>s", "<cmd>source %<cr>", "Source file")
+vim.cmd([[
+  cnoremap <c-a> <home>
+  cnoremap <c-f> <right>
+  cnoremap <c-b> <left>
+  cnoremap <esc>b <s-left>
+  cnoremap <esc>f <s-right>
+]])
 
 -- window
 nmap("<c-h>", "<c-w>h")
@@ -60,6 +67,9 @@ _G.leader_group_keys = {
   { "<leader>p",     group = "project" },
   { "<leader>g",     group = "git" },
   { "<leader>t",     group = "toggle" },
+  { "<leader>td",    group = "diagnostic" },
+  { "<leader>tt",    group = "terminal" },
+  { "<leader>d",     group = "debug" },
   { "<leader>c",     group = "code" },
   { "<leader>h",     group = "help" },
   { "<leader>a",     group = "avante" },
@@ -121,7 +131,7 @@ nmap_leader("sg", "<cmd>Telescope live_grep grep_open_files=true<cr>",     "Grep
 nmap_leader('s"', "<cmd>Telescope registers<cr>",                          "Registers")
 nmap_leader("s/", "<cmd>Telescope search_history<cr>",                     "Search history")
 nmap_leader("sa", "<cmd>Telescope autocommands<cr>",                       "Autocmds")
-nmap_leader("sC", "<cmd>Telescope command_history<cr>",                    "Command history")
+nmap_leader("sc", "<cmd>Telescope command_history<cr>",                    "Command history")
 nmap_leader("sd", "<cmd>Telescope diagnostics bufnr=0<cr>",                "Diagnostics (buffer)")
 nmap_leader("sD", "<cmd>Telescope diagnostics<cr>",                        "Diagnostics")
 nmap_leader("se", "<cmd>Telescope diagnostics bufnr=0 severity=ERROR<cr>", "Errors (buffer)")
@@ -202,6 +212,7 @@ nmap_leader("tm", function()
 end, "Toggle mouse")
 nmap_leader("tg", function() vim.opt.list = not vim.o.list end, "Toggle listchars")
 nmap_leader("tf", function() vim.g.oil_float = not vim.g.oil_float end, "Toggle oil float")
+nmap_leader("tn", function() vim.opt.relativenumber = not vim.o.relativenumber end, "Toggle relative number")
 -- terminal
 local function toggle_term(number, type)
   -- 为空则表示最后方向，否则设置新方向
@@ -209,10 +220,20 @@ local function toggle_term(number, type)
   vim.g.term_toggle_number = number
   vim.cmd(number .. 'ToggleTerm ' .. direction)
 end
+nmap_leader("tdl", function()
+  vim.diagnostic.config({
+    virtual_text = not vim.diagnostic.config().virtual_text,
+  })
+end, "Toggle virtual text")
+nmap_leader("tds", function()
+  vim.diagnostic.config({
+    signs = not vim.diagnostic.config().signs,
+  })
+end, "Toggle signs")
 nmap_leader("tts", function() toggle_term(vim.v.count1, "horizontal") end, "Toggle terminal horizontal")
 nmap_leader("tta", function() toggle_term(vim.v.count1, "tab") end,        "Toggle terminal tab")
 nmap_leader("ttf", function() toggle_term(vim.v.count1, "float") end,      "Toggle terminal float")
-map({ 'n', "t", "i" }, '<c-/>', function()
+local function toggle_terminal()
   local number = 1
   if vim.v.count ~= 0 then
     number = vim.v.count
@@ -222,24 +243,44 @@ map({ 'n', "t", "i" }, '<c-/>', function()
     number = vim.g.term_toggle_number or 1
   end
   toggle_term(number)
-end, { desc = "Toggle Terminal" })
+end
+map({ 'n', "t", "i" }, '<c-/>', toggle_terminal, { desc = "Toggle Terminal" })
+map({ 'n', "t", "i" }, '<c-_>', toggle_terminal, { desc = "Toggle Terminal" })
+
+-- debug
+nmap_leader("db", function() require("dap").toggle_breakpoint() end, "Toggle breakpoint")
+nmap_leader("dc", function() require("dap").continue() end, "Continue")
+nmap_leader("dg", function() require("dap").run_to_cursor() end, "Run to cursor")
+nmap_leader("dr", function() require("dap").restart() end, "Restart")
+nmap_leader("dq", function() require("dap").terminate() end, "Terminate")
+nmap_leader("dn", function() require("dap").step_over() end, "Step over")
+nmap_leader("dp", function() require("dap").step_back() end, "Step back")
+nmap_leader("di", function() require("dap").step_into() end, "Step into")
+nmap_leader("do", function() require("dap").step_out() end, "Step out")
+nmap_leader("dk", function()
+  require("dap.ui.widgets").hover()
+end, "Hover")
+nmap_leader("df", function()
+  local widgets = require("dap.ui.widgets")
+  widgets.centered_float(widgets.frames)
+end, "Centered float")
+nmap_leader("dl", function()
+  local server = require("osv").launch({ port = 8086 })
+  if not server then
+    vim.notify("OSV launch failed", vim.log.levels.WARN)
+  else
+    vim.notify(string.format("OSV listening on %s:%s", server.host, server.port), vim.log.levels.INFO)
+  end
+end, "Launch")
 
 -- help
 nmap_leader("hi", "<cmd>help<cr>", "Info")
 nmap_leader("hk", "<cmd>Telescope keymaps<cr>", "Keymaps")
 nmap_leader("hh", ":help ", "Help word")
 nmap_leader("hc", function()
-  local colors = vim.fn.getcompletion("", "color")
-  local lazy = package.loaded["lazy.core.util"]
-  if lazy and lazy.get_unloaded_rtp then
-    for _, f in ipairs(vim.fn.globpath(table.concat(lazy.get_unloaded_rtp(""), ","), "colors/*", true, true)) do
-      colors[#colors + 1] = vim.fn.fnamemodify(f, ":t:r")
-    end
-  end
   require("telescope.builtin").colorscheme({
     ignore_builtins = true,
     enable_preview = true,
-    colors = vim.fn.uniq(vim.fn.sort(colors)),
   })
 end , "Colorschemes")
 

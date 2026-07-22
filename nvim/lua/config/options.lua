@@ -57,6 +57,7 @@ vim.opt.signcolumn = "yes"
 vim.opt.showmode = false
 vim.opt.laststatus = 3
 vim.opt.cmdheight = 1
+vim.opt.report = 10
 vim.opt.fillchars = {
   eob = " ",
   foldopen = "",
@@ -68,7 +69,8 @@ vim.opt.wrap = false
 vim.opt.list = false
 vim.opt.showcmd = true
 vim.opt.showtabline = 1
-vim.opt.title = false
+vim.opt.title = true
+vim.opt.titlestring = "%t"
 vim.opt.visualbell = true
 vim.opt.linespace = 0
 
@@ -98,11 +100,12 @@ vim.opt.exrc = true
 
 -- diagnostic
 vim.diagnostic.config({
-  virtual_text = true,
-  signs = true,
+  virtual_text = false,
+  signs = false,
   underline = true,
   update_in_insert = false,
   severity_sort = true,
+  float = {},
 })
 
 -- neovide 设置
