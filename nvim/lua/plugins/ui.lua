@@ -97,7 +97,17 @@ return {
       --   format = "{kind_icon}{symbol.name:Normal}",
       --   hl_group = "lualine_c_normal",
       -- })
-      local record = require("me.lualine_record")
+      local record_section = {
+        function()
+          local reg = vim.fn.reg_recording()
+          return reg == "" and "" or "recording @" .. reg
+        end,
+        color = function()
+          local theme_color = require("lualine.utils.utils").extract_highlight_colors("DiagnosticError", "fg")
+          return { fg = theme_color or "#e86671" }
+        end,
+      }
+
       return {
         options = {
           component_separators = { left = "", right = "" },
@@ -124,7 +134,7 @@ return {
             -- },
           },
           lualine_x = {
-            record.lualine_section,
+            record_section,
             {
               "progress",
               separator = "",
@@ -151,6 +161,14 @@ return {
           lualine_z = {},
         },
       }
+    end,
+    init = function()
+      vim.api.nvim_create_autocmd({ "RecordingEnter", "RecordingLeave" }, {
+        group = vim.api.nvim_create_augroup("recording_lualine", { clear = true }),
+        callback = function()
+          require("lualine").refresh()
+        end,
+      })
     end,
   },
   {

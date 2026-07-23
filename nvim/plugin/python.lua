@@ -25,21 +25,15 @@ local function run_command()
   vim.keymap.set("n", "q", "<Cmd>bd!<CR>", { buffer = buf, silent = true })
 end
 
-local M = {}
-
-function M.setup()
-  vim.api.nvim_create_autocmd("FileType", {
-    group = vim.api.nvim_create_augroup("RunPython", { clear = true }),
-    pattern = "python",
-    callback = function()
-      vim.keymap.set("n", "<localleader>r", run_command, {
-        noremap = true,
-        silent = true,
-        buffer = true,
-        desc = "运行python",
-      })
-    end
-  })
-end
-
-return M
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("RunPython", { clear = true }),
+  pattern = "python",
+  callback = function()
+    vim.keymap.set("n", "<localleader>r", run_command, {
+      noremap = true,
+      silent = true,
+      buffer = true,
+      desc = "运行python",
+    })
+  end,
+})

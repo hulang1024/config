@@ -13,10 +13,4 @@ local function toggle_light()
   trigger_webhook("-Gu-fnjgbtfWjgrtXshg_yNRK")
 end
 
-local M = {}
-
-function M.setup()
-  vim.keymap.set("n", "<leader>Hl", toggle_light, { desc = "开关卧室吸顶灯" })
-end
-
-return M
+vim.keymap.set("n", "<leader>Hl", toggle_light, { desc = "开关卧室吸顶灯" })

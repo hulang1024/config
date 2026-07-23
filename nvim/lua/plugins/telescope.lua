@@ -54,6 +54,7 @@ return {
           },
           find_files = {
             previewer = false,
+            hidden = true,
           },
           oldfiles = {
             previewer = false,

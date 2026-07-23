@@ -43,20 +43,14 @@ local function hide_rec_indicator()
   end
 end
 
-local M = {}
+local macro_group = vim.api.nvim_create_augroup("MacroRecording", { clear = true })
 
-function M.setup()
-  local macro_group = vim.api.nvim_create_augroup("MacroRecording", { clear = true })
+vim.api.nvim_create_autocmd("RecordingEnter", {
+  group = macro_group,
+  callback = show_rec_indicator,
+})
 
-  vim.api.nvim_create_autocmd("RecordingEnter", {
-    group = macro_group,
-    callback = show_rec_indicator,
-  })
-
-  vim.api.nvim_create_autocmd("RecordingLeave", {
-    group = macro_group,
-    callback = hide_rec_indicator,
-  })
-end
-
-return M
+vim.api.nvim_create_autocmd("RecordingLeave", {
+  group = macro_group,
+  callback = hide_rec_indicator,
+})
