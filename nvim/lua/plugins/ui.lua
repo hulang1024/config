@@ -1,5 +1,24 @@
 return {
   {
+    "chentoast/marks.nvim",
+    event = "VeryLazy",
+    opts = {
+      default_mappings = true,
+      builtin_marks = { ".", "<", ">", "^", "`" },
+      cyclic = true,
+      force_write_shada = false,
+      refresh_interval = 1000,
+      sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 20 },
+      excluded_filetypes = {},
+      excluded_buftypes = {},
+      bookmark_0 = {
+        sign = "⚑",
+        virt_text = "",
+        annotate = false,
+      },
+    },
+  },
+  {
     "Bekaboo/dropbar.nvim",
     dependencies = {
       {
@@ -89,14 +108,6 @@ return {
         ["nt"] = "T-NORMAL",
         ["cv"] = "VIM-EX",
       }
-      -- local lsp_symbols = require("trouble").statusline({
-      --   mode = "lsp_document_symbols",
-      --   groups = {},
-      --   title = false,
-      --   filter = { range = true },
-      --   format = "{kind_icon}{symbol.name:Normal}",
-      --   hl_group = "lualine_c_normal",
-      -- })
       local record_section = {
         function()
           local reg = vim.fn.reg_recording()
@@ -107,58 +118,62 @@ return {
           return { fg = theme_color or "#e86671" }
         end,
       }
-
       return {
         options = {
-          component_separators = { left = "", right = "" },
-          section_separators = { left = "", right = "" },
+          globalstatus = true,
+          component_separators = "",
+          section_separators = { left = " ", right = " " },
         },
         sections = {
           lualine_a = {
             {
               function()
                 local m = vim.fn.mode(1)
-                return mode_map[m] or m
+                return " " .. (mode_map[m] or m)
               end,
+              padding = { left = 1, right = 1 },
+              separator = { right = "" },
             },
           },
-          lualine_b = { "branch", "diff", "diagnostics" },
-          lualine_c = {
+          lualine_b = {
+            {
+              "filetype",
+              icon_only = true,
+              icon = { align = "right" },
+              separator = { left = "" },
+              padding = { left = 1, right = 0 },
+            },
             {
               "filename",
               path = 1,
+              separator = { right = "" },
+              padding = { left = 0, right = 1 },
             },
-            -- {
-            --   lsp_symbols.get,
-            --   cond = lsp_symbols.has,
-            -- },
+          },
+          lualine_c = {
+            "branch",
+            "diff",
+            "diagnostics",
           },
           lualine_x = {
             record_section,
             {
-              "progress",
-              separator = "",
-              padding = { left = 2, right = 1 },
-            },
-            {
-              "location",
-              padding = { left = 0, right = 2 },
-            },
-            "encoding",
-            {
-              function()
-                local symbols = {
-                  unix = "LF",
-                  dos = "CRLF",
-                  mac = "CR",
-                }
-                return symbols[vim.bo.fileformat] or vim.bo.fileformat
+              "encoding",
+              cond = function()
+                local enc = vim.bo.fileencoding or "utf-8"
+                return enc:lower() ~= "utf-8"
               end,
+              show_bomb = false,
             },
-            "filetype",
+            "fileformat",
           },
           lualine_y = {},
-          lualine_z = {},
+          lualine_z = {
+            {
+              "progress",
+              padding = { left = 1, right = 0 },
+            },
+          },
         },
       }
     end,

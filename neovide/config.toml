@@ -11,23 +11,26 @@ frame = "full"
 # "font-glyph", "native" or "selected-native"
 mode = "native"
 
-[font]
-size = 14
+# [font]
+# size = 14
 # edging = "subpixelantialias"
 # hinting = "full"
 
-[[font.normal]]
-family = "Terminess Nerd Font"
-style = "Normal" 
-
-[[font.normal]]
-family = "Sarasa Term SC"
-style = "Normal"
+# [[font.normal]]
+# family = "Terminess Nerd Font"
+# style = "Normal" 
+#
+# [[font.normal]]
+# family = "Sarasa Term SC"
+# style = "Normal"
 
 # [[font.normal]]
 # family = "Ark Pixel 10px Mono zh_cn"
 # style = "Thin"
 
-# [[font.normal]]
-# family = "Maple Mono NF CN"
-# style = "Normal" 
+[font]
+size = 13.2
+
+[[font.normal]]
+family = "Maple Mono NF CN"
+style = "Normal" 

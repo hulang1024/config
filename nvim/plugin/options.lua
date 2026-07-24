@@ -21,7 +21,7 @@ vim.opt.hlsearch = true
 vim.opt.incsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.inccommand = "split"
+vim.opt.inccommand = vim.g.neovide and "nosplit" or "split"
 
 -- 编辑与导航
 vim.opt.scrolloff = 2
@@ -65,6 +65,11 @@ vim.opt.fillchars = {
 }
 vim.opt.wrap = false
 vim.opt.list = false
+vim.opt.listchars = {
+  tab = " ",
+  trail = ".",
+  nbsp = ".",
+}
 vim.opt.showcmd = true
 vim.opt.showtabline = 1
 vim.opt.title = true

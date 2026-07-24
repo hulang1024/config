@@ -59,6 +59,13 @@ nmap("[e", diagnostic_goto(-1, "ERROR"),  "Prev error")
 nmap("]w", diagnostic_goto(1, "WARN"),    "Next warning")
 nmap("[w", diagnostic_goto(-1, "WARN"),   "Prev warning")
 
+nmap("]o", function()
+  require("todo-comments").jump_next()
+end, "Next todo comment")
+nmap("[o", function()
+  require("todo-comments").jump_prev()
+end, "Previous todo comment")
+
 local wrap_prompt = function (prefix, escape)
   escape = escape or false
   local p =  prefix .. " > "
@@ -118,7 +125,7 @@ nmap_leader("*", telescope_cmd("grep_string"), "Grep word")
 xmap_leader("*", telescope_cmd("grep_string"), "Grep selection")
 nmap_leader("'", telescope_cmd("resume"), "Resume last picker")
 nmap_leader("K", cmd("norm! K"), "Keywordprg")
-nmap_leader("P", cmd("Lazy"), "Plugin manager")
+nmap_leader("D", cmd("DBUITab"), "DBUI")
 
 -- quit/session
 nmap_leader("qq", cmd("qa"), "Quit neovim")
@@ -220,6 +227,7 @@ end, "Format file")
 xmap_leader("cf", function()
   require("conform").format({ async = true, lsp_fallback = true, timeout_ms = 1000 })
 end, "Format selection")
+nmap_leader("cp", cmd("MarkdownPreview"), "Preview markdown")
 
 -- toggle
 nmap_leader("ts", function() vim.opt.spell = not vim.o.spell end, "Toggle spelling")
@@ -240,7 +248,9 @@ nmap_leader("tm", function()
   end
   vim.notify("Mouse " .. (vim.o.mouse ~= "" and "enabled" or "disabled"))
 end, "Toggle mouse")
-nmap_leader("tg", function() vim.opt.list = not vim.o.list end, "Toggle listchars")
+nmap_leader("tg", cmd("Gitsigns toggle_signs"), "Toggle git signs")
+nmap_leader("tm", cmd("MarksToggleSigns"), "Toggle mark signs")
+nmap_leader("tl", function() vim.opt.list = not vim.o.list end, "Toggle listchars")
 nmap_leader("tf", function() vim.g.oil_float = not vim.g.oil_float end, "Toggle oil float")
 nmap_leader("tn", function() vim.opt.relativenumber = not vim.o.relativenumber end, "Toggle relative number")
 -- terminal
@@ -304,7 +314,10 @@ nmap_leader("dl", function()
 end, "Launch neovim lua adpater")
 
 -- help
-nmap_leader("hi", cmd("help"), "Info")
+nmap_leader("hi", cmd("vert help"), "Help info")
+nmap_leader("hh", telescope_cmd("help_tags", "Search help tag"), "Help tag")
+nmap_leader("hH", ":<c-u>checkhealth ", "Check health")
+nmap_leader("hp", cmd("Lazy"), "Plugin manager")
 nmap_leader("hk", telescope_cmd("keymaps"), "Keymaps")
 nmap_leader("hK", function()
   local leader = vim.g.mapleader or "\\"
@@ -314,7 +327,6 @@ nmap_leader("hK", function()
     end,
   })
 end, "Leader keymaps")
-nmap_leader("hh", ":<c-u>help ", "Help word")
 nmap_leader("hc", function()
   require("telescope.builtin").colorscheme({
     ignore_builtins = true,

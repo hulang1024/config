@@ -155,6 +155,18 @@ return {
   }),
   theme({
     "ribru17/bamboo.nvim",
+    opts = {
+      code_style = {
+        comments = { italic = true },
+        conditionals = { italic = false },
+        keywords = { italic = false },
+        functions = { italic = false },
+        namespaces = { italic = false },
+        parameters = { italic = false },
+        strings = { italic = false },
+        variables = { italic = false },
+      },
+    },
   }),
   theme({
     "NTBBloodbath/doom-one.nvim",
