@@ -16,7 +16,6 @@ vim.api.nvim_create_user_command("CopyRootPath", function()
   local path = require("mini.misc").find_root() or ""
   if path then
     do_copy(path)
-    return
   else
     vim.notify("未找到根路径", vim.log.levels.WARN)
   end
@@ -35,3 +34,7 @@ vim.api.nvim_create_user_command("ToggleDropbar", function()
     vim.opt.winbar = ""
   end
 end, { desc = "切换Dropbar" })
+
+vim.api.nvim_create_user_command("ActionDBL", function(opts)
+  vim.cmd(("%d,%dg/^\\s*$/d"):format(opts.line1, opts.line2))
+end, { desc = "删除空白行", range = "%" })

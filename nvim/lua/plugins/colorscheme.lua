@@ -2,7 +2,7 @@
 vim.g.light_colorscheme = "bamboo"
 vim.g.dark_colorscheme = "bamboo-vulgaris"
 vim.g.active_colorscheme = ""
-vim.g.auto_background = true
+vim.g.auto_background = false
 
 local function modname(colorname)
   if colorname:find("^github") then
@@ -21,6 +21,11 @@ local function set_colorscheme(mode, first)
   if not first then
     require(modname(vim.g.active_colorscheme))
     vim.cmd.colorscheme(vim.g.active_colorscheme)
+    if modname(vim.g.active_colorscheme):find("^bamboo") then
+      vim.schedule(function ()
+        vim.cmd("Lazy reload bamboo.nvim")
+      end)
+    end
   end
 end
 
@@ -36,6 +41,9 @@ local function update(first)
   end
 end
 
+if not vim.g.auto_background then
+  vim.opt.background = "dark"
+end
 set_colorscheme(vim.o.background, true)
 update(true)
 

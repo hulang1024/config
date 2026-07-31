@@ -13,6 +13,13 @@ return {
           },
         },
       },
+      anti_conceal = {
+        enabled = false,
+      },
+      heading = {
+        width = "block",
+        backgrounds = { "", "", "", "", "", "" },
+      },
     },
   },
   {

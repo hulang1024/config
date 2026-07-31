@@ -1,5 +1,20 @@
+require('vim._core.ui2').enable({
+  enable = true,
+  msg = {
+    targets = 'cmd',
+    cmd = { height = 0.5 },
+    dialog = { height = 0.5, },
+    msg = { height = 0.5, timeout = 4000, },
+    pager = { height = 0.5, },
+  },
+})
+
 vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
+vim.g.maplocalleader = " "
+
+if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
+  pcall(vim.fn.serverstart, [[\\.\pipe\NeovimServer]])
+end
 
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -27,19 +42,23 @@ require("lazy").setup({
     lazy = false,
     version = false,
   },
+  rocks = {
+    hererocks = true,
+    server = "https://lumen-oss.github.io/rocks-binaries/",
+  },
   checker = { enabled = true, notify = false },
   performance = {
     rtp = {
       -- disable some rtp plugins
       disabled_plugins = {
-        "gzip",
-        -- "matchit",
-        -- "matchparen",
         "netrwPlugin",
+        "gzip",
+        "zipPlugin",
         "tarPlugin",
         "tohtml",
-        "tutor",
-        "zipPlugin",
+        -- "matchit",
+        -- "matchparen",
+        -- "tutor",
       },
     },
   },

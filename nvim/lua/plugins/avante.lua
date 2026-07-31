@@ -36,6 +36,9 @@ return {
         enable_token_counting = false,
         confirmation_ui_style = "popup",
       },
+      windows = {
+        width = 40,
+      },
     },
     init = function()
       vim.api.nvim_create_autocmd("FileType", {

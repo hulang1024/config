@@ -13,7 +13,7 @@ return {
     dependencies = {
       "esmuellert/codediff.nvim",
       "m00qek/baleia.nvim",
-      "folke/snacks.nvim",
+      "nvim-telescope/telescope.nvim",
     },
     cmd = "Neogit",
     opts = {

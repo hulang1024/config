@@ -11,6 +11,7 @@ BackWord() => Send("^{Left}")
 ForwardWord() => Send("^{Right}")
 ToHead() => Send("{Home}")
 ToEnd() => Send("{End}")
+NewLine() => Send("{Enter}")
 #HotIf WinActive("ahk_exe Microsoft.CmdPal.UI.exe")
     || WinActive("ahk_exe QQ.exe")
     || WinActive("ahk_exe Weixin.exe")
@@ -25,7 +26,9 @@ ToEnd() => Send("{End}")
     !b::BackWord
     !f::ForwardWord
     ^i::ToHead
+    ^a::ToHead
     ^e::ToEnd
+    ^j::NewLine
 #HotIf
 #HotIf WinActive("ahk_exe chrome.exe")
     ^h::DeleteLeftChar
@@ -39,6 +42,37 @@ ToEnd() => Send("{End}")
     !f::ForwardWord
     ^i::ToHead
     ^e::ToEnd
+#HotIf
+
+#HotIf not WinActive("ahk_exe WindowsTerminal.exe")
+    !1::Send("#1")
+    !2::Send("#2")
+    !3::Send("#3")
+    !4::Send("#4")
+    !5::Send("#5")
+    !6::Send("#6")
+    !7::Send("#7")
+    !8::Send("#8")
+    !9::Send("#9")
+#HotIf
+
+ActiveVim() {
+    programs := ["neovide.exe", "gvim.exe"]
+    for index, exe in programs {
+        if WinExist("ahk_exe " exe) {
+            if not WinActive("ahk_exe " exe) {
+                WinActivate
+            }
+            return
+        }
+    }
+    Run("neovide.exe")
+}
+
+#HotIf not WinActive("ahk_exe WindowsTerminal.exe") 
+    && not WinActive("ahk_exe neovide.exe")
+    && not WinActive("ahk_exe gvim.exe")
+    ^[::ActiveVim()
 #HotIf
 
 ; 导航移动

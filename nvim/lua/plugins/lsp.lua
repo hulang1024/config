@@ -1,7 +1,6 @@
 return {
   {
     "neovim/nvim-lspconfig",
-    event = "VeryLazy",
     opts = {},
     config = function()
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -27,11 +26,28 @@ return {
     "mason-org/mason-lspconfig.nvim",
     dependencies = {
       { "mason-org/mason.nvim", opts = {} },
-      "neovim/nvim-lspconfig",
+      -- "neovim/nvim-lspconfg",
     },
     event = "VeryLazy",
     opts = {
-      ensure_installed = { "lua_ls" },
+      ensure_nstalled = {
+        -- LSP
+        "lua_ls",
+        "clangd",
+        "jdtls",
+        "lua_ls",
+        "marksman",
+        "roslyn-language-server",
+        "vetur-vls",
+        "vtsls",
+        -- DAP
+        "local-lua-debugger-vscode",
+        -- formatter
+        "bome",
+        "csharper",
+        "sqruff",
+        "stylua",
+      },
     },
   },
   {

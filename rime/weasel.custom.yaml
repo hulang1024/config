@@ -2,7 +2,7 @@ customization:
   distribution_code_name: Weasel
   distribution_version: 0.17.4
   generator: "Weasel::UIStyleSettings"
-  modified_time: "Sat Jul 18 22:18:09 2026"
+  modified_time: "Mon Aug  3 12:00:49 2026"
   rime_version: 1.13.1
 patch:
   app_options:
@@ -11,14 +11,24 @@ patch:
     neovide.exe: {ascii_mode: true, vim_mode: true}
   ascii_mask: 1
   ascii_mode: true
+  "style/alpha": 0.85
+  "style/blur": true
   "style/color_scheme": solarized_rock
   "style/font_face": "Sarasa UI SC"
   "style/font_point": 14
   "style/horizontal": false
   "style/layout/+":
+    border_width: 0
+    candidate_spacing: 0
     corner_radius: 0
-    hilite_padding: 4
-    hilite_padding_x: 4
-    margin_x: 14
-    margin_y: 14
-    round_corner: 2
+    hilite_padding: 3
+    hilite_padding_x: 10
+    margin_x: 0
+    margin_y: 0
+    min_width: 120
+    round_corner: 0
+    shadow_offset_x: 4
+    shadow_offset_y: 4
+    shadow_radius: 8
+    spacing: 0
+  "style/translucency": true

@@ -33,8 +33,9 @@ return {
             vim.keymap.set(mode, "<localleader>" .. key, rhs, { desc = desc, buffer = event.buf })
           end
           map({ "n", "v" }, "r", "<Plug>(DBUI_ExecuteQuery)", "Execute Query")
-          map("n", "s", "<Plug>(DBUI_SaveQuery)", "Save Query")
+          map("n",          "s", "<Plug>(DBUI_SaveQuery)", "Save Query")
           map({ "n", "v" }, "e", "<Plug>(DBUI_EditBindParameters)", "Edit Bind Parameters")
+          map("n",          "d", "DBUIToggle", "Toggle drawer")
         end,
       })
 

@@ -1,9 +1,12 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
+    -- Upstream: this plugin does not support lazy-loading.
+    lazy = false,
     build = ":TSUpdate",
-    event = { "BufReadPost", "BufNewFile" },
     config = function()
+      require("nvim-treesitter").setup({})
       require("nvim-treesitter").install({
         "c",
         "regex",
@@ -17,8 +20,19 @@ return {
         "toml",
         "yaml",
         "json",
+        "xml",
         "python",
         "javascript",
+        "typescript",
+        "jsdoc",
+        "css",
+        "html",
+        "vue",
+        "http",
+        "c_sharp",
+        "java",
+        "javadoc",
+        "sql"
       })
     end,
   },

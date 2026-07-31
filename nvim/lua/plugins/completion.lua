@@ -15,6 +15,12 @@ return {
       "rafamadriz/friendly-snippets",
     },
     build = function()
+      -- Prefer rustup cargo over outdated system cargo (lockfile v4)
+      local cargo_bin = vim.fs.joinpath(vim.env.HOME, ".cargo", "bin")
+      if vim.fn.isdirectory(cargo_bin) == 1 then
+        vim.env.PATH = cargo_bin .. ":" .. (vim.env.PATH or "")
+      end
+      ---@diagnostic disable-next-line: undefined-field
       require("blink.cmp").build():pwait()
     end,
     opts = function()

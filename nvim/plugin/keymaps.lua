@@ -1,6 +1,8 @@
 --stylua: ignore start
 local map = vim.keymap.set
-local nmap = function(lhs, rhs, desc) map("n", lhs, rhs, { desc = desc }) end
+local mapf = function (mode) return function(lhs, rhs, desc) map(mode, lhs, rhs, { desc = desc }) end end
+local nmap = mapf("n")
+local cmap = mapf("c")
 local map_leader = function(mode, suffix, rhs, desc) map(mode, "<leader>" .. suffix, rhs, { desc = desc }) end
 local nmap_leader = function(suffix, rhs, desc) map_leader("n", suffix, rhs, desc) end
 local xmap_leader = function(suffix, rhs, desc) map_leader("x", suffix, rhs, desc) end
@@ -17,14 +19,14 @@ map("v", "<a-j>", ":<c-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv")
 map("v", "<a-k>", ":<c-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv")
 
 map({ "n", "i", "s" }, "<esc>", function() vim.cmd("noh") return "<esc>" end, { expr = true })
+
+cmap("<c-a>",  "<home>")
+cmap("<c-f>",  "<right>")
+cmap("<c-b>",  "<left>")
+cmap("<esc>b", "<s-left>")
+cmap("<esc>f", "<s-right>")
+
 nmap("Q", "<nop>")
-vim.cmd([[
-  cnoremap <c-a> <home>
-  cnoremap <c-f> <right>
-  cnoremap <c-b> <left>
-  cnoremap <esc>b <s-left>
-  cnoremap <esc>f <s-right>
-]])
 
 -- window
 nmap("<c-h>", "<c-w>h")
@@ -38,6 +40,7 @@ nmap("<tab>", function()
     vim.cmd("wincmd w")
   end
 end)
+nmap("<c-i>", "<c-i>")
 
 -- diagnostic
 local diagnostic_goto = function(offset, severity)
@@ -59,12 +62,8 @@ nmap("[e", diagnostic_goto(-1, "ERROR"),  "Prev error")
 nmap("]w", diagnostic_goto(1, "WARN"),    "Next warning")
 nmap("[w", diagnostic_goto(-1, "WARN"),   "Prev warning")
 
-nmap("]o", function()
-  require("todo-comments").jump_next()
-end, "Next todo comment")
-nmap("[o", function()
-  require("todo-comments").jump_prev()
-end, "Previous todo comment")
+nmap("]o", function() require("todo-comments").jump_next() end, "Next todo comment")
+nmap("[o", function() require("todo-comments").jump_prev() end, "Previous todo comment")
 
 local wrap_prompt = function (prefix, escape)
   escape = escape or false
@@ -126,6 +125,12 @@ xmap_leader("*", telescope_cmd("grep_string"), "Grep selection")
 nmap_leader("'", telescope_cmd("resume"), "Resume last picker")
 nmap_leader("K", cmd("norm! K"), "Keywordprg")
 nmap_leader("D", cmd("DBUITab"), "DBUI")
+nmap_leader("S", ":<c-u>%s///g<left><left><left>", "Substitute global")
+xmap_leader("s", ":s///g<left><left><left>",       "Substitute selection")
+nmap_leader("u", function ()
+  vim.cmd.packadd("nvim.undotree")
+  require("undotree").open()
+end, "Toggle undotree")
 
 -- quit/session
 nmap_leader("qq", cmd("qa"), "Quit neovim")
@@ -163,10 +168,12 @@ nmap_leader("fP", function()
   })
 end, "find plugin file")
 nmap_leader("fg", telescope_cmd("git_files", "Find git file"), "Find git files")
-nmap_leader("fd", function() vim.cmd("Oil" .. (vim.g.oil_float and " --float" or "")) end, "File explorer")
-nmap_leader("fe", function() require("mini.files").open(vim.api.nvim_buf_get_name(0)) end, "Open file directory")
-nmap_leader("fE", function() require("mini.files").open() end, "Open work directory")
-nmap_leader("fs", cmd("up"), "Save file")
+nmap_leader("fd", cmd("Oil --float"), "Directory (float window)")
+nmap_leader("fD", cmd("Oil"), "Directory")
+nmap_leader("fe", function() require("mini.files").open(vim.api.nvim_buf_get_name(0)) end, "Explore file")
+nmap_leader("fE", function() require("mini.files").open() end, "Explore cwd")
+nmap_leader("fs", cmd("up"), "Save file (Update)")
+nmap_leader("fS", cmd("w"), "Save file (Write)")
 nmap_leader("fx", cmd("source %"), "Execute this file")
 
 -- search
@@ -251,8 +258,14 @@ end, "Toggle mouse")
 nmap_leader("tg", cmd("Gitsigns toggle_signs"), "Toggle git signs")
 nmap_leader("tm", cmd("MarksToggleSigns"), "Toggle mark signs")
 nmap_leader("tl", function() vim.opt.list = not vim.o.list end, "Toggle listchars")
-nmap_leader("tf", function() vim.g.oil_float = not vim.g.oil_float end, "Toggle oil float")
+nmap_leader("tf",function()
+  vim.g.autoformat = not vim.g.autoformat
+  print("Auto format: " .. (vim.g.autoformat and "enabled" or "disalbed"))
+end, "Toggle auto format")
 nmap_leader("tn", function() vim.opt.relativenumber = not vim.o.relativenumber end, "Toggle relative number")
+if vim.g.neovide then
+  nmap_leader("tF", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle fullscreen")
+end
 -- terminal
 local function toggle_term(number, type)
   local last = ""
@@ -288,15 +301,21 @@ map({ 'n', "t", "i" }, '<c-/>', toggle_terminal, { desc = "Toggle Terminal" })
 map({ 'n', "t", "i" }, '<c-_>', toggle_terminal, { desc = "Toggle Terminal" })
 
 -- debug
-nmap_leader("db", function() require("dap").toggle_breakpoint() end, "Toggle breakpoint")
-nmap_leader("dc", function() require("dap").continue() end,          "Continue")
-nmap_leader("dg", function() require("dap").run_to_cursor() end,     "Run to cursor")
-nmap_leader("dr", function() require("dap").restart() end,           "Restart")
-nmap_leader("dq", function() require("dap").terminate() end,         "Terminate")
-nmap_leader("dn", function() require("dap").step_over() end, "Step over")
-nmap_leader("dp", function() require("dap").step_back() end, "Step back")
-nmap_leader("di", function() require("dap").step_into() end, "Step into")
-nmap_leader("do", function() require("dap").step_out() end,  "Step out")
+nmap("<F5>",  function() require("dap").continue() end, "Continue (DAP)")
+nmap("<F9>",  function() require("dap").toggle_breakpoint() end, "Toggle Breakpoint (DAP)")
+nmap("<F10>", function() require("dap").step_over() end, "Step over (DAP)")
+nmap("<F11>", function() require("dap").step_into() end, "Step into (DAP)")
+nmap("<F12>", function() require("dap").step_out() end, "Step out (DAP)")
+nmap_leader("du", function() require("dap"); require("dapui").toggle() end, "Toggle DAP UI (DAP)")
+nmap_leader("db", function() require("dap").toggle_breakpoint() end, "Toggle breakpoint (DAP)")
+nmap_leader("dc", function() require("dap").continue() end,          "Continue (DAP)")
+nmap_leader("dg", function() require("dap").run_to_cursor() end,     "Run to cursor (DAP)")
+nmap_leader("dr", function() require("dap").restart() end,           "Restart (DAP)")
+nmap_leader("dq", function() require("dap").terminate() end,         "Terminate (DAP)")
+nmap_leader("dn", function() require("dap").step_over() end, "Step over (DAP)")
+nmap_leader("dp", function() require("dap").step_back() end, "Step back (DAP)")
+nmap_leader("di", function() require("dap").step_into() end, "Step into (DAP)")
+nmap_leader("do", function() require("dap").step_out() end,  "Step out (DAP)")
 nmap_leader("dk", function()
   require("dap.ui.widgets").hover()
 end, "Hover")

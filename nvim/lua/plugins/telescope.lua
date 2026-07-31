@@ -66,7 +66,28 @@ return {
             previewer = false,
           },
         },
+        extensions = {
+          ["ui-select"] = {
+            require("telescope.themes").get_ivy({
+              layout_config = {
+                height = 0.3,
+              },
+              border = false,
+              winblend = function()
+                return vim.o.winblend
+              end,
+              prompt_prefix = "Code action > "
+            }),
+          },
+        },
       }
+    end,
+  },
+  {
+    "nvim-telescope/telescope-ui-select.nvim",
+    opts = {},
+    config = function()
+      require("telescope").load_extension("ui-select")
     end,
   },
   {

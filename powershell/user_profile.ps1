@@ -100,6 +100,8 @@ function y {
 	Remove-Item -Path $tmp
 }
 
+Set-Alias -Name g -Value git
+
 $starshipCache = "$HOME\.starship_cache.ps1"
 if (-not (Test-Path $starshipCache)) {
     # 如果缓存不存在，生成一个（仅在第一次或手动删除时发生一次）

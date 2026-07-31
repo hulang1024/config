@@ -4,13 +4,13 @@ return {
     event = "VeryLazy",
     opts = {
       default_mappings = true,
-      builtin_marks = { ".", "<", ">", "^", "`" },
+      -- builtin_marks = { ".", "<", ">", "^", "`" },
       cyclic = true,
       force_write_shada = false,
       refresh_interval = 1000,
       sign_priority = { lower = 10, upper = 15, builtin = 8, bookmark = 20 },
       excluded_filetypes = {},
-      excluded_buftypes = {},
+      excluded_buftypes = { "nofile", "terminal" },
       bookmark_0 = {
         sign = "⚑",
         virt_text = "",
@@ -146,6 +146,12 @@ return {
             {
               "filename",
               path = 1,
+              fmt = function(filename)
+                if vim.bo.filetype and vim.bo.filetype:find("Telescope") then
+                  return ""
+                end
+                return filename
+              end,
               separator = { right = "" },
               padding = { left = 0, right = 1 },
             },
@@ -157,6 +163,17 @@ return {
           },
           lualine_x = {
             record_section,
+            {
+              "rest",
+              fmt = function (path)
+                return vim.fn.fnamemodify(path, ":t")
+              end,
+              cond = function()
+                return vim.bo.filetype == "http"
+              end,
+              icon = "",
+              fg = "#428890"
+            },
             {
               "encoding",
               cond = function()
@@ -171,7 +188,7 @@ return {
           lualine_z = {
             {
               "progress",
-              padding = { left = 1, right = 0 },
+              padding = { left = 1, right = 1 },
             },
           },
         },

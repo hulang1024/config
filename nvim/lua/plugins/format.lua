@@ -12,6 +12,9 @@ return {
         sql = { "sqruff" },
       },
       format_on_save = function(bufnr)
+        if not vim.g.autoformat then
+          return nil
+        end
         local ft = vim.bo[bufnr].filetype
         local allowed = { "lua", "json", "sql" }
         if vim.tbl_contains(allowed, ft) then

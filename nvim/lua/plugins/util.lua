@@ -3,7 +3,19 @@ return {
     "m4xshen/hardtime.nvim",
     event = "VeryLazy",
     dependencies = { "MunifTanjim/nui.nvim" },
-    opts = {},
+    opts = {
+      max_count = 10,
+      restricted_keys = {
+        ["j"] = false,
+        ["k"] = false,
+      },
+      disabled_keys = {
+        ["<Up>"] = { "c", "i" },
+        ["<Down>"] = { "c", "i" },
+        ["<Left>"] = { "c", "i" },
+        ["<Right>"] = { "c", "i" },
+      },
+    },
   },
   {
     "epwalsh/pomo.nvim",

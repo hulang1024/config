@@ -2,7 +2,7 @@ return {
   {
     "akinsho/toggleterm.nvim",
     version = "*",
-    cmd = "ToggleTerm",
+    cmd = { "ToggleTerm", "TermExec" },
     opts = {
       direction = "float",
       float_opts = {

@@ -1,36 +1,41 @@
-fps_max = 0
-vsync = true
-render_to_cpu = false
-idle = false
-hide_menus = true
+fps_max              = 0
+vsync                = true
+render_to_cpu        = false
+idle                 = false
+hide_menus           = true
 remember_window_size = false
-maximized = true
-frame = "full"
+maximized            = true
+frame                = "full"
+opengl               = true
 
 [box-drawing]
 # "font-glyph", "native" or "selected-native"
 mode = "native"
+hinting = "none"
+edging = "alias"
 
-# [font]
-# size = 14
-# edging = "subpixelantialias"
-# hinting = "full"
+[font]
+size = 12
+
+[[font.normal]]
+family = "JetBrainsMono Nerd Font Mono"
+style  = "Normal"
 
 # [[font.normal]]
 # family = "Terminess Nerd Font"
-# style = "Normal" 
-#
-# [[font.normal]]
-# family = "Sarasa Term SC"
-# style = "Normal"
+# style  = "Normal"
+
+[[font.normal]]
+family = "NSimSun‌"
+style  = "Normal"
 
 # [[font.normal]]
 # family = "Ark Pixel 10px Mono zh_cn"
-# style = "Thin"
+# style  = "Thin"
 
-[font]
-size = 13.2
-
-[[font.normal]]
-family = "Maple Mono NF CN"
-style = "Normal" 
+# [font]
+# size = 12.2
+#
+# [[font.normal]]
+# family = "Maple Mono NF CN"
+# style  = "Normal" 

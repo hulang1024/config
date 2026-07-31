@@ -21,7 +21,7 @@ vim.opt.hlsearch = true
 vim.opt.incsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.inccommand = vim.g.neovide and "nosplit" or "split"
+vim.opt.inccommand = "split"
 
 -- 编辑与导航
 vim.opt.scrolloff = 2
@@ -43,13 +43,17 @@ vim.opt.foldenable = true
 -- 窗口
 vim.opt.splitbelow = true
 vim.opt.splitright = true
-vim.opt.winblend = vim.g.neovide and 10 or 5
-vim.opt.pumblend = vim.g.neovide and 10 or 5
 
 -- UI与外观显示
 vim.opt.termguicolors = true
+vim.opt.guicursor = table.concat({
+  "n-v-c:block-blinkwait700-blinkon250-blinkoff400",
+  "i-ci-ve:ver25-blinkwait700-blinkon250-blinkoff400",
+  "r-cr-o:hor20-blinkwait700-blinkon250-blinkoff400",
+}, ",")
 vim.opt.number = true
 vim.opt.relativenumber = true
+vim.opt.cursorlineopt = "number"
 vim.opt.cursorline = true
 vim.opt.signcolumn = "yes"
 vim.opt.showmode = false
@@ -99,6 +103,7 @@ if vim.fn.has("win32") == 1 then
   vim.opt.shellxquote = ""
 end
 vim.opt.backup = false
+vim.opt.confirm = true
 vim.opt.exrc = true
 
 -- diagnostic
@@ -109,19 +114,32 @@ vim.diagnostic.config({
   update_in_insert = false,
   severity_sort = true,
   float = {},
+  jump = {
+    on_jump = function(_, bufnr)
+      vim.diagnostic.open_float {
+        bufnr = bufnr,
+        scope = 'cursor',
+        focus = false,
+      }
+    end,
+  },
 })
 
 -- neovide 设置
 if vim.g.neovide then
+  vim.opt.winblend = 10
+  vim.opt.pumblend = 10
+
   vim.g.neovide_theme = "bg_color"
   vim.g.neovide_cursor_vfx_mode = ""
   vim.g.neovide_cursor_vfx_particle_density = 0.7
   vim.g.neovide_position_animation_length = 0
   vim.g.neovide_cursor_animation_length = 0.00
+  vim.g.neovide_cursor_smooth_blink = true
   vim.g.neovide_hide_mouse_when_typing = true
   vim.g.neovide_floating_blur_amount_x = 2
   vim.g.neovide_floating_blur_amount_y = 2
-  vim.g.neovide_floating_z_height = 1
+  vim.g.neovide_floating_z_height = 4
   vim.g.neovide_refresh_rate = 144
   vim.g.neovide_refresh_rate_idle = 30
   vim.g.neovide_profiler = false
