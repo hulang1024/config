@@ -20,7 +20,7 @@ return {
       floating = {
         width = 0.8,
         height = 0.7,
-        border = "solid",
+        border = "rounded",
       },
     },
   },

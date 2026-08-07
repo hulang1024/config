@@ -12,7 +12,7 @@ return {
         height = function()
           return math.floor(vim.o.lines * 0.7)
         end,
-        border = "solid",
+        border = "rounded",
         winblend = vim.o.winblend,
       },
       on_open = function(term)

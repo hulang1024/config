@@ -23,7 +23,7 @@ local function show_rec_indicator()
     row = row,
     col = col,
     style = "minimal",
-    border = "none",
+    border = "rounded",
     focusable = false,
     zindex = 150,
   })

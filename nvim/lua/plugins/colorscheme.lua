@@ -1,8 +1,8 @@
 -- 激活colorscheme (支持变体: catppuccin-frappe, tokyonight-night, github_dark, …)
-vim.g.light_colorscheme = "bamboo"
-vim.g.dark_colorscheme = "bamboo-vulgaris"
+vim.g.light_colorscheme = "koda-light"
+vim.g.dark_colorscheme = "koda-moss"
 vim.g.active_colorscheme = ""
-vim.g.auto_background = false
+vim.g.auto_background = true
 
 local function modname(colorname)
   if colorname:find("^github") then
@@ -85,6 +85,21 @@ local function theme(spec)
 end
 
 return {
+  theme({
+    "oskarnurm/koda.nvim",
+    opts = {
+      styles = {
+        functions = { bold = true },
+        keywords  = {},
+        comments  = {},
+        strings   = {},
+        constants = {}, -- includes numbers, booleans
+      },
+      on_highlights = function(hl, c)
+        hl.CursorLineNr = { fg = c.border }
+      end,
+    }
+  }),
   theme({
     "navarasu/onedark.nvim",
     opts = {

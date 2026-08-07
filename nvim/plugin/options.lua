@@ -139,7 +139,7 @@ if vim.g.neovide then
   vim.g.neovide_hide_mouse_when_typing = true
   vim.g.neovide_floating_blur_amount_x = 2
   vim.g.neovide_floating_blur_amount_y = 2
-  vim.g.neovide_floating_z_height = 4
+  vim.g.neovide_floating_z_height = 0
   vim.g.neovide_refresh_rate = 144
   vim.g.neovide_refresh_rate_idle = 30
   vim.g.neovide_profiler = false

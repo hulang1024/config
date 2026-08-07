@@ -21,8 +21,16 @@ return {
             height = 0.5,
             prompt_position = "top",
           },
+          prompt_title = false,
+          results_title = false,
+          preview_title = false,
           sorting_strategy = "ascending",
-          border = false,
+          border = true,
+          borderchars = {
+            prompt = { "─", " ", " ", " ", "─", "─", " ", " " },
+            results = { " " },
+            preview = { "─", " ", " ", " ", "─", "─", " ", " " },
+          },
           winblend = function()
             return vim.o.winblend
           end,
@@ -43,6 +51,7 @@ return {
         pickers = {
           buffers = {
             previewer = false,
+            prompt_title = false,
             show_all_buffers = true,
             sort_mru = true,
             ignore_current_buffer = false,
@@ -54,16 +63,20 @@ return {
           },
           find_files = {
             previewer = false,
+            prompt_title = false,
             hidden = true,
           },
           oldfiles = {
             previewer = false,
+            prompt_title = false,
           },
           frecency = {
             previewer = false,
+            prompt_title = false,
           },
           git_files = {
             previewer = false,
+            prompt_title = false,
           },
         },
         extensions = {
@@ -72,11 +85,11 @@ return {
               layout_config = {
                 height = 0.3,
               },
-              border = false,
               winblend = function()
                 return vim.o.winblend
               end,
-              prompt_prefix = "Code action > "
+              prompt_prefix = "Code action > ",
+              prompt_title = false,
             }),
           },
         },

@@ -49,7 +49,8 @@ return {
         float = {
           padding = 2,
           max_width = 0.4,
-          border = "none",
+          border = "rounded",
+          get_win_title = function () return nil end,
           win_options = {
             winblend = vim.o.winblend,
           },
