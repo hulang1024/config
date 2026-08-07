@@ -51,10 +51,12 @@ local augroup = vim.api.nvim_create_augroup("colorscheme_update", { clear = true
 vim.api.nvim_create_autocmd({ "FocusGained", "CursorHold" }, {
   group = augroup,
   callback = update,
+  nested = true,
 })
 vim.api.nvim_create_autocmd("User", {
   group = augroup,
   pattern = "ToggleBackground",
+  nested = true,
   callback = function()
     set_colorscheme(vim.o.background == "dark" and "light" or "dark")
   end,
