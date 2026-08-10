@@ -3,6 +3,8 @@ local map = vim.keymap.set
 local mapf = function (mode) return function(lhs, rhs, desc) map(mode, lhs, rhs, { desc = desc }) end end
 local nmap = mapf("n")
 local cmap = mapf("c")
+local vmap = mapf("v")
+local imap = mapf("i")
 local map_leader = function(mode, suffix, rhs, desc) map(mode, "<leader>" .. suffix, rhs, { desc = desc }) end
 local nmap_leader = function(suffix, rhs, desc) map_leader("n", suffix, rhs, desc) end
 local xmap_leader = function(suffix, rhs, desc) map_leader("x", suffix, rhs, desc) end
@@ -11,14 +13,22 @@ local cmd = function (cmd) return "<cmd>" .. cmd .. "<cr>" end
 map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
 map({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
 
-map("n", "<a-j>", "<cmd>execute 'move .+' . v:count1<cr>==")
-map("n", "<a-k>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==")
-map("i", "<a-j>", "<esc><cmd>m .+1<cr>==gi")
-map("i", "<a-k>", "<esc><cmd>m .-2<cr>==gi")
-map("v", "<a-j>", ":<c-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv")
-map("v", "<a-k>", ":<c-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv")
+nmap("<a-j>", "<cmd>execute 'move .+' . v:count1<cr>==")
+nmap("<a-k>", "<cmd>execute 'move .-' . (v:count1 + 1)<cr>==")
+imap("<a-j>", "<esc><cmd>m .+1<cr>==gi")
+imap("<a-k>", "<esc><cmd>m .-2<cr>==gi")
+vmap("<a-j>", ":<c-u>execute \"'<,'>move '>+\" . v:count1<cr>gv=gv")
+vmap("<a-k>", ":<c-u>execute \"'<,'>move '<-\" . (v:count1 + 1)<cr>gv=gv")
 
 map({ "n", "i", "s" }, "<esc>", function() vim.cmd("noh") return "<esc>" end, { expr = true })
+
+nmap("n", "nzzzv")
+nmap("N", "Nzzzv")
+nmap("<c-d>", "<c-d>zz")
+nmap("<c-u>", "<c-u>zz")
+
+vmap("<", "<gv")
+vmap(">", ">gv")
 
 cmap("<c-a>",  "<home>")
 cmap("<c-f>",  "<right>")
@@ -108,6 +118,7 @@ _G.leader_group_keys = {
   { "<leader>c",     group = "code" },
   { "<leader>h",     group = "help" },
   { "<leader>a",     group = "avante" },
+  { "<leader>x",     group = "execute" },
   { "<leader>H",     group = "home assistant" },
 }
 
@@ -125,6 +136,7 @@ xmap_leader("*", telescope_cmd("grep_string"), "Grep selection")
 nmap_leader("'", telescope_cmd("resume"), "Resume last picker")
 nmap_leader("K", cmd("norm! K"), "Keywordprg")
 nmap_leader("D", cmd("DBUITab"), "DBUI")
+xmap_leader("x", cmd(".lua"), "Execute the current line")
 nmap_leader("S", ":<c-u>%s///g<left><left><left>", "Substitute global")
 xmap_leader("s", ":s///g<left><left><left>",       "Substitute selection")
 nmap_leader("u", function ()

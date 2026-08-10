@@ -2,6 +2,19 @@ local function augroup(name)
   return vim.api.nvim_create_augroup("my_" .. name, { clear = true })
 end
 
+local group = augroup("myconf")
+
+vim.api.nvim_create_autocmd("CmdlineLeave", {
+  group = group,
+  pattern = "[/?]",
+  callback = function()
+    if vim.v.event.abort then return end
+    vim.schedule(function()
+      vim.cmd("normal! zz")
+    end)
+  end,
+})
+
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("close_with_q"),
   pattern = {

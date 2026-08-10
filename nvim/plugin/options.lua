@@ -91,6 +91,7 @@ vim.opt.undofile = true
 vim.opt.undolevels = 10000
 vim.opt.clipboard = "unnamedplus"
 vim.opt.completeopt = "menu,menuone,noselect"
+vim.opt.path:append("**")
 vim.opt.sessionoptions = "buffers,curdir,tabpages,winsize,help,globals,skiprtp,folds"
 vim.opt.encoding = "utf-8"
 if vim.fn.has("win32") == 1 then

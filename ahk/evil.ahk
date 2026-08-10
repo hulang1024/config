@@ -44,36 +44,13 @@ NewLine() => Send("{Enter}")
     ^e::ToEnd
 #HotIf
 
-#HotIf not WinActive("ahk_exe WindowsTerminal.exe")
-    !1::Send("#1")
-    !2::Send("#2")
-    !3::Send("#3")
-    !4::Send("#4")
-    !5::Send("#5")
-    !6::Send("#6")
-    !7::Send("#7")
-    !8::Send("#8")
-    !9::Send("#9")
-#HotIf
-
-ActiveVim() {
-    programs := ["neovide.exe", "gvim.exe"]
-    for index, exe in programs {
-        if WinExist("ahk_exe " exe) {
-            if not WinActive("ahk_exe " exe) {
-                WinActivate
-            }
-            return
-        }
-    }
-    Run("neovide.exe")
-}
-
-#HotIf not WinActive("ahk_exe WindowsTerminal.exe") 
-    && not WinActive("ahk_exe neovide.exe")
-    && not WinActive("ahk_exe gvim.exe")
-    ^[::ActiveVim()
-#HotIf
+#;::#1
+#+v::#2
+#+q::#3
+#+x::#4
+#+o::#5
+#+w::#7
+#+b::#8
 
 ; 导航移动
 #HotIf WinActive("ahk_exe Microsoft.CmdPal.UI.exe")

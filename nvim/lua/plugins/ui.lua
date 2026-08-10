@@ -1,4 +1,8 @@
 return {
+  -- {
+  --   "xiyaowong/transparent.nvim",
+  --   opts = {}
+  -- },
   {
     "chentoast/marks.nvim",
     event = "VeryLazy",

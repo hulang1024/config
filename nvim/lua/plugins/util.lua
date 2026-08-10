@@ -31,7 +31,10 @@ return {
   },
   {
     "nvim-mini/mini.misc",
-    lazy = true,
+    event = "VeryLazy",
+    config = function ()
+      require("mini.misc").setup_restore_cursor({ center = true })
+    end
   },
   {
     "folke/flash.nvim",

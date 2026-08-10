@@ -21,11 +21,6 @@ local function set_colorscheme(mode, first)
   if not first then
     require(modname(vim.g.active_colorscheme))
     vim.cmd.colorscheme(vim.g.active_colorscheme)
-    if modname(vim.g.active_colorscheme):find("^bamboo") then
-      vim.schedule(function ()
-        vim.cmd("Lazy reload bamboo.nvim")
-      end)
-    end
   end
 end
 
@@ -88,7 +83,7 @@ end
 
 return {
   theme({
-    "oskarnurm/koda.nvim",
+    "hulang1024/koda.nvim",
     opts = {
       styles = {
         functions = { bold = true },
@@ -97,8 +92,14 @@ return {
         strings   = {},
         constants = {}, -- includes numbers, booleans
       },
+      colors = {
+        moss = {
+          border = '#aaaaaa',
+        },
+      },
       on_highlights = function(hl, c)
-        hl.CursorLineNr = { fg = c.border }
+        hl.CursorLineNr = { fg = c.fg }
+        hl.FloatBorder = { fg = c.border }
       end,
     }
   }),

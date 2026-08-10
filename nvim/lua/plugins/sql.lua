@@ -16,8 +16,9 @@ return {
       vim.g.db_ui_use_nvim_notify = true
       vim.g.db_ui_show_database_icon = true
       vim.g.db_ui_auto_execute_table_helpers = true
-      vim.g.db_ui_save_location = "~/dadbod_ui"
-      vim.g.db_ui_tmp_query_location = "~/dadbod_ui/tmp"
+      local data_path = vim.fn.stdpath("data") .. "/dadbod_ui"
+      vim.g.db_ui_save_location = data_path
+      vim.g.db_ui_tmp_query_location = data_path .. "/tmp"
       vim.g.db_ui_execute_on_save = false
       vim.g.db_ui_disable_mappings_sql = true
 
@@ -30,9 +31,9 @@ return {
             return
           end
           local map = function(mode, key, rhs, desc)
-            vim.keymap.set(mode, "<localleader>" .. key, rhs, { desc = desc, buffer = event.buf })
+            vim.keymap.set(mode, "<localleader>x" .. key, rhs, { desc = desc, buffer = event.buf })
           end
-          map({ "n", "v" }, "r", "<Plug>(DBUI_ExecuteQuery)", "Execute Query")
+          map({ "n", "v" }, "x", "<Plug>(DBUI_ExecuteQuery)", "Execute Query")
           map("n",          "s", "<Plug>(DBUI_SaveQuery)", "Save Query")
           map({ "n", "v" }, "e", "<Plug>(DBUI_EditBindParameters)", "Edit Bind Parameters")
           map("n",          "d", "DBUIToggle", "Toggle drawer")
