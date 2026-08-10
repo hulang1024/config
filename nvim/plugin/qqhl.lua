@@ -1,11 +1,11 @@
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "http" },
-  callback = function()
-    vim.cmd("Rest env set .env.prod")
-  end,
-})
-
 vim.api.nvim_create_user_command("ApiWork", function()
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "http" },
+    callback = function()
+      vim.cmd("Rest env set .env.prod")
+    end,
+  })
+
   vim.cmd("tabnew API")
   vim.cmd("tcd E:/work/qqhl/api")
   vim.cmd("e login.http")

@@ -98,8 +98,11 @@ return {
         },
       },
       on_highlights = function(hl, c)
+        local koda = require("koda")
         hl.CursorLineNr = { fg = c.fg }
         hl.FloatBorder = { fg = c.border }
+        hl.TelescopeBorder = { link = "FloatBorder" }
+        hl.WinSeparator = { fg = koda.blend(c.border, c.bg, 0.2) }
       end,
     }
   }),

@@ -27,7 +27,40 @@ return {
         dap.providers.configs["dap.launch.json"] = nil
       end
 
-      dapui.setup()
+      -- Prefer an already-visible source window when hitting a breakpoint.
+      dap.defaults.fallback.switchbuf = "useopen,usetab,uselast"
+
+      -- Layout 1 = Console (opened with the session).
+      -- Layout 2 = IDEA-like Frames | Variables | Watches | Breakpoints (keymap).
+      ---@diagnostic disable-next-line: missing-fields
+      dapui.setup({
+        layouts = {
+          {
+            elements = { "console" },
+            size = 10,
+            position = "bottom",
+          },
+          {
+            elements = {
+              { id = "stacks", size = 0.22 },
+              { id = "scopes", size = 0.38 },
+              { id = "watches", size = 0.20 },
+              { id = "breakpoints", size = 0.20 },
+            },
+            size = 14,
+            position = "bottom",
+          },
+        },
+        ---@diagnostic disable-next-line: missing-fields
+        controls = {
+          enabled = true,
+          element = "scopes",
+        },
+        ---@diagnostic disable-next-line: missing-fields
+        floating = {
+          border = "rounded",
+        },
+      })
       require("nvim-dap-virtual-text").setup({
         commented = false,
         virt_text_pos = "eol",
@@ -47,7 +80,7 @@ return {
       dap.listeners.after.event_initialized["user-dap"] = function(session)
         local name = session.config and session.config.name or "DAP"
         vim.notify("DAP attached: " .. name, vim.log.levels.INFO)
-        dapui.open()
+        dapui.open({ layout = 1 })
       end
       dap.listeners.after.event_terminated["user-dap"] = function()
         vim.notify("DAP session terminated", vim.log.levels.INFO)
