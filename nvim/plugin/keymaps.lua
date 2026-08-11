@@ -324,7 +324,15 @@ nmap_leader("db", function() require("dap").toggle_breakpoint() end, "Toggle bre
 nmap_leader("dc", function() require("dap").continue() end,          "Continue (DAP)")
 nmap_leader("dg", function() require("dap").run_to_cursor() end,     "Run to cursor (DAP)")
 nmap_leader("dr", function() require("dap").restart() end,           "Restart (DAP)")
-nmap_leader("dq", function() require("dap").terminate() end,         "Terminate (DAP)")
+nmap_leader("dq", function()
+  (_G.DapTerminateAndKill or function()
+    require("dap").terminate({
+      all = true,
+      hierarchy = true,
+      disconnect_args = { terminateDebuggee = true },
+    })
+  end)()
+end, "Terminate and kill debuggee (DAP)")
 nmap_leader("dn", function() require("dap").step_over() end, "Step over (DAP)")
 nmap_leader("dp", function() require("dap").step_back() end, "Step back (DAP)")
 nmap_leader("di", function() require("dap").step_into() end, "Step into (DAP)")

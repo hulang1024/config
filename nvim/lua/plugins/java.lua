@@ -14,6 +14,9 @@ return {
     ft = "java",
     config = function()
       local util = require("lspconfig.util")
+      local dap = require("dap")
+      local jdtls = require("jdtls")
+      local jdtls_dap = require("jdtls.dap")
       local mason_share = vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "share")
 
       local function mason_jars(pattern)
@@ -42,55 +45,66 @@ return {
         return bundles
       end
 
-      local function jdtls_has_debug(client)
-        local cmds = vim.tbl_get(client, "server_capabilities", "executeCommandProvider", "commands") or {}
-        return vim.tbl_contains(cmds, "vscode.java.startDebugSession")
-      end
+      local jdtls_base = vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "packages", "jdtls")
+      local lombok_jar = vim.fs.joinpath(jdtls_base, "lombok.jar")
 
-      --- Restart stale jdtls clients started without java-debug bundles.
-      local function stop_stale_jdtls(bundles)
-        if #bundles == 0 then
-          return
-        end
-        for _, client in ipairs(vim.lsp.get_clients({ name = "jdtls" })) do
-          local old = vim.tbl_get(client, "config", "init_options", "bundles") or {}
-          if #old == 0 or not jdtls_has_debug(client) then
-            vim.notify("Restarting jdtls to load java-debug bundles…", vim.log.levels.INFO)
-            client:stop(true)
-            vim.wait(10000, function()
-              return vim.lsp.get_client_by_id(client.id) == nil
-            end, 50)
-          end
-        end
-      end
+      local function build_jdtls_cmd(configuration, data)
+        local launcher = vim.fn.glob(vim.fs.joinpath(jdtls_base, "plugins", "org.eclipse.equinox.launcher_*.jar"), false, true)[1]
+        assert(launcher, "jdtls equinox launcher not found; install jdtls via :Mason")
 
-      local function ensure_java_dap()
-        require("jdtls.dap").setup_dap({ hotcodereplace = "auto" })
-        local dap = require("dap")
-        -- Drop manual presets so F5 only sees discovered Main class launch configs.
-        dap.configurations.java = vim.tbl_filter(function(cfg)
-          return cfg.name ~= "Launch Current File" and cfg.name ~= "Attach (5005)"
-        end, dap.configurations.java or {})
+        local uname = vim.uv.os_uname().sysname
+        local conf_name = uname == "Linux" and "config_linux" or uname == "Darwin" and "config_mac" or "config_win"
+        local shared_config = vim.fs.joinpath(jdtls_base, conf_name)
+        local java = (vim.env.JAVA_HOME and vim.fs.joinpath(vim.env.JAVA_HOME, "bin", "java")) or "java"
+
+        -- Invoke java directly so -javaagent is guaranteed on the language server JVM.
+        local cmd = {
+          java,
+          "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+          "-Dosgi.bundles.defaultStartLevel=4",
+          "-Declipse.product=org.eclipse.jdt.ls.core.product",
+          "-Dosgi.checkConfiguration=true",
+          "-Dosgi.sharedConfiguration.area=" .. shared_config,
+          "-Dosgi.sharedConfiguration.area.readOnly=true",
+          "-Dosgi.configuration.cascaded=true",
+          "-Xms1G",
+          "--add-modules=ALL-SYSTEM",
+          "--add-opens",
+          "java.base/java.util=ALL-UNNAMED",
+          "--add-opens",
+          "java.base/java.lang=ALL-UNNAMED",
+          "-jar",
+          launcher,
+          "-configuration",
+          configuration,
+          "-data",
+          data,
+        }
+        if vim.uv.fs_stat(lombok_jar) then
+          table.insert(cmd, 2, "-javaagent:" .. lombok_jar)
+        end
+        return cmd
       end
 
       local function map_java_dap(bufnr)
         local function map(lhs, rhs, desc)
           vim.keymap.set("n", lhs, rhs, { buffer = bufnr, desc = desc })
         end
+
         map("<leader>dt", function()
-          require("jdtls").test_nearest_method()
+          jdtls.test_nearest_method()
         end, "Debug nearest java test (DAP)")
         map("<leader>dT", function()
-          require("jdtls").test_class()
+          jdtls.test_class()
         end, "Debug java test class (DAP)")
         map("<leader>dP", function()
-          require("jdtls").pick_test()
+          jdtls.pick_test()
         end, "Pick java test (DAP)")
         map("<leader>dU", "<cmd>JdtUpdateDebugConfig<cr>", "Update java debug configs (DAP)")
         map("<leader>dA", function()
           local client = vim.lsp.get_clients({ name = "jdtls", bufnr = bufnr })[1]
           local cwd = client and client.config.root_dir or vim.fn.getcwd()
-          require("dap").run({
+          dap.run({
             type = "java",
             request = "attach",
             name = "Attach (5005)",
@@ -149,17 +163,13 @@ return {
           )
         end
 
-        stop_stale_jdtls(bundles)
-        ensure_java_dap()
+        jdtls_dap.setup_dap({ hotcodereplace = "auto" })
+
+        vim.fn.mkdir(jdtls_config_dir, "p")
+        vim.fn.mkdir(jdtls_workspace_dir, "p")
 
         require("jdtls").start_or_attach({
-          cmd = {
-            "jdtls",
-            "-configuration",
-            jdtls_config_dir,
-            "-data",
-            jdtls_workspace_dir,
-          },
+          cmd = build_jdtls_cmd(jdtls_config_dir, jdtls_workspace_dir),
           root_dir = root_dir,
           settings = {
             java = {
@@ -171,6 +181,11 @@ return {
                 incompleteClasspath = { severity = "error" },
               },
               autobuild = { enabled = true },
+              jdt = {
+                ls = {
+                  lombokSupport = { enabled = true },
+                },
+              },
             },
           },
           init_options = {
@@ -185,10 +200,9 @@ return {
                 })
               end)
               if result.type == "ServiceReady" then
-                ensure_java_dap()
-                -- Discover main classes after project is ready (also disables the short-timeout provider).
+                -- Discover launchable main classes for F5.
                 vim.defer_fn(function()
-                  require("jdtls.dap").setup_dap_main_class_configs({ verbose = true })
+                  jdtls_dap.setup_dap_main_class_configs()
                 end, 1500)
               end
             end,
