@@ -70,6 +70,20 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("sql_family"),
+  pattern = { "sql", "mysql", "plsql" },
+  callback = function(event)
+    vim.bo[event.buf].commentstring = "-- %s"
+    if not vim.b[event.buf].action_quote_lines_defined then
+      vim.b[event.buf].action_quote_lines_defined = true
+      vim.api.nvim_buf_create_user_command(event.buf, "ActionQuoteLines", function(opts)
+        vim.cmd(("%d,%ds/^[^\\s]*$/'&',/"):format(opts.line1, opts.line2))
+      end, { desc = "添加引号到每一行", range = "%" })
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
   group = augroup("treesitter_autostart"),
   pattern = "*",
   callback = function()

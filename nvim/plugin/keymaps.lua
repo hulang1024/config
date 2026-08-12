@@ -249,17 +249,17 @@ end, "Format selection")
 nmap_leader("cp", cmd("MarkdownPreview"), "Preview markdown")
 
 -- toggle
-nmap_leader("ts", function() vim.opt.spell = not vim.o.spell end, "Toggle spelling")
-nmap_leader("tw", function() vim.opt.wrap = not vim.o.wrap end, "Toggle wrap")
-nmap_leader("tb", function()
+nmap_leader("tos", function() vim.opt.spell = not vim.o.spell end, "Toggle spelling")
+nmap_leader("tow", function() vim.opt.wrap = not vim.o.wrap end, "Toggle wrap")
+nmap_leader("tob", function()
   vim.g.auto_background = false
   vim.api.nvim_exec_autocmds("User", { pattern = "ToggleBackground" })
 end, "Toggle background")
-nmap_leader("tB", function()
+nmap_leader("toB", function()
   vim.g.auto_background = not vim.g.auto_background
   vim.notify("Auto Backgrond " .. (vim.g.auto_background and "enabled" or "disabled"))
 end, "Toggle auto background")
-nmap_leader("tm", function()
+nmap_leader("tom", function()
   if vim.o.mouse == "" then
     vim.opt.mouse = "a"
   else
@@ -267,14 +267,14 @@ nmap_leader("tm", function()
   end
   vim.notify("Mouse " .. (vim.o.mouse ~= "" and "enabled" or "disabled"))
 end, "Toggle mouse")
+nmap_leader("tol", function() vim.opt.list = not vim.o.list end, "Toggle listchars")
+nmap_leader("ton", function() vim.opt.relativenumber = not vim.o.relativenumber end, "Toggle relative number")
 nmap_leader("tg", cmd("Gitsigns toggle_signs"), "Toggle git signs")
 nmap_leader("tm", cmd("MarksToggleSigns"), "Toggle mark signs")
-nmap_leader("tl", function() vim.opt.list = not vim.o.list end, "Toggle listchars")
 nmap_leader("tf",function()
   vim.g.autoformat = not vim.g.autoformat
   print("Auto format: " .. (vim.g.autoformat and "enabled" or "disalbed"))
 end, "Toggle auto format")
-nmap_leader("tn", function() vim.opt.relativenumber = not vim.o.relativenumber end, "Toggle relative number")
 if vim.g.neovide then
   nmap_leader("tF", function() vim.g.neovide_fullscreen = not vim.g.neovide_fullscreen end, "Toggle fullscreen")
 end

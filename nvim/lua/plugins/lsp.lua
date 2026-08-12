@@ -30,21 +30,21 @@ return {
     },
     event = "VeryLazy",
     opts = {
-      ensure_nstalled = {
+      ensure_installed = {
         -- LSP
         "lua_ls",
         "clangd",
         "jdtls",
         "lua_ls",
         "marksman",
-        "roslyn-language-server",
-        "vetur-vls",
+        -- "roslyn_ls",
+        "vuels",
         "vtsls",
         -- DAP
-        "local-lua-debugger-vscode",
+        -- "local-lua-debugger-vscode",
         -- formatter
-        "bome",
-        "csharper",
+        "biome",
+        -- "csharpier",
         "sqruff",
         "stylua",
       },
