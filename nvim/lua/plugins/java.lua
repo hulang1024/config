@@ -18,10 +18,11 @@ return {
       local jdtls = require("jdtls")
       local jdtls_dap = require("jdtls.dap")
       local mason_share = vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "share")
+      local custom_java_test_server = vim.fs.joinpath(vim.fn.stdpath("data"), "java-test", "server")
 
-      local function mason_jars(pattern)
+      local function jars_from(base, pattern)
         local seen, jars = {}, {}
-        for _, path in ipairs(vim.fn.glob(vim.fs.joinpath(mason_share, pattern), true, true)) do
+        for _, path in ipairs(vim.fn.glob(vim.fs.joinpath(base, pattern), true, true)) do
           local real = vim.uv.fs_realpath(path) or path
           if path ~= "" and not seen[real] then
             seen[real] = true
@@ -31,13 +32,19 @@ return {
         return jars
       end
 
+      local function mason_jars(pattern)
+        return jars_from(mason_share, pattern)
+      end
+
       local function java_bundles()
         local bundles = mason_jars("java-debug-adapter/com.microsoft.java.debug.plugin-*.jar")
+        local java_test_jars = vim.uv.fs_stat(custom_java_test_server) and jars_from(custom_java_test_server, "*.jar")
+          or mason_jars("java-test/*.jar")
         local excluded = {
           ["com.microsoft.java.test.runner-jar-with-dependencies.jar"] = true,
           ["jacocoagent.jar"] = true,
         }
-        for _, jar in ipairs(mason_jars("java-test/*.jar")) do
+        for _, jar in ipairs(java_test_jars) do
           if not excluded[vim.fs.basename(jar)] then
             table.insert(bundles, jar)
           end
@@ -48,13 +55,13 @@ return {
       local jdtls_base = vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "packages", "jdtls")
       local lombok_jar = vim.fs.joinpath(jdtls_base, "lombok.jar")
 
-      local function build_jdtls_cmd(configuration, data)
+      local function build_jdtls_cmd(data)
         local launcher = vim.fn.glob(vim.fs.joinpath(jdtls_base, "plugins", "org.eclipse.equinox.launcher_*.jar"), false, true)[1]
         assert(launcher, "jdtls equinox launcher not found; install jdtls via :Mason")
 
         local uname = vim.uv.os_uname().sysname
         local conf_name = uname == "Linux" and "config_linux" or uname == "Darwin" and "config_mac" or "config_win"
-        local shared_config = vim.fs.joinpath(jdtls_base, conf_name)
+        local configuration = vim.fs.joinpath(jdtls_base, conf_name)
         local java = (vim.env.JAVA_HOME and vim.fs.joinpath(vim.env.JAVA_HOME, "bin", "java")) or "java"
 
         -- Invoke java directly so -javaagent is guaranteed on the language server JVM.
@@ -64,9 +71,6 @@ return {
           "-Dosgi.bundles.defaultStartLevel=4",
           "-Declipse.product=org.eclipse.jdt.ls.core.product",
           "-Dosgi.checkConfiguration=true",
-          "-Dosgi.sharedConfiguration.area=" .. shared_config,
-          "-Dosgi.sharedConfiguration.area.readOnly=true",
-          "-Dosgi.configuration.cascaded=true",
           "-Xms1G",
           "--add-modules=ALL-SYSTEM",
           "--add-opens",
@@ -153,7 +157,6 @@ return {
         end
         local project_name = vim.fs.basename(root_dir)
         local cache_dir = vim.fs.joinpath(vim.fn.stdpath("cache"), "jdtls", project_name)
-        local jdtls_config_dir = vim.fs.joinpath(cache_dir, "config")
         local jdtls_workspace_dir = vim.fs.joinpath(cache_dir, "workspace")
         local bundles = java_bundles()
         if #bundles == 0 then
@@ -165,11 +168,10 @@ return {
 
         jdtls_dap.setup_dap({ hotcodereplace = "auto" })
 
-        vim.fn.mkdir(jdtls_config_dir, "p")
         vim.fn.mkdir(jdtls_workspace_dir, "p")
 
         require("jdtls").start_or_attach({
-          cmd = build_jdtls_cmd(jdtls_config_dir, jdtls_workspace_dir),
+          cmd = build_jdtls_cmd(jdtls_workspace_dir),
           root_dir = root_dir,
           settings = {
             java = {

@@ -159,9 +159,6 @@ nmap_leader("bD", cmd("%bd"), "Delete all buffer")
 
 -- tab
 nmap_leader("<tab>c", cmd("tabclose"))
-for n = 1, 9 do
-  nmap_leader("<tab>" .. n, n .. "gt", "Switch to " .. n .. "th tab")
-end
 nmap_leader("<tab>n", cmd("tabnew"), "New tab")
 
 -- file
@@ -323,7 +320,8 @@ nmap_leader("dC", function() require("dap"); require("dapui").toggle({ layout = 
 nmap_leader("db", function() require("dap").toggle_breakpoint() end, "Toggle breakpoint (DAP)")
 nmap_leader("dc", function() require("dap").continue() end,          "Continue (DAP)")
 nmap_leader("dg", function() require("dap").run_to_cursor() end,     "Run to cursor (DAP)")
-nmap_leader("dr", function() require("dap").restart() end,           "Restart (DAP)")
+nmap_leader("dr", function() require("dap").repl.toggle() end,           "REPL (DAP)")
+nmap_leader("dR", function() require("dap").restart() end,           "Restart (DAP)")
 nmap_leader("dq", function()
   (_G.DapTerminateAndKill or function()
     require("dap").terminate({

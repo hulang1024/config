@@ -13,12 +13,12 @@ return {
       local moves = {
         goto_next_start = {
           ["]f"] = "@function.outer",
-          ["]c"] = "@class.outer",
+          -- ["]c"] = "@class.outer",
           ["]a"] = "@parameter.outer",
         },
         goto_previous_start = {
           ["[f"] = "@function.outer",
-          ["[c"] = "@class.outer",
+          -- ["[c"] = "@class.outer",
           ["[a"] = "@parameter.outer",
         },
         goto_next_end = {

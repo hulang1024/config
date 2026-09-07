@@ -32,7 +32,8 @@ return {
         "c_sharp",
         "java",
         "javadoc",
-        "sql"
+        "sql",
+        "csv"
       })
     end,
   },
