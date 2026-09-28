@@ -13,6 +13,9 @@ return {
       "nvim-tree/nvim-web-devicons",
     },
     lazy = false, -- neo-tree will lazily load itself
+    opts = {
+      enable_git_status = false,
+    },
   },
   {
     "stevearc/oil.nvim",

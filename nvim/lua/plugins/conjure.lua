@@ -4,14 +4,13 @@ return {
     ft = { "clojure", "fennel" },
     cmd = {
       "ConjureConnect",
-      "ConjureEvalCurrentForm",
-      "ConjureEvalVisual",
-      "ConjureEvalWord",
+      "ConjureShadowSelect",
     },
     lazy = true,
     init = function()
       local repl_cmd = "clojure -M:nrepl"
       vim.g["conjure#debug"] = false
+      -- vim.g["conjure#mapping#enable_defaults"] = false
       -- vim.g["conjure#mapping#doc_word"] = { "K" }
       -- vim.g["conjure#mapping#def_word"] = { "gd" }
       -- Keep auto-repl off by default; :Repl will trigger it manually.
